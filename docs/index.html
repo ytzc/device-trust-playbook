@@ -1,10 +1,9 @@
-cat > docs/index.html <<'EOF'
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device Trust & Platform Security Playbook</title>
+  <title>Device Trust Playbook</title>
   <style>
     body {
       margin: 0;
@@ -12,32 +11,17 @@ cat > docs/index.html <<'EOF'
       background: #f6f8fb;
       color: #1f2937;
     }
-
     header {
       padding: 64px 24px;
       text-align: center;
       color: white;
       background: linear-gradient(135deg, #111827, #374151);
     }
-
-    header h1 {
-      margin: 0 0 16px;
-      font-size: 42px;
-      line-height: 1.2;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 18px;
-      color: #d1d5db;
-    }
-
     main {
-      max-width: 960px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 40px 24px;
     }
-
     .card {
       background: white;
       border-radius: 18px;
@@ -45,97 +29,34 @@ cat > docs/index.html <<'EOF'
       margin-bottom: 24px;
       box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
     }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .badge {
+    .version {
       display: inline-block;
-      padding: 6px 10px;
+      margin-top: 16px;
+      padding: 8px 14px;
       border-radius: 999px;
       background: #e0f2fe;
       color: #075985;
-      font-size: 13px;
-      font-weight: 600;
-      margin: 4px 4px 4px 0;
-    }
-
-    footer {
-      text-align: center;
-      padding: 32px 24px;
-      color: #6b7280;
-      font-size: 14px;
+      font-weight: 700;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Device Trust & Platform Security Playbook</h1>
-    <p>設備信任、平台安全、Root of Trust、Provisioning、Onboarding 與 Attestation 知識庫</p>
+    <p>設備信任、Root of Trust、Provisioning、Onboarding、Attestation 知識庫</p>
+    <div class="version">Version: __VERSION__</div>
   </header>
 
   <main>
     <section class="card">
-      <h2>Overview / 總覽</h2>
+      <h2>Deployment Test / 部署測試</h2>
       <p>
-        This site is a practical knowledge base for building trusted device platforms.
-        It covers Root of Trust, TPM/fTPM/hRoT, secure provisioning, device onboarding,
-        firmware integrity, secure boot, measured boot, remote attestation, and CRA-ready product security.
+        This page is deployed to GitHub Pages only when a version tag is pushed.
       </p>
       <p>
-        本網站用於整理設備信任與平台安全相關知識，涵蓋 Root of Trust、TPM/fTPM/hRoT、
-        安全佈建、設備上線、韌體完整性、Secure Boot、Measured Boot、Remote Attestation
-        與 CRA-ready 產品安全。
-      </p>
-    </section>
-
-    <section class="card">
-      <h2>Core Topics / 核心主題</h2>
-      <div class="grid">
-        <div>
-          <span class="badge">Root of Trust</span>
-          <span class="badge">TPM / fTPM / hRoT</span>
-          <span class="badge">Secure Key Storage</span>
-        </div>
-        <div>
-          <span class="badge">Device Identity</span>
-          <span class="badge">Provisioning</span>
-          <span class="badge">Onboarding</span>
-        </div>
-        <div>
-          <span class="badge">Secure Boot</span>
-          <span class="badge">Measured Boot</span>
-          <span class="badge">Firmware Integrity</span>
-        </div>
-        <div>
-          <span class="badge">Remote Attestation</span>
-          <span class="badge">CRA-ready</span>
-          <span class="badge">Zero Trust</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>Status / 狀態</h2>
-      <p>
-        GitHub Pages deployment test is working.
-      </p>
-      <p>
-        GitHub Pages 測試頁面已建立。
+        此頁面只有在推送版本 tag，例如 v0.1.0 時，才會部署到 GitHub Pages。
       </p>
     </section>
   </main>
-
-  <footer>
-    device-trust-playbook
-  </footer>
 </body>
 </html>
-EOF
