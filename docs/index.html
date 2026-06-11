@@ -38,16 +38,65 @@
       color: #075985;
       font-weight: 700;
     }
+    .report-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #93c5fd;
+      border-radius: 14px;
+      padding: 20px 24px;
+      text-decoration: none;
+      color: #1e3a8a;
+      margin-bottom: 16px;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .report-link:hover {
+      box-shadow: 0 8px 24px rgba(30,58,138,.15);
+      transform: translateY(-2px);
+    }
+    .report-link .rl-icon { font-size: 2rem; flex-shrink: 0; }
+    .report-link .rl-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .report-link .rl-body p { font-size: .85rem; opacity: .75; margin: 0; }
+    .report-link .rl-badge {
+      margin-left: auto; flex-shrink: 0;
+      background: #1e3a8a; color: #fff;
+      border-radius: 999px; padding: 4px 12px; font-size: .75rem; font-weight: 700;
+    }
+    .sec-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+      color: #6b7280; margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Device Trust & Platform Security Playbook</h1>
     <p>設備信任、Root of Trust、Provisioning、Onboarding、Attestation 知識庫</p>
-    <div class="version">Version: __VERSION__</div>
+    <div class="version" id="site-version">Version: __VERSION__</div>
   </header>
+  <script>
+    (function () {
+      var el = document.getElementById('site-version');
+      if (el && !/^v\d/.test((el.textContent.split(': ')[1] || '').trim())) {
+        el.textContent = 'Version: dev (local)';
+      }
+    })();
+  </script>
 
   <main>
+    <section class="card">
+      <div class="sec-label">📄 最新報告 / Latest Reports</div>
+      <a href="./current-device-trust-cra-summary.html" class="report-link">
+        <div class="rl-icon">🛡</div>
+        <div class="rl-body">
+          <h3>Current Device Trust &amp; CRA Summary</h3>
+          <p>目前 Device Trust 與 CRA 整理報告 · Platform Decision · Capability Model · CRA Annex Mapping · PLANET / TX8 / i.MX93 Analysis</p>
+        </div>
+        <div class="rl-badge">2026-06-11</div>
+      </a>
+    </section>
+
     <section class="card">
       <h2>Deployment Test / 部署測試</h2>
       <p>

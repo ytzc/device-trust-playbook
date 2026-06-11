@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Trust & CRA Readiness — Current Summary</title>
+<style>
+  :root {
+    --ink: #111827;
+    --ink-2: #374151;
+    --ink-3: #6b7280;
+    --bg: #f6f8fb;
+    --bg-2: #ffffff;
+    --border: #e5e7eb;
+    --blue: #1d4ed8;
+    --blue-l: #eff6ff;
+    --blue-m: #bfdbfe;
+    --green: #15803d;
+    --green-l: #f0fdf4;
+    --orange: #b45309;
+    --orange-l: #fffbeb;
+    --red: #b91c1c;
+    --red-l: #fef2f2;
+    --gray-l: #f9fafb;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(17,24,39,.07);
+    --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 55%, #1d4ed8 100%); color: #fff; padding: 60px 32px 52px; text-align: center; }
+  .hero h1 { font-size: 2rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .hero .hero-sub { font-size: 1rem; opacity: .8; margin-bottom: 8px; }
+  .hero .hero-date { font-size: .82rem; opacity: .6; margin-bottom: 28px; }
+  .hero .disclaimer { display: inline-block; background: rgba(255,255,255,.13); border: 1px solid rgba(255,255,255,.25); border-radius: 99px; padding: 5px 16px; font-size: .78rem; margin-bottom: 36px; }
+  .hero-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .htag { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+
+  /* STICKY NAV */
+  nav { background: #0f172a; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #1e3a8a; }
+  nav a { color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 16px; font-size: .8rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+  /* PAGE */
+  .page { max-width: 1180px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 52px 0 44px; }
+  section + section { border-top: 1px solid var(--border); }
+
+  /* SECTION HEADING */
+  .sec-head { margin-bottom: 24px; }
+  .sec-num { display: inline-block; background: var(--blue); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: .75rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  h2.sec-title { font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .sec-desc { font-size: .9rem; color: var(--ink-3); }
+
+  /* BADGES */
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-green { background: var(--green-l); color: var(--green); }
+  .b-blue { background: var(--blue-l); color: var(--blue); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red { background: var(--red-l); color: var(--red); }
+  .b-gray { background: #f3f4f6; color: #374151; }
+
+  /* CARD GRID */
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .g5 { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .card .card-en { font-size: .77rem; color: var(--ink-3); font-style: italic; margin-bottom: 10px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 8px; }
+  .card ul li { margin-bottom: 3px; }
+  .card .cra-tag { margin-top: 10px; background: var(--blue-l); color: var(--blue); border-radius: 6px; padding: 5px 9px; font-size: .77rem; display: block; }
+  .card-icon { font-size: 1.5rem; margin-bottom: 8px; }
+
+  /* TABLES */
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th { background: #1e3a8a; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: var(--gray-l); }
+  tbody tr:hover td { background: var(--blue-l); }
+  .td-mono { font-family: monospace; font-size: .78rem; color: var(--blue); }
+  .td-sm { font-size: .78rem; color: var(--ink-3); }
+
+  /* NOTICE BOXES */
+  .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 16px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-err { background: var(--red-l); border-left: 4px solid var(--red); }
+
+  /* CUSTOMER PANELS */
+  .scenario { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+  .scenario-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .scenario-title h3 { font-size: 1rem; font-weight: 700; }
+  .scenario-body { font-size: .86rem; color: var(--ink-2); }
+  .scenario-body ul { padding-left: 16px; margin: 6px 0; }
+  .scenario-body li { margin-bottom: 3px; }
+
+  /* CAPABILITY CARDS */
+  .cap-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-sm); }
+  .cap-card .cap-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .cap-card h3 { font-size: .95rem; font-weight: 700; }
+  .cap-card .cap-section { margin-top: 10px; }
+  .cap-card .cap-label { font-size: .72rem; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+  .cap-card p { font-size: .84rem; color: var(--ink-2); }
+
+  /* OVERCLAIM */
+  .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 4px; }
+  @media (max-width: 680px) { .oc-grid { grid-template-columns: 1fr; } }
+  .oc-bad { background: var(--red-l); border-left: 4px solid var(--red); border-radius: 10px; padding: 16px 18px; }
+  .oc-good { background: var(--green-l); border-left: 4px solid var(--green); border-radius: 10px; padding: 16px 18px; }
+  .oc-bad h4 { color: var(--red); font-size: .88rem; margin-bottom: 10px; }
+  .oc-good h4 { color: var(--green); font-size: .88rem; margin-bottom: 10px; }
+  .oc-row { font-size: .84rem; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,.06); display: flex; align-items: flex-start; gap: 8px; }
+  .oc-row:last-child { border-bottom: none; }
+  .oc-bad .oc-row::before { content: "✗"; color: var(--red); font-weight: 700; flex-shrink: 0; }
+  .oc-good .oc-row::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+  /* ROADMAP */
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  @media (max-width: 760px) { .roadmap { grid-template-columns: 1fr; } }
+  .rm { border-radius: var(--radius); padding: 22px; }
+  .rm.p1 { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd; }
+  .rm.p2 { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; }
+  .rm.p3 { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; }
+  .rm h3 { font-size: .95rem; font-weight: 700; margin-bottom: 2px; }
+  .rm .rm-sub { font-size: .77rem; color: var(--ink-3); font-style: italic; margin-bottom: 10px; }
+  .rm ul { padding-left: 16px; font-size: .84rem; }
+  .rm ul li { margin-bottom: 3px; }
+  .rm .rm-block { margin-top: 10px; font-size: .78rem; color: #555; border-top: 1px solid rgba(0,0,0,.08); padding-top: 8px; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; padding: 0; margin-top: 8px; }
+  .checklist li { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 7px; font-size: .85rem; display: flex; gap: 10px; align-items: flex-start; }
+  .checklist li::before { content: "☐"; color: var(--orange); font-size: 1rem; flex-shrink: 0; line-height: 1.5; }
+  .checklist li strong { color: var(--blue); }
+
+  /* SOURCE TABLE */
+  .src-table td:first-child { font-family: monospace; font-size: .78rem; color: var(--blue); white-space: nowrap; }
+
+  /* FOOTER */
+  footer { background: #0f172a; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
+  footer strong { color: rgba(255,255,255,.85); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.5rem; }
+    .g2, .g3, .g5 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Device Trust &amp; CRA Readiness</h1>
+  <p class="hero-sub">Current Summary — FiduciaEdge Device Trust &amp; Platform Security Playbook</p>
+  <p class="hero-date">最後更新：2026-06-11 · 來源：cra-compliance-readiness repo</p>
+  <div class="disclaimer">⚠ 內部知識整理，非法律合規聲明 · Internal draft — not a conformity declaration</div>
+  <div class="hero-tags">
+    <span class="htag">Device Identity</span>
+    <span class="htag">Root of Trust</span>
+    <span class="htag">TPM / fTPM / hRoT</span>
+    <span class="htag">Secure Provisioning</span>
+    <span class="htag">Secure Boot</span>
+    <span class="htag">Remote Attestation</span>
+    <span class="htag">CRA Readiness</span>
+    <span class="htag">PLANET · TX8 · i.MX93</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#exec">摘要</a>
+  <a href="#context">客戶場景</a>
+  <a href="#naming">定位</a>
+  <a href="#platform">平台決策表</a>
+  <a href="#capability">能力模型</a>
+  <a href="#cra">CRA Mapping</a>
+  <a href="#planet">PLANET</a>
+  <a href="#tx8">TX8</a>
+  <a href="#ra">RA Roadmap</a>
+  <a href="#overclaim">勿過度承諾</a>
+  <a href="#openq">Open Questions</a>
+  <a href="#sources">來源</a>
+</nav>
+
+<div class="page">
+
+<!-- 1. EXECUTIVE SUMMARY -->
+<section id="exec">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <h2 class="sec-title">Executive Summary 執行摘要</h2>
+    <p class="sec-desc">我們建立的是 Device Trust &amp; Platform Security 能力，CRA 是其中一個重要的合規驅動場景，但整體能力遠超出 CRA 本身。</p>
+  </div>
+
+  <div class="notice notice-info" style="margin-bottom:20px">
+    <strong>核心定位：</strong> FiduciaEdge 提供 CRA 所需安全控制的技術實作基礎，協助 OEM 建立 CRA-ready 產品安全架構。Conformity assessment 與 CE marking 法律責任仍在 OEM 製造商。
+  </div>
+
+  <div class="grid g5">
+    <div class="card">
+      <div class="card-icon">🔑</div>
+      <h3>Device Identity</h3>
+      <div class="card-en">IDevID / LDevID · Hardware-bound</div>
+      <p>每台設備唯一、不可匯出的 device key + cert，儲存於硬體保護邊界（fTPM / SE / hRoT）。</p>
+      <span class="cra-tag">📌 CRA Annex I (2)(d) AuthN &amp; Identity</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🛡</div>
+      <h3>Root of Trust</h3>
+      <div class="card-en">TPM 2.0 / fTPM / hRoT / SE</div>
+      <p>Private key 永不離開硬體保護邊界。ARM TrustZone fTPM / hTPM / Soteria hRoT / External SE。</p>
+      <span class="cra-tag">📌 CRA Annex I (2)(e)(k) Confidentiality &amp; Mitigation</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔧</div>
+      <h3>Secure Provisioning</h3>
+      <div class="card-en">TTPS DI · FDO · Zero-touch</div>
+      <p>TTPS DI service 已在 Ubuntu+TPM 驗證。Phase 1 = 移植至 MTK OpenWRT + fTPM。FDO 協定支援 zero-touch onboarding。</p>
+      <span class="cra-tag">📌 CRA Annex I (2)(b) Secure-by-default</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Firmware Integrity</h3>
+      <div class="card-en">Secure Boot · Measured Boot · SBOM</div>
+      <p>Secure Boot 確保 boot chain 可信。Measured Boot 將每個 boot 階段 hash extend 至 PCR-like registers。SBOM 由 OEM release key 簽署。</p>
+      <span class="cra-tag">📌 CRA Annex I (2)(b)(f) Integrity</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">📡</div>
+      <h3>Remote Attestation</h3>
+      <div class="card-en">Measured Boot · Quote · NMS Policy</div>
+      <p>RA client 產生帶簽章的 attestation report；NMS verifier 比對 Known-Good baseline；Pass / Fail / Unknown verdict 控制管理存取。</p>
+      <span class="cra-tag">📌 CRA Annex I (2)(f)(k)(l) Integrity, Monitoring</span>
+    </div>
+  </div>
+
+  <div class="notice notice-warn" style="margin-top:20px">
+    <strong>CRA 時程：</strong>
+    <strong>2026/06/11</strong> — Conformity assessment bodies 通知規定開始適用（今日）｜
+    <strong>2026/09/11</strong> — 漏洞主動利用通報義務｜
+    <strong>2027/12/11</strong> — CRA 全面強制執行（距今約 18 個月）｜罰則：最高 €15M 或年營收 2.5%
+  </div>
+</section>
+
+<!-- 2. CUSTOMER CONTEXT -->
+<section id="context">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <h2 class="sec-title">Current Customer / Project Context 客戶與場景</h2>
+    <p class="sec-desc">目前涉及的主要客戶與技術場景。</p>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>PLANET Technology — Gateway 產品線</h3>
+      <span class="b b-orange">CRA Important Class I 風險</span>
+      <span class="b b-blue">三階段 RA 提案</span>
+    </div>
+    <div class="scenario-body">
+      <p>PLANET 為台灣網路設備製造商，高階 Gateway 可能落入 <strong>CRA Important Class I</strong>（CRA Annex III），需通過 harmonized standard 合規或第三方審查。FiduciaEdge 提出三階段 RA 提案（以 MTK ARM TrustZone + fTPM 平台為主）。</p>
+      <ul>
+        <li>Phase 1：TTPS DI <strong>移植</strong>（Ubuntu+TPM → MTK OpenWRT + fTPM）— hardware-bound device identity</li>
+        <li>Phase 2：VPN/mTLS private key 移入 TrustZone；PKCS#11 / TPM2 Provider 整合</li>
+        <li>Phase 3：Measured Boot → PCR；RA client；NMS Verifier + Policy Engine</li>
+      </ul>
+      <p style="margin-top:8px"><strong>⚠ 關鍵前提：</strong> MIPS 架構本身不是阻礙——問題在於特定 MIPS SoC 缺乏 hardware RoT。無 hardware RoT 的平台只能提供 gap analysis + compensating controls。</p>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Techmation TX8</h3>
+      <span class="b b-green">有 Soteria hRoT</span>
+      <span class="b b-blue">Vendor-specific API</span>
+    </div>
+    <div class="scenario-body">
+      <p>TX8 搭載 <strong>Soteria hRoT</strong>（vendor-specific API，非 TPM2 標準 API）。Phase 1/2 可行。Phase 3 Remote Attestation 需確認 Soteria 是否支援 attestation quote mechanism。</p>
+      <ul>
+        <li>需開發 custom adapter layer（工程量高於 TPM2 Provider path）</li>
+        <li>Soteria attestation quote capability 為 Phase 3 阻擋條件</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>i.MX93 / NXP EdgeLock 2GO / TTPS / FDO</h3>
+      <span class="b b-blue">ELE + AHAB + TrustZone</span>
+      <span class="b b-orange">Root CA sovereignty 待決</span>
+    </div>
+    <div class="scenario-body">
+      <p>i.MX93 含 ELE（EdgeLock Secure Enclave）、AHAB Secure Boot、TrustZone。SESIP Level 3 / PSA Level 3 認證為技術佐證（不等同 CRA compliance）。</p>
+      <ul>
+        <li><strong>衝突風險：</strong> NXP EL2GO 若控制 Root CA，FiduciaEdge 的 Chain of Trust 設計建立在 NXP 信任錨點上 → FiduciaEdge 失去架構主導權</li>
+        <li><strong>FiduciaEdge 立場：</strong> Chain of Trust 定義、Attestation 設計、Threat Modeling 應由 FiduciaEdge 主導</li>
+        <li>AN14601 Rev 1.1（NXP）明確聲明：不保證 CRA 法律確定性，僅為技術路徑指引</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Mitwell e-Box</h3>
+      <span class="b b-blue">CRA Compliance Workshop</span>
+      <span class="b b-orange">待確認</span>
+    </div>
+    <div class="scenario-body">
+      <p>FiduciaEdge 正為 Mitwell 進行 CRA compliance workshop。涉及 NXP EL2GO 整合。<strong>Root CA sovereignty</strong> 是關鍵考量。具體產品 SoC 型號、EL2GO 整合邊界、Root CA 歸屬：需人工確認（Mitwell Proposal DOCX 未完整讀取）。</p>
+    </div>
+  </div>
+
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Legacy MIPS Switch / Bridge</h3>
+      <span class="b b-red">無 hardware RoT</span>
+      <span class="b b-gray">Compensating Controls only</span>
+    </div>
+    <div class="scenario-body">
+      <p>部分舊有產品使用 MIPS SoC（優化封包處理，無 TrustZone / hardware TPM 接頭）。</p>
+      <ul>
+        <li>可提供：Gap analysis + SBOM + signed firmware update + mTLS（軟體金鑰）+ CVD policy</li>
+        <li>不可承諾：Hardware-bound identity、non-exportable key、Remote Attestation evidence 可信度</li>
+        <li>若有 External SE + PKCS#11：Phase 1/2 仍可能可行（需確認 SE 型號）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 3. SOLUTION NAMING -->
+<section id="naming">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <h2 class="sec-title">Solution Naming &amp; Positioning 定位說法</h2>
+    <p class="sec-desc">如何正確向客戶定位我們提供的服務。</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>長期技術品牌</h3>
+      <div class="card-en">Long-term Knowledge Base</div>
+      <p style="font-size:1.05rem; font-weight:700; color:var(--blue); margin:10px 0">Device Trust &amp; Platform Security Playbook</p>
+      <p>涵蓋 Device Identity → RoT → Provisioning → Onboarding → Firmware Integrity → Remote Attestation 的完整技術能力知識庫。</p>
+    </div>
+    <div class="card">
+      <h3>客戶-facing 方案名稱</h3>
+      <div class="card-en">Customer-Facing Solution Name</div>
+      <p style="font-size:1.05rem; font-weight:700; color:var(--blue); margin:10px 0">CRA-Ready Device Trust &amp; Platform Security Solution</p>
+      <p>強調「CRA-ready」，不說「CRA compliance guaranteed」。適合面向 OEM 客戶定位。</p>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:20px">
+    <table>
+      <thead>
+        <tr><th>情境</th><th>✓ 正確說法</th><th>✗ 不可說</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>整體定位</td>
+          <td>CRA-ready · CRA compliance support · CRA readiness foundation</td>
+          <td>fully compliant with CRA · guarantees CRA compliance</td>
+        </tr>
+        <tr>
+          <td>技術能力</td>
+          <td>supports CRA-related evidence preparation · CRA-ready 技術基礎</td>
+          <td>makes the product fully compliant · CRA certified</td>
+        </tr>
+        <tr>
+          <td>責任邊界</td>
+          <td>Conformity assessment 責任在製造商；FiduciaEdge 提供技術服務</td>
+          <td>FiduciaEdge 負責 CE marking</td>
+        </tr>
+        <tr>
+          <td>Phase 1 說明</td>
+          <td>移植既有 TTPS DI（Ubuntu+TPM → MTK OpenWRT + fTPM）</td>
+          <td>從零開發 DI</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 4. PLATFORM DECISION TABLE -->
+<section id="platform">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <h2 class="sec-title">Platform Solution Decision Table 平台決策表</h2>
+    <p class="sec-desc">三階段 RA 可行性由 hardware root-of-trust capability 決定，不由處理器架構名稱決定。</p>
+  </div>
+
+  <div class="notice notice-warn">
+    <strong>⚠ PKCS#11 ≠ 完整 Remote Attestation：</strong>
+    PKCS#11 解決 key operations（簽署/加密），不提供 Secure Boot、Measured Boot、PCR-like registers、attestation quote。Phase 3 需要這些額外能力，需逐平台確認。
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:12px">
+    <table>
+      <thead>
+        <tr>
+          <th>Platform / Scenario</th>
+          <th>Recommended RoT</th>
+          <th>TPM?</th>
+          <th>Integration API</th>
+          <th>Phase 1</th>
+          <th>Phase 2</th>
+          <th>Phase 3</th>
+          <th>CRA-ready</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>x86</strong></td>
+          <td>hTPM (discrete / integrated)</td>
+          <td><span class="b b-green">TPM 2.0</span></td>
+          <td class="td-mono">TSS2 / OpenSSL TPM2 Provider</td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">強（全三階段）</span></td>
+          <td><span class="b b-green">已驗證</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM TrustZone + OP-TEE (BSP 啟用)</strong></td>
+          <td>OP-TEE fTPM TA</td>
+          <td><span class="b b-blue">fTPM（虛擬）</span></td>
+          <td class="td-mono">TPM2 Provider / tpm2-pkcs11</td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span> <span class="td-sm">（需 Secure Boot）</span></td>
+          <td><span class="b b-green">強（全三階段）</span></td>
+          <td><span class="b b-blue">規劃中</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM TrustZone（BSP 未啟用）</strong></td>
+          <td>先啟用 OP-TEE + fTPM TA</td>
+          <td><span class="b b-blue">fTPM（待建立）</span></td>
+          <td class="td-mono">同上（啟用後）</td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">潛力強（需確認）</span></td>
+          <td><span class="b b-orange">需 BSP 評估</span></td>
+        </tr>
+        <tr>
+          <td><strong>Techmation TX8</strong></td>
+          <td>Soteria hRoT</td>
+          <td><span class="b b-gray">非 TPM API</span></td>
+          <td class="td-mono">Soteria vendor SDK</td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-orange">TBD（Soteria quote?）</span></td>
+          <td><span class="b b-blue">中（Phase 1/2 確認）</span></td>
+          <td><span class="b b-orange">評估中</span></td>
+        </tr>
+        <tr>
+          <td><strong>任意平台 + External SE + PKCS#11</strong></td>
+          <td>External Secure Element</td>
+          <td><span class="b b-gray">非 TPM（SE）</span></td>
+          <td class="td-mono">PKCS#11 standard</td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-orange">需確認 Measured Boot</span></td>
+          <td><span class="b b-blue">中（identity+mTLS）</span></td>
+          <td><span class="b b-orange">逐 SE 評估</span></td>
+        </tr>
+        <tr>
+          <td><strong>高出貨量（無 SE）</strong></td>
+          <td>建議硬體改版加 External SE</td>
+          <td><span class="b b-gray">依 SE</span></td>
+          <td class="td-mono">依 SE 型號</td>
+          <td><span class="b b-orange">改版後</span></td>
+          <td><span class="b b-orange">改版後</span></td>
+          <td><span class="b b-orange">改版後</span></td>
+          <td><span class="b b-orange">改版後適用</span></td>
+          <td><span class="b b-orange">需客戶決策</span></td>
+        </tr>
+        <tr>
+          <td><strong>Legacy MIPS（無 hardware RoT）</strong></td>
+          <td>Gap Analysis + Compensating Controls</td>
+          <td><span class="b b-red">無</span></td>
+          <td class="td-mono">無 hardware anchor</td>
+          <td><span class="b b-red">不可承諾</span></td>
+          <td><span class="b b-red">不可承諾</span></td>
+          <td><span class="b b-red">不適用</span></td>
+          <td><span class="b b-red">有限（補償控制）</span></td>
+          <td><span class="b b-gray">Gap analysis</span></td>
+        </tr>
+        <tr>
+          <td><strong>RISC-V 新平台</strong></td>
+          <td>Per-SoC capability assessment</td>
+          <td><span class="b b-gray">依 SoC</span></td>
+          <td class="td-mono">依 SoC</td>
+          <td><span class="b b-orange">需評估</span></td>
+          <td><span class="b b-orange">需評估</span></td>
+          <td><span class="b b-orange">需評估</span></td>
+          <td><span class="b b-gray">Per-product assessment</span></td>
+          <td><span class="b b-orange">需評估</span></td>
+        </tr>
+        <tr>
+          <td><strong>VM / KVM / QEMU</strong></td>
+          <td>vTPM / swtpm</td>
+          <td><span class="b b-blue">vTPM</span></td>
+          <td class="td-mono">TPM2 Provider（同實體）</td>
+          <td><span class="b b-blue">開發/測試</span></td>
+          <td><span class="b b-blue">開發/測試</span></td>
+          <td><span class="b b-blue">開發/測試</span></td>
+          <td><span class="b b-gray">不可用於生產</span></td>
+          <td><span class="b b-gray">測試用途</span></td>
+        </tr>
+        <tr>
+          <td><strong>i.MX93 + NXP EL2GO</strong></td>
+          <td>ELE + AHAB + OP-TEE fTPM</td>
+          <td><span class="b b-blue">fTPM（虛擬）</span></td>
+          <td class="td-mono">TTPS DI + EL2GO（邊界待定）</td>
+          <td><span class="b b-orange">需確認</span></td>
+          <td><span class="b b-orange">需確認</span></td>
+          <td><span class="b b-orange">需確認</span></td>
+          <td><span class="b b-orange">潛力強（Root CA 待決）</span></td>
+          <td><span class="b b-orange">需確認</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 5. CAPABILITY MODEL -->
+<section id="capability">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <h2 class="sec-title">Capability Model 能力模型</h2>
+    <p class="sec-desc">Device Trust 技術棧的各層能力，從 Device Identity 到 CRA Evidence。</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="cap-card">
+      <div class="cap-header"><h3>🔑 Device Identity</h3><span class="b b-green">Phase 1</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>IDevID / LDevID，hardware-bound，non-exportable private key。每台設備唯一不可偽造的身份。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>直接對應 Annex I (2)(d) Authentication &amp; Identity Management。所有後續功能的信任基礎。</p></div>
+      <div class="cap-section"><div class="cap-label">平台相依性</div><p>高。需要 hardware RoT。無 hardware RoT 只有軟體金鑰（可信度弱）。</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>🔒 Secure Provisioning</h3><span class="b b-green">Phase 1</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>製造時或部署時安全注入 device key + cert。Zero-touch / minimal-touch。TTPS DI（已驗證）+ FDO 協定。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>對應 (2)(b) Secure-by-default；出廠即具備 hardware-bound identity，無不安全預設狀態。</p></div>
+      <div class="cap-section"><div class="cap-label">平台相依性</div><p>高。Key 必須在 hardware RoT 中產生。</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>🛡 Root of Trust Integration</h3><span class="b b-green">Phase 1–2</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>將平台 hardware RoT 正確整合到 OS/Application 層，提供 hardware-isolated key operations。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>(2)(d)(e)(k)；private key 不離開 hardware boundary。</p></div>
+      <div class="cap-section"><div class="cap-label">各平台 API</div><p>x86 hTPM → TSS2 / TPM2 Provider｜ARM fTPM → 同 hTPM API｜TX8 → Soteria vendor API｜External SE → PKCS#11</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>📦 Firmware Integrity</h3><span class="b b-orange">Phase 2–3 前提</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>確保設備運行的 firmware 是原廠授權版本，未被篡改。Build-time signing + deploy-time verification。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>(2)(f) Integrity；(2)(b) Secure-by-default。</p></div>
+      <div class="cap-section"><div class="cap-label">平台相依性</div><p>高。需要 Secure Boot（boot chain signature verification）。PLANET 目標平台 Secure Boot 狀態待確認。</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>📏 Measured Boot</h3><span class="b b-orange">Phase 3 前提</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>在 Secure Boot 基礎上，將每個 boot 階段的 cryptographic hash extend 到 hardware-write-once PCR-like registers。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>Phase 3 Remote Attestation 的核心前提。沒有 Measured Boot 就沒有 verifiable boot integrity evidence。</p></div>
+      <div class="cap-section"><div class="cap-label">重要注意</div><p>PKCS#11-only 平台無此能力。需 hardware write-once registers。</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>📡 Remote Attestation</h3><span class="b b-orange">Phase 3 目標</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>NMS 遠端驗證設備 boot + runtime integrity，依驗證結果做 policy decision（Pass/Fail/Unknown）。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>(2)(f)(k)(l)；tamper-evident runtime evidence，支援 attestation-gated access control。</p></div>
+      <div class="cap-section"><div class="cap-label">重要提醒</div><p>Remote Attestation 是 roadmap，不應對所有平台立即承諾。需逐平台確認完整能力棧。</p></div>
+    </div>
+    <div class="cap-card">
+      <div class="cap-header"><h3>📋 CRA Evidence Readiness</h3><span class="b b-green">全程</span></div>
+      <div class="cap-section"><div class="cap-label">目的</div><p>為 OEM conformity assessment 準備技術佐證：CRA Annex I mapping 文件、RA audit trail、SBOM、security architecture 說明。</p></div>
+      <div class="cap-section"><div class="cap-label">對 CRA readiness</div><p>支援 OEM 執行 conformity assessment 的技術面準備；不等同合規本身。</p></div>
+      <div class="cap-section"><div class="cap-label">平台相依性</div><p>低（文件層）。但技術佐證強度取決於平台能力。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. CRA REQUIREMENT MAPPING -->
+<section id="cra">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <h2 class="sec-title">CRA Requirement Mapping CRA 條文對應</h2>
+    <p class="sec-desc">基於 EU CRA 2024/2847 Annex I。需在正式 conformity assessment 時對照官方 EUR-Lex 原文驗證。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>注意：</strong> 以下為 CRA-related requirement mapping，不代表 FiduciaEdge 能獨立保證客戶產品完整符合 CRA。Conformity assessment 為 OEM 製造商責任。
+  </div>
+  <div class="tbl-wrap" style="margin-top:12px">
+    <table>
+      <thead>
+        <tr><th>CRA 要求</th><th>Annex I 條文</th><th>技術控制</th><th>CRA-ready 程度</th><th>Gap / 需 OEM 配合</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Secure by default</td><td class="td-mono">(2)(b)</td><td>出廠即有 hardware-bound device identity；DI 自動化</td><td><span class="b b-green">強（Phase 1）</span></td><td>停用 JTAG；factory reset SOP</td></tr>
+        <tr><td>AuthN / Access Control</td><td class="td-mono">(2)(d)</td><td>IDevID/LDevID；mTLS；RA-gated management access</td><td><span class="b b-green">強（Phase 1–3）</span></td><td>OEM 應用層 AuthZ policy</td></tr>
+        <tr><td>Data Confidentiality</td><td class="td-mono">(2)(e)</td><td>hardware-protected VPN/mTLS key；non-exportable；mTLS channel</td><td><span class="b b-green">強（Phase 1–2）</span></td><td>所有管理介面強制 TLS</td></tr>
+        <tr><td>Incident Mitigation</td><td class="td-mono">(2)(k)</td><td>hardware-protected key；private key 不可提取</td><td><span class="b b-green">強（Phase 1–2）</span></td><td>—</td></tr>
+        <tr><td>Data Integrity / Boot</td><td class="td-mono">(2)(b)(f)</td><td>Measured Boot + fTPM PCR；RA quote；firmware signature</td><td><span class="b b-orange">強（Phase 3）</span></td><td>OEM 需建立 Secure Boot chain</td></tr>
+        <tr><td>Logging / Monitoring</td><td class="td-mono">(2)(l)</td><td>RA attestation audit log；cert event log；mTLS auth failure</td><td><span class="b b-orange">強（Phase 3）</span></td><td>OEM 非 attestation 相關 event log</td></tr>
+        <tr><td>Security Updates</td><td class="td-mono">(2)(c), Part II (7)(8)</td><td>firmware signed update；attestation 驗證更新後狀態</td><td><span class="b b-orange">部分（Phase 3）</span></td><td>OEM 需建立 OTA pipeline + 簽名金鑰管理</td></tr>
+        <tr><td>SBOM</td><td class="td-mono">Part II (1)</td><td>Known-Good Firmware SBOM Baseline DB（OEM release key 簽署）</td><td><span class="b b-orange">Phase 3 前提</span></td><td>OEM 必須建立 SBOM 生成 + 簽署 pipeline</td></tr>
+        <tr><td>Attack Surface</td><td class="td-mono">(2)(j)</td><td>cert-based auth 取代預設密碼；DI 消除臨時設定路徑</td><td><span class="b b-blue">部分（Phase 1–2）</span></td><td>停用 JTAG/SWD；關閉未使用 port</td></tr>
+        <tr><td>Secure Design</td><td class="td-mono">(1), (a)</td><td>三階段安全架構；hardware-rooted trust foundation</td><td><span class="b b-blue">支援架構設計</span></td><td>OEM 需執行 threat model + risk assessment</td></tr>
+        <tr><td>Vulnerability Handling</td><td class="td-mono">Part II (2)–(6)</td><td>SBOM 支援 CVE correlation；mismatch records</td><td><span class="b b-blue">部分支援</span></td><td>OEM 必須建立 PSIRT + CVD policy + security contact</td></tr>
+        <tr><td>Secure Decommission</td><td class="td-mono">(2)(m)</td><td>安全刪除 LDevID、私鑰、trust anchor</td><td><span class="b b-gray">設計考量</span></td><td>OEM decommission SOP</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 7. PLANET ANALYSIS -->
+<section id="planet">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <h2 class="sec-title">PLANET Analysis PLANET 分析</h2>
+    <p class="sec-desc">PLANET Technology Gateway 產品線的 CRA readiness 分析。</p>
+  </div>
+
+  <div class="roadmap">
+    <div class="rm p1">
+      <h3>Phase 1 — Device Identity</h3>
+      <div class="rm-sub">Hardware-bound device identity foundation</div>
+      <ul>
+        <li>TTPS DI <strong>移植</strong>（Ubuntu+TPM → MTK OpenWRT + fTPM）</li>
+        <li>fTPM access layer + TA 整合</li>
+        <li>OpenWRT 自動化 DI CLI</li>
+        <li>Hardware-bound identity 驗證</li>
+        <li>IDevID / LDevID 佈建</li>
+      </ul>
+      <div class="rm-block">⛔ 阻擋：MTK BSP OP-TEE + fTPM TA 就緒・硬體樣品</div>
+    </div>
+    <div class="rm p2">
+      <h3>Phase 2 — Key Protection</h3>
+      <div class="rm-sub">VPN/mTLS hardened with hardware-bound key</div>
+      <ul>
+        <li>VPN/mTLS private key → TrustZone Secure World</li>
+        <li>PKCS#11 / TPM2 Provider 整合</li>
+        <li>StrongSwan / OpenVPN 適配</li>
+        <li>Private key 不暴露於 Normal World</li>
+      </ul>
+      <div class="rm-block">⛔ 阻擋：Phase 1 完成・VPN 技術選定</div>
+    </div>
+    <div class="rm p3">
+      <h3>Phase 3 — Remote Attestation</h3>
+      <div class="rm-sub">Measured Boot + NMS policy enforcement</div>
+      <ul>
+        <li>Measured Boot → fTPM PCR extend</li>
+        <li>RA Client daemon</li>
+        <li>NMS Verifier + Known-Good Baseline DB</li>
+        <li>Policy Engine：Pass / Fail / Unknown</li>
+        <li>Attestation-gated management access</li>
+        <li>CRA evidence documentation</li>
+      </ul>
+      <div class="rm-block">⛔ 阻擋：Phase 1/2・Secure Boot 確認・SBOM pipeline・NMS API</div>
+    </div>
+  </div>
+
+  <h3 style="font-size:.95rem; font-weight:700; margin:24px 0 8px; color:var(--ink)">PLANET-side Dependencies（FiduciaEdge 不能單獨完成）</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>用途</th><th>緊急程度</th></tr></thead>
+      <tbody>
+        <tr><td>MTK BSP OP-TEE + fTPM TA + 硬體樣品</td><td>Phase 1 阻擋條件</td><td><span class="b b-red">Critical</span></td></tr>
+        <tr><td>各產品 SoC 型號清單</td><td>Platform path decision</td><td><span class="b b-red">Critical</span></td></tr>
+        <tr><td>SBOM 生成 + 簽署 pipeline</td><td>Phase 3 attestation baseline</td><td><span class="b b-red">Critical</span></td></tr>
+        <tr><td>Secure Boot 啟用</td><td>Phase 3 前提</td><td><span class="b b-orange">High</span></td></tr>
+        <tr><td>VPN/mTLS 技術選定</td><td>Phase 2 整合設計</td><td><span class="b b-orange">High</span></td></tr>
+        <tr><td>NMS API 邊界定義</td><td>Phase 3 NMS 整合</td><td><span class="b b-orange">High</span></td></tr>
+        <tr><td>Device certificate CA 選擇</td><td>Provisioning flow 設計</td><td><span class="b b-blue">Medium</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice notice-info" style="margin-top:16px">
+    <strong>MIPS 正確說法：</strong> 問題不在「MIPS」本身，而在特定 MIPS SoC <strong>缺乏 hardware RoT</strong>。若有 External SE + PKCS#11，Phase 1/2 仍可能可行。若無 hardware RoT，只能提供 gap analysis + compensating controls。
+  </div>
+</section>
+
+<!-- 8. TX8 ANALYSIS -->
+<section id="tx8">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <h2 class="sec-title">Techmation TX8 Analysis TX8 分析</h2>
+    <p class="sec-desc">使用 Soteria hRoT 的 TX8 平台，vendor-specific API，Phase 3 待確認。</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>技術架構</h3>
+      <ul>
+        <li><strong>平台：</strong> Techmation TX8</li>
+        <li><strong>RoT：</strong> Soteria hRoT</li>
+        <li><strong>API：</strong> Vendor-specific（非 TPM2 API，非 PKCS#11）</li>
+        <li><strong>Phase 1/2：</strong> <span class="b b-green">可行</span>（需 custom adapter）</li>
+        <li><strong>Phase 3：</strong> <span class="b b-orange">TBD — 待確認 Soteria quote 能力</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>待確認事項</h3>
+      <ul>
+        <li>Soteria hRoT API spec（attestation quote capability）</li>
+        <li>Measured Boot / PCR-like registers 是否存在</li>
+        <li>Secure Boot 是否支援</li>
+        <li>Custom adapter 工程量估算</li>
+        <li>Phase 3 完整可行性評估</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="notice notice-info" style="margin-top:12px">
+    <strong>整合方式：</strong> 需開發 custom adapter layer 適配 Soteria vendor API → TTPS DI flow + VPN/mTLS hardening。工程量高於標準 TPM2 Provider path，但 Soteria 提供 hardware RoT，Phase 1/2 CRA-ready 基礎技術上可行。
+  </div>
+</section>
+
+<!-- 9. REMOTE ATTESTATION ROADMAP -->
+<section id="ra">
+  <div class="sec-head">
+    <div class="sec-num">09</div>
+    <h2 class="sec-title">Remote Attestation Roadmap RA 導入路線</h2>
+    <p class="sec-desc">Remote Attestation 是 roadmap，不是立即可用的功能。需逐平台確認能力棧後再決定可交付的 Phase。</p>
+  </div>
+
+  <div class="notice notice-warn">
+    <strong>Phase 3 必備條件（缺一不可）：</strong>
+    ① Secure Boot（boot chain 信任起點） ②  Measured Boot（boot stage hash extend 至 hardware-write-once registers） ③ PCR-like measurement slots（hardware write-once） ④ Signed attestation quote mechanism ⑤ NMS verifier integration
+    <br>— PKCS#11 只解決條件 ④ 的一部分（key operation），不提供條件 ①②③。
+  </div>
+
+  <div class="roadmap" style="margin-top:16px">
+    <div class="rm p1">
+      <h3>Assessment + Identity Foundation</h3>
+      <div class="rm-sub">Phase 1 前：評估 + 基礎建立</div>
+      <ul>
+        <li>目標平台 hardware capability audit（SoC 型號確認）</li>
+        <li>RoT API 確認（TPM2 / fTPM / SE / hRoT）</li>
+        <li>建立 hardware-bound device identity</li>
+        <li>TTPS DI 移植或新整合</li>
+      </ul>
+      <div class="rm-block">成果：每台設備有 hardware-bound cert；private key non-exportable</div>
+    </div>
+    <div class="rm p2">
+      <h3>RoT Integration + Firmware Integrity</h3>
+      <div class="rm-sub">Phase 2：Key protection + Boot readiness</div>
+      <ul>
+        <li>VPN/mTLS hardening（PKCS#11 / TPM2 Provider）</li>
+        <li>Secure Boot 確認或建立</li>
+        <li>SBOM generation + signing pipeline</li>
+      </ul>
+      <div class="rm-block">成果：management channel hardened；firmware integrity foundation</div>
+    </div>
+    <div class="rm p3">
+      <h3>Measured Boot / RA / CRA Evidence</h3>
+      <div class="rm-sub">Phase 3：Full attestation + compliance evidence</div>
+      <ul>
+        <li>Measured Boot integration</li>
+        <li>RA Client daemon</li>
+        <li>NMS Verifier + Known-Good Baseline DB</li>
+        <li>Policy Engine（Pass/Fail/Unknown）</li>
+        <li>CRA evidence documentation</li>
+      </ul>
+      <div class="rm-block">成果：NMS 依 trust verdict 控制 management access；CRA Annex I 技術佐證</div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. OVERCLAIM -->
+<section id="overclaim">
+  <div class="sec-head">
+    <div class="sec-num">10</div>
+    <h2 class="sec-title">What Not to Overclaim 勿過度承諾</h2>
+    <p class="sec-desc">這是技術 readiness 文件，不是法律合規聲明。</p>
+  </div>
+  <div class="oc-grid">
+    <div class="oc-bad">
+      <h4>❌ 不可以說 — Avoid</h4>
+      <div class="oc-row">我們保證完整 CRA compliance</div>
+      <div class="oc-row">fully compliant with CRA · CRA certified</div>
+      <div class="oc-row">所有平台都可以用 TPM</div>
+      <div class="oc-row">Legacy MIPS 不改硬體也可達到完整 attestation</div>
+      <div class="oc-row">PUF / hRoT 實體上完全無法攻破</div>
+      <div class="oc-row">Remote Attestation 立即支援所有平台</div>
+      <div class="oc-row">PKCS#11 = 完整 Remote Attestation</div>
+      <div class="oc-row">i.MX93 SESIP 認證 = CRA 合規</div>
+      <div class="oc-row">FiduciaEdge 負責 CE marking</div>
+      <div class="oc-row">Phase 1 = 從零開發 DI</div>
+    </div>
+    <div class="oc-good">
+      <h4>✓ 正確說法 — Use These</h4>
+      <div class="oc-row">CRA-ready · CRA compliance support · CRA readiness foundation</div>
+      <div class="oc-row">supports CRA-related evidence preparation</div>
+      <div class="oc-row">TPM 是一種選項；關鍵需求是 hardware-protected key mechanism</div>
+      <div class="oc-row">無 hardware RoT 的 MIPS 只能提供 compensating controls</div>
+      <div class="oc-row">PUF / hRoT 提供強硬體保護，安全性有其假設與邊界</div>
+      <div class="oc-row">Remote Attestation 是 roadmap；需逐平台評估完整能力棧</div>
+      <div class="oc-row">PKCS#11 解決 key operations；Phase 3 需 Secure Boot + Measured Boot + PCR</div>
+      <div class="oc-row">i.MX93 SESIP 認證是技術佐證，可支援 conformity assessment</div>
+      <div class="oc-row">Conformity assessment 與 CE marking 法律責任在 OEM 製造商</div>
+      <div class="oc-row">Phase 1 = 移植既有 TTPS DI（Ubuntu+TPM → OpenWRT+fTPM）</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. OPEN QUESTIONS -->
+<section id="openq">
+  <div class="sec-head">
+    <div class="sec-num">11</div>
+    <h2 class="sec-title">Open Questions 待確認事項</h2>
+    <p class="sec-desc">需要客戶或內部確認的關鍵問題。這些是啟動後續設計的先決條件。</p>
+  </div>
+
+  <h3 style="font-size:.9rem; font-weight:700; color:var(--ink-2); margin:0 0 8px">PLANET 需提供</h3>
+  <ul class="checklist">
+    <li><strong>各產品型號 SoC 型號清單</strong>（ARM / MIPS / RISC-V / x86 分布）</li>
+    <li><strong>MTK BSP OP-TEE + fTPM TA 命令集覆蓋</strong>（TPM2 NV Index, ECDSA, PCR extend）</li>
+    <li><strong>各產品 External SE 是否存在</strong>（型號/介面）— PKCS#11 path 可行性</li>
+    <li><strong>各產品 Secure Boot 是否已啟用</strong>— Phase 3 前提</li>
+    <li><strong>Measured Boot + PCR-like registers 是否存在</strong>— Phase 3 核心</li>
+    <li><strong>VPN/mTLS 技術選擇</strong>（StrongSwan / OpenVPN / 其他）</li>
+    <li><strong>SBOM 生成 + 簽署 pipeline 是否已建立</strong></li>
+    <li><strong>各產品線出貨量 / EOL 狀態</strong></li>
+  </ul>
+
+  <h3 style="font-size:.9rem; font-weight:700; color:var(--ink-2); margin:16px 0 8px">Techmation 需提供</h3>
+  <ul class="checklist">
+    <li><strong>Soteria hRoT API spec</strong>（attestation quote capability）</li>
+    <li><strong>Measured Boot / PCR-like registers</strong> 是否支援</li>
+    <li><strong>Secure Boot 狀態確認</strong></li>
+  </ul>
+
+  <h3 style="font-size:.9rem; font-weight:700; color:var(--ink-2); margin:16px 0 8px">FiduciaEdge 內部需確認</h3>
+  <ul class="checklist">
+    <li><strong>CRA 官方 Annex I 條文 × evidence requirements</strong> 精確 mapping（對照 EUR-Lex 原文）</li>
+    <li><strong>EL2GO Root CA sovereignty 政策</strong>（Mitwell 場景）</li>
+    <li><strong>TTPS 自身 PSIRT 流程</strong> 是否已建立</li>
+    <li><strong>SBOM 管理範圍</strong>（TTPS 服務端 SBOM 由誰維護）</li>
+    <li><strong>各功能的 Phase 1 / Phase 2 / Future roadmap 劃分</strong></li>
+    <li><strong>Mitwell Proposal DOCX</strong> 具體需求（DOCX 未完整讀取，需人工確認）</li>
+  </ul>
+</section>
+
+<!-- 12. SOURCE FILES -->
+<section id="sources">
+  <div class="sec-head">
+    <div class="sec-num">12</div>
+    <h2 class="sec-title">Source Files Reviewed 來源文件</h2>
+    <p class="sec-desc">本報告整理自 <code>../cra-compliance-readiness/</code> repo 的以下文件。</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="src-table">
+      <thead><tr><th>來源文件</th><th>主要資訊</th></tr></thead>
+      <tbody>
+        <tr><td>analysis/01_CRA_iMX93_TTPS_FDO_TPM2_Analysis.md</td><td>CRA Annex I 完整條列；i.MX93 × FDO × TTPS × TPM mapping；NXP AN14601 限制聲明；產品分類</td></tr>
+        <tr><td>analysis/06_CRA_2024_Survey_Update.md</td><td>CRA 法規概述；製造商義務；產品分類 × 合規路徑；PLANET Gateway 可能落入 Important Class I</td></tr>
+        <tr><td>analysis/07_CRA_Requirement_to_TTPS_RA_Solution_Mapping.md</td><td>CRA Annex I × 三階段 solution components 詳細 mapping；Phase coverage summary</td></tr>
+        <tr><td>analysis/08_PLANET_RA_CRA_Gap_Analysis.md</td><td>PLANET 三階段 gap 分析；PLANET-side dependencies；風險清單 R1-R10</td></tr>
+        <tr><td>analysis/09_CRA_RA_Requirement_Solution_Matrix_Update.md</td><td>4-path platform applicability 矩陣；No-TPM Requirement Mapping；Eddie 決策樹整合</td></tr>
+        <tr><td>analysis/10_John_MIPS_CRA_PDF_Summary_and_Response.md</td><td>John Zao MIPS 分析；Eddie platform decision tree；PKCS#11 限制；3 Scenarios；Q1-Q14</td></tr>
+        <tr><td>plan/01_PLANET_Remote_Attestation_and_CRA_Solution_Plan.md</td><td>三階段完整任務清單；Phase 1 移植（非新建）；§12 Platform Decision Tree；§13 No-TPM Solution Paths</td></tr>
+        <tr><td>meeting/02_One_Page_Meeting_Brief.md</td><td>單頁快速參考；技術組合 × CRA 覆蓋表</td></tr>
+        <tr><td>meeting/03_Meeting_Talk_Track.md</td><td>會議口頭腳本；「支援 CRA-required controls」定位說法</td></tr>
+        <tr><td>meeting/04_NXP_EdgeLock2GO_Meeting_Prep.md</td><td>EL2GO 架構分析；Root CA sovereignty 衝突風險；Chain of Trust 主導權</td></tr>
+        <tr><td>meeting/05_Self_Intro_Talk_Script.md</td><td>FiduciaEdge 自我介紹；T-REE 技術背景</td></tr>
+        <tr><td>meeting/06_PLANET_CRA_RA_One_Page_Brief.md</td><td>一頁摘要；Platform Capability Decision 表；No-TPM Platform Handling；MIPS 回應說法</td></tr>
+        <tr><td>diagrams/PLANET_RA_Functional_Block_Diagram.md</td><td>ARM TrustZone 架構方塊圖；platform applicability</td></tr>
+        <tr><td>diagrams/PLANET_RA_Attestation_Flow.md</td><td>16 步驟 RA 完整流程；Pass/Fail/Unknown 分支</td></tr>
+        <tr><td>input（raw notes）</td><td>CRA 時程；三模組英中名稱；Annex I Part I/II 中英全文；IDevID mapping；平台表</td></tr>
+        <tr><td>cra_ready_device_trust_platform_security_report.html</td><td>完整 HTML 視覺報告；9 大節；Platform Decision flowchart；CRA Annex 全條文表格</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice notice-warn" style="margin-top:16px">
+    <strong>⚠ 未完整解析（需人工確認）：</strong>
+    <ul style="margin-top:6px; padding-left:16px; font-size:.86rem;">
+      <li><code>reference/AN14601, iMX93 CRA Guide.pdf</code> — NXP 官方 Rev 1.1；內容透過 analysis/01 間接取得</li>
+      <li><code>reference/john/*.pdf</code>（5 份）— John Zao MIPS 分析；透過 analysis/10 整理</li>
+      <li><code>Project Proposal_ Mitwell workshop (LC3 JKZ1).docx</code> — Mitwell 具體需求未讀取</li>
+      <li><code>reference/Map EU CRA to NXP iMX93 IoT (gSrchAI 26-03-15).pdf</code> — AI 生成 checklist（低可信度），未讀取</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- /page -->
+
+<footer>
+  <strong>Device Trust &amp; CRA Readiness — Current Summary</strong><br>
+  FiduciaEdge Device Trust &amp; Platform Security Playbook · 內部知識整理，非法律合規聲明<br>
+  EU Cyber Resilience Act (Regulation EU 2024/2847) · 強制執行日：2027-12-11<br>
+  Generated 2026-06-11 · Source: cra-compliance-readiness repo
+</footer>
+
+</body>
+</html>
