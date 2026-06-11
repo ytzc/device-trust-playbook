@@ -188,6 +188,7 @@
   <a href="#overclaim">勿過度承諾</a>
   <a href="#openq">Open Questions</a>
   <a href="#sources">來源</a>
+  <a href="#gary-matrix">Gary Matrix</a>
 </nav>
 
 <div class="page">
@@ -889,6 +890,170 @@
       <li><code>Project Proposal_ Mitwell workshop (LC3 JKZ1).docx</code> — Mitwell 具體需求未讀取</li>
       <li><code>reference/Map EU CRA to NXP iMX93 IoT (gSrchAI 26-03-15).pdf</code> — AI 生成 checklist（低可信度），未讀取</li>
     </ul>
+  </div>
+</section>
+
+
+<!-- 13. GARY MATRIX -->
+<section id="gary-matrix">
+  <div class="sec-head">
+    <div class="sec-num">13</div>
+    <h2 class="sec-title">Gary's PLANET NMS CRA Enforcement Matrix</h2>
+    <p class="sec-desc">來源：<code>PLANET_NMS_CRA_Enforcement_Matrix (GG1).xlsx</code>（Gary 分析）— 對照 PLANET NMS 現有功能、CRA 強制條文、提案強化方向與商業效益。</p>
+  </div>
+
+  <div class="notice notice-info">
+    本矩陣從 <strong>PLANET NMS 產品視角</strong>出發，與 FiduciaEdge 三階段 RA 提案在技術方向上高度一致：(2)(d) → Phase 1，(2)(e) → Phase 2，Part II (1) 與 (2)(f) → Phase 3。
+  </div>
+
+  <!-- Row 2: (2)(d) -->
+  <div class="scenario" style="margin-top:20px">
+    <div class="scenario-title">
+      <h3>Annex I Sec 1(3)(d) — Unauthorized Access Protection</h3>
+      <span class="b b-blue">Phase 1</span>
+      <span class="b b-gray">Device Identity</span>
+    </div>
+    <div class="scenario-body">
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:10px">要求所有連接設備具備強身份驗證與唯一身份追蹤。</p>
+      <div class="grid g3">
+        <div class="card" style="border-top:3px solid var(--ink-3)">
+          <h3 style="color:var(--ink-3)">現有 PLANET NMS</h3>
+          <p><strong>Software-Defined Device Identity</strong><br>標準軟體層簽發的 cryptographic certificate、API keys、OS 層管理的 credentials。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <h3 style="color:var(--blue)">提案強化</h3>
+          <p><strong>Hardware-Rooted Identity（CRA Trust Anchor）</strong><br>佈建 TWCA-bound identity certificate，cryptographic 綁定鎖入 ARM TrustZone，建立不可竄改的唯一設備識別碼。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <h3 style="color:var(--green)">商業 &amp; 安全效益</h3>
+          <p><strong>Zero-Identity Theft Risk</strong><br>Hardware-bound identity 無法被複製或偽造，保證完整 supply chain 追蹤與不可否認性。軟體金鑰可被 OS-level 漏洞複製，hardware key 不可。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 3: (2)(e) -->
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Annex I Sec 1(3)(e) — Data Confidentiality</h3>
+      <span class="b b-blue">Phase 2</span>
+      <span class="b b-gray">VPN / mTLS Key Protection</span>
+    </div>
+    <div class="scenario-body">
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:10px">要求使用當代技術水準的加密機制，保護傳輸中資料與遠端連線。</p>
+      <div class="grid g3">
+        <div class="card" style="border-top:3px solid var(--ink-3)">
+          <h3 style="color:var(--ink-3)">現有 PLANET NMS</h3>
+          <p><strong>Standard Network Layer VPNs</strong><br>內建軟體 VPN（IPSec、OpenVPN、SSL VPN），在主作業系統環境中執行，private key 儲存於 OS 檔案系統。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <h3 style="color:var(--blue)">提案強化</h3>
+          <p><strong>Hardware-Bound VPN（Cryptographic Hardening）</strong><br>將 private session key 直接錨定在 secure element 或 ARM TrustZone 內。key operations 在 Secure World 執行，Normal World 只取得 signature result。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <h3 style="color:var(--green)">商業 &amp; 安全效益</h3>
+          <p><strong>Breach Isolation</strong><br>即使攻擊者取得主 OS 的完整 root 存取，private cryptographic key 仍完全無法取得，遠端管理通道持續受到保護。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 4: Part II (1) -->
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Annex I Sec 2(1) — Vulnerability Management &amp; SBOM</h3>
+      <span class="b b-orange">Phase 3</span>
+      <span class="b b-gray">SBOM + Measured Boot</span>
+    </div>
+    <div class="scenario-body">
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:10px">要求有文件記錄的 SBOM，搭配驗證完整性並防止竄改的機制。</p>
+      <div class="grid g3">
+        <div class="card" style="border-top:3px solid var(--ink-3)">
+          <h3 style="color:var(--ink-3)">現有 PLANET NMS</h3>
+          <p><strong>Software Integrity Verification</strong><br>Firmware 部署 pipeline 中的 cryptographic hash 驗證機制，確保系統更新成功完成。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <h3 style="color:var(--blue)">提案強化</h3>
+          <p><strong>Consolidated SBOM &amp; Measured Boot Integrity</strong><br>Build time 產生 cryptographically signed SBOM，搭配 ARM TrustZone 強制執行的 Measured Boot 序列（OP-TEE / TF-A 架構）。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <h3 style="color:var(--green)">商業 &amp; 安全效益</h3>
+          <p><strong>Active Supply Chain Enforcement</strong><br>標準方案將 SBOM 視為被動合規文件；此架構在開機時<strong>主動執行 SBOM</strong>。TrustZone 層量測系統 binary，若未授權軟體偏離已簽署 baseline 則阻擋執行。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 5: (2)(f) -->
+  <div class="scenario">
+    <div class="scenario-title">
+      <h3>Annex I Sec 1(3)(f) — Tamper Proofing &amp; Availability</h3>
+      <span class="b b-orange">Phase 3</span>
+      <span class="b b-gray">TrustZone Memory Isolation</span>
+    </div>
+    <div class="scenario-body">
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:10px">要求對竄改、修改與資料毀損具備實體與系統性的韌性。</p>
+      <div class="grid g3">
+        <div class="card" style="border-top:3px solid var(--ink-3)">
+          <h3 style="color:var(--ink-3)">現有 PLANET NMS</h3>
+          <p><strong>Framework-Level Cyber Resilience</strong><br>標準 process-level 網路安全框架與安全日誌，針對標準網路基礎設施部署優化。被動偵測為主。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--blue)">
+          <h3 style="color:var(--blue)">提案強化</h3>
+          <p><strong>Hardware-Enforced System Resilience</strong><br>在 silicon 層設定實體 TrustZone 記憶體控制器（TZASC / TZMA），在硬體層隔離安全進程與金鑰，與主 OS 完全分離。</p>
+        </div>
+        <div class="card" style="border-top:3px solid var(--green)">
+          <h3 style="color:var(--green)">商業 &amp; 安全效益</h3>
+          <p><strong>Immutable CRA Compliance</strong><br>從被動 software-dependent 框架轉移為主動 hardware-level 記憶體防護，防止未授權 runtime data 存取，降低 2026-09 強制執行帶來的企業法律責任。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary table -->
+  <h3 style="font-size:.95rem; font-weight:700; margin:24px 0 8px; color:var(--ink)">整合摘要 Summary Table</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CRA 條文</th>
+          <th>現有 PLANET NMS</th>
+          <th>提案強化方向</th>
+          <th>核心效益</th>
+          <th>Phase</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Annex I (2)(d)</strong><br><span class="td-sm">Unauthorized Access</span></td>
+          <td>Software cert / OS-layer credentials</td>
+          <td>Hardware-Rooted Identity（TWCA + TrustZone）</td>
+          <td>Zero-Identity Theft Risk</td>
+          <td><span class="b b-blue">Phase 1</span></td>
+        </tr>
+        <tr>
+          <td><strong>Annex I (2)(e)</strong><br><span class="td-sm">Data Confidentiality</span></td>
+          <td>Software VPN（IPSec / OpenVPN）in main OS</td>
+          <td>Hardware-Bound VPN（key 鎖入 TrustZone）</td>
+          <td>Breach Isolation</td>
+          <td><span class="b b-blue">Phase 2</span></td>
+        </tr>
+        <tr>
+          <td><strong>Annex I Part II (1)</strong><br><span class="td-sm">SBOM &amp; Vulnerability</span></td>
+          <td>Firmware hash verification</td>
+          <td>Signed SBOM + Measured Boot（OP-TEE / TF-A）</td>
+          <td>Active Supply Chain Enforcement</td>
+          <td><span class="b b-orange">Phase 3</span></td>
+        </tr>
+        <tr>
+          <td><strong>Annex I (2)(f)</strong><br><span class="td-sm">Tamper Proofing</span></td>
+          <td>Process-level frameworks + security logging</td>
+          <td>TrustZone TZASC / TZMA memory isolation</td>
+          <td>Immutable CRA Compliance</td>
+          <td><span class="b b-orange">Phase 3</span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </section>
 

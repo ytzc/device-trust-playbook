@@ -523,4 +523,72 @@ Phase 3 需要這 5 個條件（缺一不可）：
 
 ---
 
+## 13. Gary's PLANET NMS CRA Enforcement Matrix
+
+**來源：** `references/cra/PLANET_NMS_CRA_Enforcement_Matrix (GG1).xlsx`（Gary 分析）
+**說明：** Gary 針對 PLANET NMS 現有功能，對照 CRA Annex I 條文，提出強化方向與商業效益。共 4 個 CRA 要求項目。
+
+---
+
+### 13.1 Annex I Sec 1(3)(d) — Unauthorized Access Protection
+
+**CRA 要求：** 強制要求所有連接設備具備強身份驗證與唯一身份追蹤。
+
+| 面向 | 內容 |
+|------|------|
+| **現有 PLANET NMS 功能** | Software-Defined Device Identity：標準軟體層簽發的 cryptographic certificate、API keys、OS 層管理的 credentials |
+| **提案強化方向** | **Hardware-Rooted Identity（CRA Trust Anchor）**：佈建 TWCA-bound identity certificate，透過 cryptographic 綁定鎖入 ARM TrustZone，建立不可竄改的唯一設備識別碼 |
+| **商業與安全效益** | **Zero-Identity Theft Risk**：不同於可被 OS-level 漏洞複製或外洩的軟體金鑰，hardware-bound identity 無法被複製或偽造，保證完整的 supply chain 追蹤與不可否認性 |
+
+---
+
+### 13.2 Annex I Sec 1(3)(e) — Data Confidentiality
+
+**CRA 要求：** 要求使用當代技術水準的加密機制，保護傳輸中資料與遠端連線。
+
+| 面向 | 內容 |
+|------|------|
+| **現有 PLANET NMS 功能** | Standard Network Layer VPNs：內建軟體 VPN（IPSec、OpenVPN、SSL VPN），在主作業系統環境中執行 |
+| **提案強化方向** | **Hardware-Bound VPN（Cryptographic Hardening）**：將 private session key 直接錨定在 secure element 或 ARM TrustZone 內，強化通訊安全 |
+| **商業與安全效益** | **Breach Isolation**：即使攻擊者取得主 OS 或 network stack 的完整 root 存取，private cryptographic key 仍完全無法取得，遠端管理通道持續受到保護 |
+
+---
+
+### 13.3 Annex I Sec 2(1) — Vulnerability Management & SBOM
+
+**CRA 要求：** 要求有文件記錄的 Software Bill of Materials（SBOM），搭配驗證完整性並防止竄改的機制。
+
+| 面向 | 內容 |
+|------|------|
+| **現有 PLANET NMS 功能** | Software Integrity Verification：內建 firmware 部署 pipeline 中的 cryptographic hash 驗證機制，確保系統更新成功 |
+| **提案強化方向** | **Consolidated SBOM & Measured Boot Integrity**：在 build time 產生 cryptographically signed SBOM，搭配 ARM TrustZone 強制執行的 Measured Boot 序列（使用 OP-TEE / TF-A 架構） |
+| **商業與安全效益** | **Active Supply Chain Enforcement**：標準方案將 SBOM 視為被動合規文件；此架構在開機時**主動執行 SBOM**。TrustZone 層實際量測系統 binary，若未授權軟體與已簽署 baseline 不符則阻擋執行 |
+
+---
+
+### 13.4 Annex I Sec 1(3)(f) — Tamper Proofing & Availability
+
+**CRA 要求：** 要求對竄改、修改與資料毀損具備實體與系統性的韌性。
+
+| 面向 | 內容 |
+|------|------|
+| **現有 PLANET NMS 功能** | Framework-Level Cyber Resilience：標準 process-level 網路安全框架與安全日誌，針對標準網路基礎設施部署優化 |
+| **提案強化方向** | **Hardware-Enforced System Resilience**：在 silicon 層設定實體 TrustZone 記憶體控制器（TZASC / TZMA），在硬體層隔離安全進程與金鑰，使其與主 OS 完全分離 |
+| **商業與安全效益** | **Immutable CRA Compliance**：將保護從被動的 software-dependent 框架轉移為主動的 hardware-level 記憶體防護，防止未授權 runtime data 存取，降低 2026-09 強制執行日期帶來的企業法律責任 |
+
+---
+
+### 13.5 Gary Matrix 整合摘要
+
+| CRA 條文 | 現有 NMS | 提案強化 | 對應 Phase |
+|---------|---------|---------|-----------|
+| Annex I (2)(d) Unauthorized Access | Software cert / OS-layer credentials | Hardware-Rooted Identity（TWCA + TrustZone） | Phase 1 |
+| Annex I (2)(e) Data Confidentiality | Software VPN（IPSec/OpenVPN） | Hardware-Bound VPN（key 鎖入 TrustZone） | Phase 2 |
+| Annex I (Part II)(1) SBOM | Firmware hash verification | Signed SBOM + Measured Boot（OP-TEE/TF-A） | Phase 3 |
+| Annex I (2)(f) Tamper Proofing | Process-level frameworks + logging | TrustZone TZASC/TZMA memory isolation | Phase 3 |
+
+> **與 FiduciaEdge 三階段提案的對應：** Gary 的矩陣從 PLANET NMS 產品視角出發，與 FiduciaEdge 三階段 RA 提案在技術方向上高度一致。(2)(d) 對應 Phase 1、(2)(e) 對應 Phase 2、(Part II)(1) 與 (2)(f) 對應 Phase 3。差異在於 Gary 矩陣聚焦 PLANET NMS 既有功能的 gap，FiduciaEdge 提案聚焦在 TTPS DI 移植與 RA infrastructure 的具體交付。
+
+---
+
 *本文件為內部知識整理。非法律合規聲明。正式 conformity assessment 為 OEM 製造商的責任。*
