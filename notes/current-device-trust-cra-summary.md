@@ -591,4 +591,89 @@ Phase 3 需要這 5 個條件（缺一不可）：
 
 ---
 
+---
+
+## 14. PLANET 三階段技術提案時程（GG2 EF1）
+
+**來源：** `PLANET_Technical_Proposal_Complete (GG2 EF1).docx` — Jerry Yang (FE) 草擬，Gary Gan (FE) 技術評審後定稿。
+
+> 各 Phase 標示時間為假設**循序執行**的工程任務總和。許多任務可並行，以此為上限參考。Pre-requisite 項目為 PLANET 端須先備妥的條件，不在 FiduciaEdge 交付範圍內。
+
+### 14.0 時程總覽
+
+| Phase | 名稱 | 估算時程（循序上限） | 主要交付 | CRA 對應 |
+|-------|------|---------------------|---------|---------|
+| Phase 1 | Hardware-Bound Device Identity | **10w** | fTPM TA + TWCA provisioning CLI | Annex I §1(3)(d) |
+| Phase 2 | Hardware-Bound VPN mTLS | **9w** | PKCS#11/TPM2 Provider + mTLS + benchmark report | Annex I §1(3)(e) |
+| Phase 3 | Remote Attestation + SBOM Verification | **25w** | Measured Boot patches + RA client + Attestor service + web UI | Annex I Part II §1 + §1(3)(d)(f) |
+
+---
+
+### 14.1 Phase 1：安全身份佈建 [10w]
+
+**Objective：** 將硬體綁定的設備身份與憑證佈建到矽晶層，讓應用程式可密碼學驗明設備身份。
+
+**Outcome：** 不可偽造、hardware-bound、密碼學不可否認的設備身份。私鑰在 ARM TrustZone 內產生且永不外露，對應 CRA Annex I §1(3)(d)。
+
+**Engineering Tasks：**
+
+| 任務 | 估算 | 說明 |
+|------|------|------|
+| Initialize HRoT on ARM TrustZone | 6w | 部署 fTPM TA，暴露 TPM 2.0 API 至 OpenWRT |
+| TWCA Device Identity Provisioning Pipeline | 4w | 製造端 toolchain，enclave 內產生 keypair + TWCA 憑證鎖入 secure storage |
+
+**Pre-requisite：** MTK BSP 須已含 TF-A。若未設定，加 **3w Lead Time**。
+
+**Out of Scope：** 整合 PLANET 客製 BSP 產品分支（約 3w）、OpenWRT GUI 管理介面。
+
+---
+
+### 14.2 Phase 2：硬體綁定 VPN 強化 [9w]
+
+**Objective：** 在專用網路切片上建立獨立加密通道，完全隔離管理平面與資料流量。
+
+**Outcome：** 即便主機 OS 被入侵，管理通道仍安全。VPN 私鑰鎖在 TrustZone 內，無法被 root 用戶讀取或提取。對應 CRA 資料機密性要求。
+
+**Engineering Tasks：**
+
+| 任務 | 估算 | 說明 |
+|------|------|------|
+| TrustZone Crypto Key & Engine Offloading | 4w | OpenSSL TPM2 Provider / PKCS#11 橋接 VPN 引擎至 fTPM Enclave |
+| mTLS Isolation Verification & Testing | 2w | 驗證 mTLS 私鑰無法被 OpenWRT root 讀出或 dump |
+| Network Bandwidth & Crypto Benchmarking | 3w | 驗證 enclave crypto offload 不影響路由吞吐量 |
+
+**Out of Scope：** OpenWRT nftables / VLAN 網路切片配置（約 2w，PLANET 端負責）。
+
+---
+
+### 14.3 Phase 3：Remote Attestation [25w]
+
+**Objective：** 設備在開機序列動態量測自身執行狀態，產生 Remote Attestation Report，向 NMS 驗證服務證明完整性。
+
+**Outcome：** 主動供應鏈驗證。每個 boot 階段 hash extend 至 TrustZone 防竄改 slot，RA Report 與 PLANET 簽署 SBOM baseline 比對。偏差 → NMS 拒絕管理平面存取 + 合規告警。支援 **2026-09-11** 起的漏洞通報義務。
+
+**Pre-requisites（PLANET 端）：**
+- Phase 1 硬體綁定設備憑證已佈建
+- PLANET OpenWRT 24 build 環境可自動產生 SPDX/CycloneDX SBOM
+- SBOM 以 PLANET Corporate Release Key 加密簽署（非 device fTPM）
+- MTK ARM bootloader pipeline (BL2→BL32) 已設定 Secure Boot image verification
+
+**Engineering Tasks：**
+
+| 任務 | 估算 | 說明 |
+|------|------|------|
+| Measured Boot Instrumentation (BL2→BL32) | 8w | BL2-BL32 Measured Boot extension，hash extend 至 fTPM tamper-proof slot |
+| OpenWRT Kernel Runtime Integrity Verification | 3w | Kernel runtime integrity hooks 接入 fTPM Enclave |
+| Attestation Client & Challenge Protocol | 8w | User-space RA client daemon，從 fTPM fetch signed quote，打包 RA Report |
+| Standalone Device Onboarding & Attestor Service | 6w | 網路端驗證服務，接收 RA Report、驗簽、比對 SBOM baseline、Pass/Fail 判定 |
+
+**Quantifiable Output：**
+- Firmware Measured Boot patches + kernel config recipes（OpenWRT 24 target）
+- Containerized Backend Remote Attestor Verification Service
+- Device Onboarding Web UI Console（Pass/Fail + binary mismatch 明細）
+
+**Out of Scope：** PLANET 內部 CI/CD SBOM 簽署管線整合（FE 提供規格指導）、NMS 核心平台程式碼修改。
+
+---
+
 *本文件為內部知識整理。非法律合規聲明。正式 conformity assessment 為 OEM 製造商的責任。*

@@ -144,6 +144,16 @@
   /* SOURCE TABLE */
   .src-table td:first-child { font-family: monospace; font-size: .78rem; color: var(--blue); white-space: nowrap; }
 
+  /* MERMAID */
+  .mermaid-wrap { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 16px; overflow-x: auto; }
+  .mermaid { text-align: center; }
+
+  /* PHASE PROPOSAL */
+  .ph-task { font-size:.83rem; color: var(--ink-2); margin-top:6px; padding-left:12px; border-left:3px solid var(--border); }
+  .ph-task li { margin-bottom:4px; }
+  .ph-prereq { font-size:.8rem; background:#f8fafc; border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-top:8px; }
+  .ph-prereq li { margin-bottom:3px; }
+
   /* FOOTER */
   footer { background: #0f172a; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
   footer strong { color: rgba(255,255,255,.85); }
@@ -153,6 +163,7 @@
     .g2, .g3, .g5 { grid-template-columns: 1fr; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 </head>
 <body>
 
@@ -189,6 +200,7 @@
   <a href="#openq">Open Questions</a>
   <a href="#sources">來源</a>
   <a href="#gary-matrix">Gary Matrix</a>
+  <a href="#proposal">三階段提案</a>
 </nav>
 
 <div class="page">
@@ -530,6 +542,47 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <h3 style="font-size:.95rem;font-weight:700;margin-top:28px;margin-bottom:4px;color:var(--ink-2)">Platform Decision Flowchart 平台決策流程圖</h3>
+  <p style="font-size:.84rem;color:var(--ink-3);margin-bottom:0">三階段 RA 可行性由 <strong>hardware RoT capability</strong> 決定，不由處理器架構名稱決定。MIPS 本身不是阻礙——問題在於特定 SoC 是否缺乏 hardware RoT。</p>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    START([產品平台評估 Platform Assessment]) --> Q1{有 ARM TrustZone\n且 BSP 含 OP-TEE/fTPM?}
+
+    Q1 -->|是 Yes| A1[Path A1: ARM TrustZone + OP-TEE fTPM\n✅ 三階段完整適用\nFiduciaEdge 主要交付範圍]
+
+    Q1 -->|BSP 未啟用| A2[Path A2: ARM TrustZone 存在但未啟用\n需先啟用 OP-TEE + fTPM TA\n完成後走 A1]
+
+    Q1 -->|否 No| Q2{x86 + hTPM\n物理 TPM 晶片?}
+    Q2 -->|是 Yes| X[Path X: x86 + hTPM\n✅ 三階段完整適用\n需 Linux TPM2 Provider 整合]
+
+    Q2 -->|否 No| Q3{Techmation TX8\nSoteria hRoT?}
+    Q3 -->|是 Yes| TX8[Path TX8: TX8 + Soteria hRoT API\n✅ Phase 1/2 可行（vendor-specific）\nPhase 3 需另確認 quote mechanism]
+
+    Q3 -->|否 No| Q4{有 External SE\n且支援 PKCS#11?}
+    Q4 -->|是 Yes| B[Path B: 任意平台 + External SE + PKCS#11\n✅ Phase 1/2 可行\n⚠ Phase 3: 需另確認 Measured Boot + quote]
+
+    Q4 -->|vendor SDK only| B2[Path B2: External SE + vendor SDK\n需 custom adapter\nPhase 1/2 可行（工程量較大）]
+
+    Q4 -->|否 No| Q5{高出貨量產品線?}
+    Q5 -->|是 High-volume| C[Path C: 建議硬體改版加 SE\nBOM 增量可被量產規模攤薄]
+
+    Q5 -->|否 Low-volume / Legacy| E[Path E: Legacy/EOL 低出貨量\nGap Analysis + Compensating Controls\n❌ 不可承諾 hardware-bound RA]
+
+    Q1 -->|RISC-V 新平台| RV[Path RISC-V: 逐 SoC 能力評估\n不可預設 TrustZone 可用\nPer-product assessment required]
+
+    style A1 fill:#c9dcf7,stroke:#1a6fc4
+    style X fill:#c9dcf7,stroke:#1a6fc4
+    style B fill:#d4edda,stroke:#1a8a4a
+    style TX8 fill:#d4edda,stroke:#1a8a4a
+    style A2 fill:#fef3cd,stroke:#c47a1a
+    style B2 fill:#fef3cd,stroke:#c47a1a
+    style C fill:#fef3cd,stroke:#c47a1a
+    style E fill:#f8d7da,stroke:#c42a1a
+    style RV fill:#e2e3e5,stroke:#555
+    </div>
   </div>
 </section>
 
@@ -1057,6 +1110,128 @@
   </div>
 </section>
 
+<!-- 14. PLANET TECHNICAL PROPOSAL (GG2 EF1) -->
+<section id="proposal">
+  <div class="sec-head">
+    <div class="sec-num">14</div>
+    <h2 class="sec-title">PLANET 三階段技術提案時程 GG2 EF1</h2>
+    <p class="sec-desc">Jerry Yang (FE) 草擬，Gary Gan (FE) 技術評審定稿。時程假設循序執行；許多任務可並行，以此為上限參考。</p>
+  </div>
+
+  <div class="notice notice-info" style="margin-bottom:20px">
+    <strong>說明：</strong> 各 Phase 標示時間（10w / 9w / 25w）為工程任務循序總和。Pre-requisite 項目為 PLANET 端須先備妥的條件，不在 FiduciaEdge 交付範圍內。
+  </div>
+
+  <div class="tbl-wrap" style="margin-bottom:24px">
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>名稱</th>
+          <th>估算時程</th>
+          <th>主要交付</th>
+          <th>PLANET 端 Pre-req</th>
+          <th>CRA 對應</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Phase 1</strong></td>
+          <td>Hardware-Bound Device Identity</td>
+          <td><span class="b b-blue">10w</span></td>
+          <td>fTPM TA + TWCA provisioning CLI</td>
+          <td>MTK BSP + TF-A（未配置 +3w）</td>
+          <td>Annex I §1(3)(d)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 2</strong></td>
+          <td>Hardware-Bound VPN mTLS</td>
+          <td><span class="b b-green">9w</span></td>
+          <td>PKCS#11/TPM2 Provider + mTLS + benchmark report</td>
+          <td>OpenWRT 24 網路切片（PLANET 自行配置）</td>
+          <td>Annex I §1(3)(e)</td>
+        </tr>
+        <tr>
+          <td><strong>Phase 3</strong></td>
+          <td>Remote Attestation + SBOM Verification</td>
+          <td><span class="b b-orange">25w</span></td>
+          <td>Measured Boot patches + RA client + Attestor service + web UI</td>
+          <td>Secure Boot 已設定、SBOM 產生與簽署（PLANET 自行配置）</td>
+          <td>Annex I Part II §1 + §1(3)(d)(f)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="roadmap">
+    <!-- Phase 1 -->
+    <div class="rm p1">
+      <h3>Phase 1 — 安全身份佈建 <span style="font-weight:400;font-size:.85rem">[10w]</span></h3>
+      <p class="rm-sub">Provision Secure Identity via Hardware Root of Trust</p>
+      <div class="cap-label" style="margin-top:10px">OBJECTIVE</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">將硬體綁定的設備身份與憑證佈建到矽晶層，讓應用程式可密碼學驗明設備身份與韌體完整性。</p>
+      <div class="cap-label" style="margin-top:10px">OUTCOME</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">不可偽造、hardware-bound、密碼學不可否認的設備身份。私鑰在 ARM TrustZone 內產生且永不外露，對應 CRA Annex I §1(3)(d)。</p>
+      <div class="cap-label" style="margin-top:10px">ENGINEERING TASKS</div>
+      <ul class="ph-task">
+        <li><strong>Initialize HRoT on ARM TrustZone [6w]</strong><br>部署 fTPM TA，暴露 TPM 2.0 API 至 OpenWRT</li>
+        <li><strong>TWCA Device Identity Provisioning Pipeline [4w]</strong><br>製造端 toolchain，enclave 內產生 keypair + TWCA 憑證鎖入 secure storage</li>
+      </ul>
+      <div class="rm-block">
+        <strong>Pre-req：</strong> MTK BSP 須已含 TF-A（未設定 +3w Lead Time）<br>
+        <strong>Out of Scope：</strong> 整合 PLANET 客製 BSP 產品分支（~3w）、GUI 管理介面
+      </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="rm p2">
+      <h3>Phase 2 — 硬體綁定 VPN 強化 <span style="font-weight:400;font-size:.85rem">[9w]</span></h3>
+      <p class="rm-sub">Hardware-Bound VPN for Isolated Management Channels</p>
+      <div class="cap-label" style="margin-top:10px">OBJECTIVE</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">在專用網路切片上建立獨立加密通道，完全隔離管理平面與資料流量。</p>
+      <div class="cap-label" style="margin-top:10px">OUTCOME</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">即便主機 OS 被入侵，管理通道仍安全。VPN 私鑰鎖在 TrustZone 內，無法被 root 用戶讀取或提取。對應 CRA 資料機密性要求。</p>
+      <div class="cap-label" style="margin-top:10px">ENGINEERING TASKS</div>
+      <ul class="ph-task">
+        <li><strong>TrustZone Crypto Key &amp; Engine Offloading [4w]</strong><br>OpenSSL TPM2 Provider / PKCS#11 橋接 VPN 引擎至 fTPM Enclave</li>
+        <li><strong>mTLS Isolation Verification &amp; Testing [2w]</strong><br>驗證 mTLS 私鑰無法被 OpenWRT root 讀出或 dump</li>
+        <li><strong>Network Bandwidth &amp; Crypto Benchmarking [3w]</strong><br>驗證 enclave crypto offload 不影響路由吞吐量</li>
+      </ul>
+      <div class="rm-block">
+        <strong>Out of Scope：</strong> OpenWRT nftables / VLAN 網路切片配置（~2w，PLANET 端負責）
+      </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="rm p3">
+      <h3>Phase 3 — Remote Attestation <span style="font-weight:400;font-size:.85rem">[25w]</span></h3>
+      <p class="rm-sub">Boot &amp; Runtime Integrity Remote Attestation</p>
+      <div class="cap-label" style="margin-top:10px">OBJECTIVE</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">設備在開機序列動態量測自身執行狀態，產生 Remote Attestation Report，向 NMS 驗證服務證明完整性。</p>
+      <div class="cap-label" style="margin-top:10px">OUTCOME</div>
+      <p style="font-size:.84rem;color:var(--ink-2);margin-top:4px">主動供應鏈驗證。每個 boot 階段 hash extend 至 TrustZone 防竄改 slot，RA Report 與 PLANET 簽署 SBOM baseline 比對。偏差 → NMS 拒絕管理平面存取 + 合規告警。支援 2026-09-11 起的漏洞通報義務。</p>
+      <div class="cap-label" style="margin-top:10px">PRE-REQUISITES（PLANET 端）</div>
+      <ul class="ph-prereq">
+        <li>Phase 1 硬體綁定設備憑證已佈建</li>
+        <li>PLANET OpenWRT 24 build 環境可自動產生 SPDX/CycloneDX SBOM</li>
+        <li>SBOM 以 PLANET Corporate Release Key 加密簽署</li>
+        <li>MTK ARM bootloader pipeline (BL2→BL32) 已設定 Secure Boot</li>
+      </ul>
+      <div class="cap-label" style="margin-top:10px">ENGINEERING TASKS</div>
+      <ul class="ph-task">
+        <li><strong>Measured Boot Instrumentation (BL2→BL32) [8w]</strong><br>BL2-BL32 bootloader Measured Boot extension，hash extend 至 fTPM slot</li>
+        <li><strong>OpenWRT Kernel Runtime Integrity Verification [3w]</strong><br>Kernel runtime integrity hooks 接入 fTPM Enclave</li>
+        <li><strong>Attestation Client &amp; Challenge Protocol [8w]</strong><br>User-space RA client daemon，從 fTPM fetch signed quote，打包 RA Report</li>
+        <li><strong>Standalone Device Onboarding &amp; Attestor Service [6w]</strong><br>網路端驗證服務，接收 RA Report、驗簽、比對 SBOM baseline、Pass/Fail 判定</li>
+      </ul>
+      <div class="rm-block">
+        <strong>Quantifiable Output：</strong> Measured Boot patches + RA client daemon + containerized Attestor service + web UI console<br>
+        <strong>Out of Scope：</strong> PLANET 內部 CI/CD SBOM 簽署管線（FE 提供規格指導）、NMS 核心平台程式碼修改
+      </div>
+    </div>
+  </div>
+</section>
+
 </div><!-- /page -->
 
 <footer>
@@ -1066,5 +1241,13 @@
   Generated 2026-06-11 · Source: cra-compliance-readiness repo
 </footer>
 
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: { fontSize: '13px' },
+    flowchart: { curve: 'basis', htmlLabels: true },
+  });
+</script>
 </body>
 </html>

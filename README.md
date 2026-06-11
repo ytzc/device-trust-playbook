@@ -46,7 +46,7 @@ device-trust-playbook/
 | Executive Summary | 能力核心、CRA 時程、定位說法 |
 | Customer / Project Context | PLANET、Techmation TX8、i.MX93 / NXP EL2GO、Mitwell、Legacy MIPS |
 | Solution Naming & Positioning | 品牌名稱、正確說法對照表 |
-| Platform Solution Decision Table | 10 種平台情境（x86、ARM fTPM、TX8、External SE、Legacy MIPS、RISC-V、VM…） |
+| Platform Solution Decision Table | 10 種平台情境 + Mermaid 決策流程圖 |
 | Capability Model | Device Identity → RoT → Provisioning → Firmware Integrity → RA → CRA Evidence |
 | CRA Requirement Mapping | CRA Annex I Part I/II 條文對應 |
 | PLANET Analysis | 三階段提案、PLANET-side dependencies、MIPS 正確說法 |
@@ -55,6 +55,8 @@ device-trust-playbook/
 | What Not to Overclaim | 勿過度承諾對照表 |
 | Open Questions | PLANET / TX8 / 內部待確認事項 |
 | Source Files Reviewed | 來源文件索引 |
+| Gary's PLANET NMS CRA Enforcement Matrix | NMS gap analysis：現有基線 vs 提案強化 vs 商業效益（4 scenarios） |
+| PLANET 三階段技術提案時程（GG2 EF1） | Phase 1 (10w) / Phase 2 (9w) / Phase 3 (25w) 工程任務、pre-req、out of scope |
 
 ### [`notes/current-device-trust-cra-summary.md`](notes/current-device-trust-cra-summary.md)
 
