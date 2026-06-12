@@ -139,6 +139,8 @@ CI workflow（`.github/workflows/`）會：
   - NXP EdgeLock 2GO 會議技術準備
 - NXP AN14601 Rev 1.1（i.MX93 CRA Guide，2025-06-25）
 - EU CRA 2024/2847 官方條文（EUR-Lex）
+- `references/cra/Most Popular fTPM used in IoT or embedded devices (gSrchAI 26-06-10).pdf` — IoT / embedded 設備 fTPM 市場調查（2026-06-10）
+- `references/cra/Most Popular vTPM used in IoT or embedded devices (gSrchAI 26-06-10).pdf` — IoT / embedded 設備 vTPM 市場調查（2026-06-10）
 
 ---
 
