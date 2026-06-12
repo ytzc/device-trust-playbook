@@ -127,12 +127,43 @@
 ## Soteria hRoT（TX8）
 
 - Techmation TX8 的 hardware RoT 模組
-- Vendor-specific API（非 TCG TPM 2.0 標準）
-- 需開發 custom adapter layer → TTPS DI flow
-- Phase 1/2 技術上可行
+- **AHB memory-mapped IP**（非 TCG TPM 2.0 標準）
+- 內部：RISC-V ibex processor + 8KB OTP + AES/HMAC/RSA/TRNG 加速器
+- AHB Slave Port：MSG0–MSG15（`0x00–0x3C`）+ Control（`0x40–0x60`）
+- 透過 Secure World-only AHB driver 存取；bus isolation（TZASC/PMP）確保 Normal World 無法存取
+- Phase 1/2 技術上可行（需 custom adapter）
 - **Phase 3 阻擋條件：** Soteria 是否支援 attestation quote / PCR-like measurement
-- **正確說法：** 「TX8 的 hardware RoT 是 Soteria hRoT，使用 vendor-specific API」
-- **錯誤說法：** 「TX8 的 TPM 是 Soteria」
+- **正確說法：** 「TX8 的 hardware RoT 是 Soteria hRoT，透過 AHB interface 由 OP-TEE Secure World 存取」
+- **錯誤說法：** 「TX8 的 TPM 是 Soteria」 / 「OP-TEE 跑在 Soteria 上」
+
+### Soteria 主要命令（2026-06-12 新增）
+
+| 命令 | MSG0 | 功能 |
+|------|------|------|
+| AES | 0x1 | 對稱加密（128/192/256-bit，ECB/CBC/CTR） |
+| HMAC | 0x2 | 雜湊 / MAC（SHA-256/384/512，SHA3-512，MD5） |
+| RSA | 0x3 | 非對稱加密（512/1024/2048-bit，PKCS#1 v1.5） |
+| TRNG | 0x4 | 真亂數生成 |
+| INSTALL_ROK | 0x11 | Root of Key 安裝 / 認證 |
+| CREATE_BK | 0x12 | 生成 Black Key（TRNG + ROK 加密） |
+| AES_BK | 0x14 | Black Key 透明 AES（raw HUK 不離開 Soteria） |
+| KEY_HASH_CHK | 0x15 | Secure Boot：image hash vs OTP pubkey hash |
+| RSA_OTP | 0x16 | Secure Boot：RSA 簽章驗證（OTP pubkey） |
+| BOOT_IMG_ID | 0x17 | Anti-rollback / active boot image 查詢 |
+
+### TX8 的三種整合路線（2026-06-12 新增分析）
+
+TX8 目前 primary known path 是 Soteria hRoT API，但需進一步評估：
+
+| 路線 | 說明 | 前提條件 | 狀態 |
+|------|------|---------|------|
+| **Path A：Soteria API Only** | 直接透過 Soteria vendor API 整合，不使用 TPM API | 取得 Soteria SDK | ⚠️ Soteria API 能力待確認 |
+| **Path B：OP-TEE fTPM Only** | 若 TX8 SoC 支援 TrustZone，跑 OP-TEE fTPM TA | TX8 SoC 支援 TrustZone + BSP OP-TEE 就緒 | ⚠️ TX8 TrustZone 未確認 |
+| **Path C：Hybrid** | OP-TEE fTPM + Soteria hRoT-backed storage | Path B 前提 + Soteria Secure World 可見 | 🔬 研究 candidate |
+
+**⚠️ 重要：OP-TEE 跑在主 ARM SoC TrustZone Secure World，不是跑在 Soteria hRoT 上。**
+
+詳細分析請見：[notes/techmation-tx8-soteria-optee-ftpm-analysis.md](./techmation-tx8-soteria-optee-ftpm-analysis.md)
 
 ---
 

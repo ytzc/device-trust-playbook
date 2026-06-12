@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TX8 + Soteria hRoT + OP-TEE Integration — Device Trust Playbook</title>
+<style>
+  :root {
+    --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+    --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+    --blue: #1d4ed8; --blue-l: #eff6ff; --blue-m: #bfdbfe;
+    --green: #15803d; --green-l: #f0fdf4; --green-m: #bbf7d0;
+    --orange: #b45309; --orange-l: #fffbeb;
+    --red: #b91c1c; --red-l: #fef2f2;
+    --purple: #7c3aed; --purple-l: #f5f3ff;
+    --amber: #92400e; --amber-l: #fef3c7;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(17,24,39,.07);
+    --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system,"Segoe UI","Helvetica Neue",Arial,"Noto Sans TC",sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+
+  .hero { background: linear-gradient(140deg, #0c1a2e 0%, #0f3460 55%, #1a4a80 100%); color: #fff; padding: 60px 32px 48px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(99,179,237,.15) 0%, transparent 65%); pointer-events: none; }
+  .hero h1 { font-size: clamp(1.4rem, 3.5vw, 2.1rem); font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; position: relative; }
+  .hero h1 .hl { color: #93c5fd; }
+  .hero .hero-sub { font-size: .95rem; opacity: .75; max-width: 680px; margin: 0 auto 6px; position: relative; }
+  .hero .hero-date { font-size: .78rem; opacity: .5; margin-bottom: 20px; position: relative; }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; position: relative; }
+  .htag { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+  .htag.warn { background: rgba(252,211,77,.15); border-color: rgba(252,211,77,.35); color: #fde68a; }
+  .htag.ok   { background: rgba(167,243,208,.12); border-color: rgba(167,243,208,.3); color: #6ee7b7; }
+  .htag.new  { background: rgba(147,197,253,.15); border-color: rgba(147,197,253,.35); color: #93c5fd; }
+
+  nav { background: #0a2040; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #1a3a5c; }
+  nav a { color: rgba(255,255,255,.65); text-decoration: none; padding: 10px 15px; font-size: .78rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 44px 0 36px; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-head { margin-bottom: 20px; }
+  .sec-num { display: inline-block; background: #0f3460; color: #93c5fd; border-radius: 8px; padding: 2px 10px; font-size: .72rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  .sec-num.green { background: #14532d; color: #86efac; }
+  .sec-num.orange { background: #7c2d12; color: #fdba74; }
+  .sec-num.purple { background: #3b0764; color: #c4b5fd; }
+  h2.sec-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 4px; }
+  .sec-desc { font-size: .88rem; color: var(--ink-3); }
+
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-blue   { background: var(--blue-l); color: var(--blue); }
+  .b-green  { background: var(--green-l); color: var(--green); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red    { background: var(--red-l); color: var(--red); }
+  .b-gray   { background: #f3f4f6; color: #374151; }
+  .b-purple { background: var(--purple-l); color: var(--purple); }
+  .b-amber  { background: var(--amber-l); color: var(--amber); }
+
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 6px; }
+  .card ul li { margin-bottom: 4px; }
+  .card.p1 { border-top: 4px solid var(--green); }
+  .card.p2 { border-top: 4px solid var(--blue); }
+  .card.p3 { border-top: 4px solid var(--purple); }
+  .card.soteria { border-top: 4px solid #15803d; background: #f0fdf4; }
+  .card.optee   { border-top: 4px solid #1d4ed8; background: #eff6ff; }
+
+  .arch-block { background: #0f172a; color: #e2e8f0; border-radius: 12px; padding: 20px 24px; font-family: "Fira Code","Consolas",monospace; font-size: .82rem; line-height: 1.8; overflow-x: auto; margin-top: 14px; }
+  .arch-block .c-green  { color: #86efac; }
+  .arch-block .c-blue   { color: #93c5fd; }
+  .arch-block .c-amber  { color: #fcd34d; }
+  .arch-block .c-gray   { color: #94a3b8; }
+  .arch-block .c-orange { color: #fdba74; }
+  .arch-block .c-red    { color: #fca5a5; }
+  code.reg { background: #1e293b; color: #7dd3fc; padding: 1px 6px; border-radius: 4px; font-family: "Fira Code","Consolas",monospace; font-size: .8rem; }
+
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th { background: #0a2040; color: #e2e8f0; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  thead th.green-hd { background: #14532d; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafafa; }
+  tbody tr:hover td { background: var(--blue-l); }
+  td code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-size: .8rem; }
+
+  .mermaid-wrap { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-top: 16px; overflow-x: auto; min-height: 80px; }
+  .mermaid { text-align: center; }
+
+  .notice { border-radius: 10px; padding: 13px 16px; font-size: .86rem; margin: 12px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok   { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-err  { background: var(--red-l);   border-left: 4px solid var(--red); }
+
+  /* Workflow steps */
+  .workflow { display: flex; flex-direction: column; gap: 0; }
+  .wf-step { display: flex; gap: 16px; }
+  .wf-step + .wf-step { margin-top: 0; }
+  .wf-num { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 36px; }
+  .wf-circle { width: 36px; height: 36px; background: #0f3460; color: #93c5fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .82rem; font-weight: 700; flex-shrink: 0; }
+  .wf-line { width: 2px; background: #e5e7eb; flex: 1; min-height: 12px; }
+  .wf-body { flex: 1; padding-bottom: 20px; padding-top: 4px; }
+  .wf-body h4 { font-size: .88rem; font-weight: 700; margin-bottom: 4px; }
+  .wf-body p, .wf-body li { font-size: .83rem; color: var(--ink-3); }
+  .wf-body ul { padding-left: 14px; margin-top: 4px; }
+
+  /* Pillar cards */
+  .pillar { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 16px; }
+  .pillar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .pillar-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+  .pillar-icon.green { background: var(--green-l); }
+  .pillar-icon.blue  { background: var(--blue-l); }
+  .pillar-icon.purple{ background: var(--purple-l); }
+  .pillar h3 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+  .pillar .sub { font-size: .83rem; color: var(--ink-3); }
+  .flow-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+  .flow-step { display: flex; gap: 10px; align-items: baseline; font-size: .84rem; }
+  .flow-step .n { background: #0f3460; color: #93c5fd; border-radius: 99px; padding: 1px 8px; font-size: .72rem; font-weight: 700; flex-shrink: 0; }
+  .flow-step .t { color: var(--ink-2); }
+
+  /* Q list */
+  .q-list { counter-reset: qc; list-style: none; padding: 0; margin: 0; }
+  .q-list li { counter-increment: qc; display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: .86rem; color: var(--ink-2); }
+  .q-list li:last-child { border-bottom: none; }
+  .q-list li::before { content: "Q" counter(qc); background: #0f3460; color: #93c5fd; font-size: .7rem; font-weight: 700; padding: 2px 7px; border-radius: 6px; flex-shrink: 0; align-self: flex-start; margin-top: 2px; }
+
+  /* Position box */
+  .pos-box { background: #f0f7ff; border: 2px solid #bfdbfe; border-radius: 14px; padding: 20px 24px; margin-bottom: 14px; }
+  .pos-box .lang { font-size: .72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+  .pos-box blockquote { border-left: 3px solid var(--blue); padding-left: 14px; font-size: .9rem; color: var(--ink-2); line-height: 1.75; }
+
+  /* CRA table special */
+  td.ok   { color: var(--green); font-weight: 600; }
+  td.tbd  { color: var(--orange); font-weight: 600; }
+  td.no   { color: var(--red);   font-weight: 600; }
+  td.res  { color: var(--purple); font-weight: 600; }
+
+  /* Action checklist */
+  .act-list { list-style: none; padding: 0; }
+  .act-list li { display: flex; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: .86rem; color: var(--ink-2); }
+  .act-list li:last-child { border-bottom: none; }
+  .act-list li::before { content: "☐"; color: #94a3b8; flex-shrink: 0; }
+
+  footer { background: #0a2040; color: rgba(255,255,255,.42); text-align: center; padding: 28px 16px; font-size: .79rem; }
+  footer strong { color: rgba(255,255,255,.78); }
+  footer a { color: rgba(255,255,255,.42); text-decoration: none; }
+  footer a:hover { color: rgba(255,255,255,.8); }
+
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 1.3rem; }
+    .g2, .g3 { grid-template-columns: 1fr; }
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: {
+  primaryColor: '#0f3460', primaryTextColor: '#e2e8f0', primaryBorderColor: '#1e4a7c',
+  lineColor: '#64748b', secondaryColor: '#1e3a5f', tertiaryColor: '#f0f7ff',
+  background: '#ffffff', edgeLabelBackground: '#f8fafc'
+} });</script>
+</head>
+<body>
+
+<div class="hero">
+  <a href="./index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;color:rgba(255,255,255,.5);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:4px 13px;margin-bottom:18px;position:relative">← Device Trust Playbook</a>
+  <h1>🔐 Techmation TX8 · Soteria hRoT<br><span class="hl">+ OP-TEE Integration Architecture</span></h1>
+  <p class="hero-sub">Soteria 作為 Hardware Root-of-Trust 與 Crypto Co-processor，OP-TEE 執行於主處理器 Secure World，透過 AHB interface 整合 Soteria。</p>
+  <p class="hero-date">2026-06-12 · FiduciaEdge TTPS Team · Internal Technical Research</p>
+  <div class="hero-chips">
+    <span class="htag ok">✓ AHB Architecture Clarified</span>
+    <span class="htag ok">✓ Black Key / Secure Storage Design</span>
+    <span class="htag ok">✓ Crypto Offload API Mapping</span>
+    <span class="htag warn">⚠ TX8 TrustZone Support TBC</span>
+    <span class="htag warn">⚠ Soteria SDK Not Yet Obtained</span>
+    <span class="htag new">Updated 2026-06-12</span>
+  </div>
+</div>
+
+<nav>
+  <a href="#takeaway">Key Takeaway</a>
+  <a href="#arch">系統架構</a>
+  <a href="#bus">Bus Isolation</a>
+  <a href="#p1">Secure Boot</a>
+  <a href="#p2">Secure Storage</a>
+  <a href="#p3">Crypto Offload</a>
+  <a href="#driver">Driver Workflow</a>
+  <a href="#cra">CRA Value</a>
+  <a href="#paths">路線分析</a>
+  <a href="#questions">問題清單</a>
+  <a href="#position">建議說法</a>
+  <a href="#actions">行動項目</a>
+</nav>
+
+<div class="page">
+
+<!-- A. Key Takeaway -->
+<section id="takeaway">
+  <div class="sec-head">
+    <div class="sec-num">A</div>
+    <h2 class="sec-title">Key Takeaway / 關鍵架構定位</h2>
+  </div>
+
+  <div class="notice notice-ok">
+    <strong>✓ 架構釐清：</strong> Soteria Security Subsystem 是透過 <strong>AHB memory-mapped interface</strong> 存取的硬體 IP，內建 RISC-V ibex 處理器、8KB OTP 與多種密碼加速器。OP-TEE 執行於主處理器 TrustZone Secure World，透過 Secure World-only AHB driver 存取 Soteria。Soteria 作為 <strong>Hardware Root-of-Trust、hardware-backed secure storage provider、cryptographic co-processor 與 secure boot verification anchor</strong>。
+  </div>
+
+  <div class="grid g3" style="margin-top:18px">
+    <div class="card" style="border-top:4px solid #0f3460">
+      <h3>🖥 OP-TEE 執行位置</h3>
+      <p><strong>主處理器 TrustZone Secure World</strong>（不是在 Soteria 上）。Normal World 執行 Linux；Secure World 執行 OP-TEE。</p>
+    </div>
+    <div class="card soteria">
+      <h3>🔐 Soteria 的角色</h3>
+      <p>AHB-connected HW security module。由 Secure World OP-TEE driver 存取。提供：OTP key hash、Black Key、AES/HMAC/RSA/TRNG 加速器。</p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--orange)">
+      <h3>🔒 Bus Isolation</h3>
+      <p>TZASC / PMP 設定 Soteria register region 為 <strong>Secure World-only</strong>。Normal World <strong>無法</strong>直接存取 Soteria。</p>
+    </div>
+  </div>
+
+  <div class="notice notice-warn" style="margin-top:14px">
+    <strong>⚠ 仍待確認：</strong> TX8 主處理器是否支援 ARM TrustZone 或 RISC-V PMP；Soteria register region 是否可設定為 Secure World-only；以及 OP-TEE BSP 狀態。此文件為架構設計分析，非 TX8 實際部署確認。
+  </div>
+</section>
+
+<!-- B. System Architecture -->
+<section id="arch">
+  <div class="sec-head">
+    <div class="sec-num green">B</div>
+    <h2 class="sec-title">System Architecture / 系統架構圖</h2>
+    <p class="sec-desc">OP-TEE 執行於主處理器 Secure World；Soteria 透過 AHB interface 由 Secure World driver 存取</p>
+  </div>
+
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart LR
+    subgraph HOST["TX8 Host Processor"]
+        direction TB
+        NW["Normal World\nLinux / Applications\n❌ Cannot access Soteria"]
+        subgraph SW["Secure World: OP-TEE"]
+            DRV["Soteria Secure Driver\n(AHB R/W)"]
+            CAPI["OP-TEE Crypto API\n(offload)"]
+            SFS["Secure Storage SFS\n(HUK = Black Key)"]
+            fTPMOPT["Optional fTPM TA\n(candidate path)"]
+        end
+        BUS["Bus Protection\nTZASC / PMP\nSoteria region: SW-only"]
+    end
+
+    subgraph SOT["Soteria hRoT (AHB Interface)"]
+        direction TB
+        AHBS["AHB Slave Port\nMSG0-15: 0x00-0x3C\nCtrl: 0x40-0x60"]
+        IBEX["RISC-V ibex\nProcessor"]
+        OTP2["8KB OTP\nPubkey Hash / ROK\nDevice Secrets"]
+        ACCEL["Crypto Accelerators\nAES · HMAC · RSA · TRNG"]
+        AHBM["AHB Master Port\n(Payload DMA)"]
+    end
+
+    NW -. "❌ BLOCKED" .-> SOT
+    DRV -- "AHB (Secure World only)" --> AHBS
+    AHBM -- "Secure RAM only" --> SFS
+    BUS -. "enforces isolation" .-> AHBS
+
+    style NW fill:#fef2f2,stroke:#b91c1c
+    style SW fill:#eff6ff,stroke:#1d4ed8
+    style BUS fill:#fffbeb,stroke:#b45309
+    style SOT fill:#f0fdf4,stroke:#15803d
+    style DRV fill:#dbeafe,stroke:#3b82f6
+    style AHBS fill:#dcfce7,stroke:#16a34a
+    style ACCEL fill:#dcfce7,stroke:#16a34a
+    </div>
+  </div>
+
+  <h3 style="font-size:.92rem;margin-top:24px;margin-bottom:10px">架構文字說明</h3>
+  <div class="arch-block">
+<span class="c-amber">TX8 Host Processor</span>（ARM Cortex-A？RISC-V？— <span class="c-orange">型號待確認</span>）
+├─ <span class="c-red">Normal World: Linux / Applications</span>
+│  └─ <span class="c-red">❌ Cannot directly access Soteria register region</span>
+│     （Bus isolation enforced by TZASC / PMP）
+│
+├─ <span class="c-blue">Secure World: OP-TEE</span>
+│  ├─ Soteria Secure Driver
+│  │   ├─ Writes MSG0–MSG15 to Soteria AHB Slave Port
+│  │   ├─ Reads INT_STATUS for completion
+│  │   └─ Manages PROC_START / PROC_BUSY / PROC_CANCEL
+│  ├─ OP-TEE Crypto API（TEE_Cipher / TEE_Digest / TEE_MAC / TEE_Asym）
+│  │   └─ Offloads AES / HMAC / RSA / TRNG operations to Soteria
+│  ├─ Secure Storage / SFS
+│  │   └─ HUK protected by Soteria Black Key（raw HUK never in OP-TEE RAM）
+│  └─ <span class="c-gray">Optional fTPM TA（candidate — needs TrustZone / OP-TEE confirmed）</span>
+│
+└─ Bus Protection（TZASC / PMP）
+   └─ <span class="c-amber">Soteria register region (0x00–0x60): Secure World-only</span>
+      （Normal World memory map excludes this region）
+
+<span class="c-green">Soteria hRoT</span>（AHB Slave / Master，internal RISC-V ibex）
+├─ AHB Slave Port: MSG0–MSG15 at 0x00–0x3C（command registers）
+├─ AHB Slave Port: Control registers at 0x40–0x60
+│   ├─ PROC_START (0x40)   PROC_CANCEL (0x44)   PROC_BUSY (0x48)
+│   ├─ INT_EN (0x4C)       INT_STATUS (0x50)
+├─ AHB Master Port: fetches payload from Secure RAM
+├─ 8KB OTP: public key hash / ROK / device secrets（immutable）
+└─ Crypto Accelerators
+    ├─ AES（MSG0 = 0x1）：128/192/256-bit，ECB/CBC/CTR
+    ├─ HMAC（MSG0 = 0x2）：SHA-256/384/512，SHA3-512，MD5
+    ├─ RSA（MSG0 = 0x3）：512/1024/2048-bit，PKCS#1 v1.5
+    └─ TRNG（MSG0 = 0x4）：True Random Number Generator
+  </div>
+</section>
+
+<!-- C. Bus Isolation -->
+<section id="bus">
+  <div class="sec-head">
+    <div class="sec-num orange">C</div>
+    <h2 class="sec-title">Bus Isolation & Security Model / 匯流排隔離</h2>
+    <p class="sec-desc">確保 Normal World 無法直接存取 Soteria，以及 payload buffer 保護</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card" style="border-top:4px solid var(--orange)">
+      <h3>🛡 Register Region Isolation</h3>
+      <ul>
+        <li>Soteria AHB Slave Port（<code class="reg">0x00–0x60</code>）必須設定為 Secure World-only</li>
+        <li>實作機制：ARM TZASC（TrustZone Address Space Controller）或 RISC-V PMP（Physical Memory Protection）</li>
+        <li>Normal World 嘗試存取 Soteria region → 系統錯誤 / abort</li>
+        <li>OP-TEE 啟動後負責確認並維護此隔離設定</li>
+      </ul>
+      <div class="notice notice-warn" style="margin-top:10px;font-size:.82rem">
+        ⚠ <strong>TBC：</strong> TX8 平台是否支援 TZASC / PMP 設定 Soteria region；以及此設定是否在 BSP 中預設啟用。
+      </div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--blue)">
+      <h3>📦 Payload Buffer Protection</h3>
+      <ul>
+        <li>Soteria AHB Master Port 透過 DMA 存取 payload data</li>
+        <li>OP-TEE driver 必須確保 <code class="reg">MSG3</code>（input address）與 <code class="reg">MSG5</code>（output address）指向 <strong>Secure RAM</strong></li>
+        <li>禁止指向 Normal World 可讀取的記憶體</li>
+        <li>操作前必須 flush data cache，確保 Soteria 讀取到最新資料</li>
+        <li>Critical operations（OTP access：<code class="reg">MSG0=0x8</code>，Debug：<code class="reg">MSG0=0x7</code>）需要 Magic Numbers（<code class="reg">0x6C33B567</code>，<code class="reg">0x473FA4AE</code>）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="notice notice-info" style="margin-top:12px">
+    ℹ <strong>設計原則：</strong> Soteria 的 AHB Master Port 直接存取記憶體，不經過主處理器。OP-TEE driver 的責任是確保 source / destination addresses 都在 Secure RAM 範圍內，阻止任何 Normal World 記憶體介入加密操作流程。
+  </div>
+</section>
+
+<!-- D. Pillar 1: Secure Boot -->
+<section id="p1">
+  <div class="sec-head">
+    <div class="sec-num green">D</div>
+    <h2 class="sec-title">Integration Pillar 1：Secure Boot &amp; Chain of Trust</h2>
+    <p class="sec-desc">Soteria 作為 secure boot verification anchor，建立可信啟動鏈</p>
+  </div>
+
+  <div class="pillar p1">
+    <div class="pillar-header">
+      <div class="pillar-icon green">🔗</div>
+      <div>
+        <h3>Secure Boot &amp; Chain of Trust</h3>
+        <div class="sub">OP-TEE 啟動前由 Soteria 驗證映像完整性；anti-rollback 防護</div>
+      </div>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step"><span class="n">1</span><span class="t">主處理器上電，執行 ROM-based primary bootloader（不可修改的信任根起點）</span></div>
+      <div class="flow-step"><span class="n">2</span><span class="t">Bootloader 計算 OP-TEE image hash，透過 Soteria AHB Slave Port 提交</span></div>
+      <div class="flow-step"><span class="n">3</span><span class="t">Soteria 使用 <code class="reg">MSG0 = 0x15</code>（<strong>KEY_HASH_CHK</strong>）或 <code class="reg">MSG0 = 0x16</code>（<strong>RSA_OTP</strong>），對照 OTP 中儲存的 public key hash 驗證 OP-TEE image signature</span></div>
+      <div class="flow-step"><span class="n">4</span><span class="t">驗證通過 → OP-TEE 啟動於主處理器 Secure World；驗證失敗 → 啟動中止</span></div>
+      <div class="flow-step"><span class="n">5</span><span class="t">OP-TEE 啟動後可呼叫 <code class="reg">MSG0 = 0x17</code>（<strong>BOOT_IMG_ID</strong>）查詢 active boot image，支援 anti-rollback protection</span></div>
+    </div>
+  </div>
+
+  <h3 style="font-size:.88rem;margin-top:20px;margin-bottom:8px">Chain of Trust Flow</h3>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    ROM["ROM Bootloader\n(immutable trust anchor)"]
+    VER["Soteria: KEY_HASH_CHK / RSA_OTP\nVerify OP-TEE image vs OTP pubkey hash"]
+    OTE["OP-TEE starts in Secure World\n(main processor)"]
+    ISO["TZASC / PMP configured\nSoteria region: Secure World-only"]
+    HUK_STEP["OP-TEE: INSTALL_ROK\nRequest Black Key for SFS HUK"]
+    CRY["OP-TEE Crypto API\noffloads to Soteria accelerators"]
+    EVI["CRA-ready Evidence Foundation\ndevice identity · key protection\nfirmware integrity · attestation"]
+
+    ROM --> VER --> OTE --> ISO --> HUK_STEP --> CRY --> EVI
+
+    style ROM fill:#f0fdf4,stroke:#15803d
+    style VER fill:#dcfce7,stroke:#16a34a
+    style OTE fill:#eff6ff,stroke:#1d4ed8
+    style EVI fill:#fffbeb,stroke:#b45309
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead><tr><th>Soteria 命令</th><th>MSG0</th><th>OTP 使用</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>KEY_HASH_CHK</code></td><td><code class="reg">0x15</code></td><td>OTP pubkey hash</td><td>驗證 image hash 是否符合 OTP 中的公鑰 hash</td></tr>
+        <tr><td><code>RSA_OTP</code></td><td><code class="reg">0x16</code></td><td>OTP RSA public key</td><td>RSA 簽章驗證（image signature vs OTP public key）</td></tr>
+        <tr><td><code>BOOT_IMG_ID</code></td><td><code class="reg">0x17</code></td><td>OTP image version</td><td>查詢 active boot image；anti-rollback 保護</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- E. Pillar 2: Secure Storage -->
+<section id="p2">
+  <div class="sec-head">
+    <div class="sec-num green">E</div>
+    <h2 class="sec-title">Integration Pillar 2：Hardware-Backed Secure Storage（HUK / Black Key）</h2>
+    <p class="sec-desc">OP-TEE Secure Storage 的加密 key（HUK）由 Soteria Black Key 機制保護，raw HUK 永不暴露在 OP-TEE RAM</p>
+  </div>
+
+  <div class="pillar p2">
+    <div class="pillar-header">
+      <div class="pillar-icon blue">🗝</div>
+      <div>
+        <h3>Hardware Unique Key &amp; Black Key Mechanism</h3>
+        <div class="sub">Soteria TRNG 生成 key，ROK 加密後返回 Black Key，OP-TEE 不持有 raw key</div>
+      </div>
+    </div>
+
+    <div class="flow-steps">
+      <div class="flow-step"><span class="n">1</span><span class="t"><strong>ROK 安裝</strong>：OP-TEE 呼叫 <code class="reg">MSG0 = 0x11</code>（<strong>INSTALL_ROK</strong>），以 ROK password 認證；Root of Key（ROK）儲存於 Soteria OTP</span></div>
+      <div class="flow-step"><span class="n">2</span><span class="t"><strong>Black Key 生成</strong>：OP-TEE 呼叫 <code class="reg">MSG0 = 0x12</code>（<strong>CREATE_BK</strong>），Soteria TRNG 生成 key，以 ROK 加密，回傳 Black Key（<code>ENZMK + ENBK + MAC</code>）</span></div>
+      <div class="flow-step"><span class="n">3</span><span class="t"><strong>OP-TEE SFS 加密/解密</strong>：OP-TEE 呼叫 <code class="reg">MSG0 = 0x14</code>（<strong>AES_BK</strong>），提供 Black Key + payload；<strong>Soteria 在內部解密 Black Key 並完成 AES 操作，raw HUK 永遠不進入 OP-TEE RAM</strong></span></div>
+    </div>
+
+    <div class="notice notice-ok" style="margin-top:14px">
+      <strong>✓ 安全優勢：</strong> Black Key 機制的關鍵在於 raw HUK 永遠只存在 Soteria 內部。OP-TEE 只持有加密後的 Black Key（<code>ENZMK + ENBK + MAC</code>），無法還原 raw key，即使 OP-TEE Secure World 被攻破，也無法取得 raw HUK。
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:16px">
+    <table>
+      <thead><tr><th>Soteria 命令</th><th>MSG0</th><th>輸入</th><th>輸出</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>INSTALL_ROK</code></td><td><code class="reg">0x11</code></td><td>ROK password</td><td>—</td><td>Root of Key 安裝 / 認證</td></tr>
+        <tr><td><code>CREATE_BK</code></td><td><code class="reg">0x12</code></td><td>—</td><td>Black Key（ENZMK+ENBK+MAC）</td><td>生成 SFS HUK（TRNG + ROK 加密）</td></tr>
+        <tr><td><code>AES_BK</code></td><td><code class="reg">0x14</code></td><td>Black Key + payload</td><td>Encrypted / Decrypted data</td><td>Secure Storage 加解密（raw key 不離開 Soteria）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice notice-warn" style="margin-top:12px">
+    <strong>⚠ TBC：</strong> Black Key mechanism 是否可直接對應 OP-TEE Secure Storage HUK 的設計；以及 OP-TEE secure storage driver 是否支援 custom hardware backend（替代 RPMB default）。
+  </div>
+</section>
+
+<!-- F. Pillar 3: Crypto API Offloading -->
+<section id="p3">
+  <div class="sec-head">
+    <div class="sec-num green">F</div>
+    <h2 class="sec-title">Integration Pillar 3：OP-TEE Crypto API Offloading</h2>
+    <p class="sec-desc">OP-TEE 標準 Crypto API 透過 Soteria driver 轉發至硬體加速器</p>
+  </div>
+
+  <div class="pillar p3">
+    <div class="pillar-header">
+      <div class="pillar-icon purple">⚡</div>
+      <div>
+        <h3>Crypto API → Soteria Command Mapping</h3>
+        <div class="sub">TEE_CipherInit / TEE_DigestUpdate / TEE_AsymmetricEncrypt / TEE_GenerateRandom → Soteria MSG0 commands</div>
+      </div>
+    </div>
+    <p>OP-TEE 內部有標準化 Crypto API（<code>TEE_Crypto_xxx</code>）。透過 custom driver，可以將這些 API 請求 offload 到 Soteria hardware accelerators，提高安全性（hardware isolation）與效能。</p>
+  </div>
+
+  <h3 style="font-size:.9rem;margin-top:20px;margin-bottom:10px">Soteria 完整命令對照表</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>功能</th>
+          <th>Soteria 命令</th>
+          <th>MSG0</th>
+          <th>MSG1 設定</th>
+          <th>OP-TEE API 對應</th>
+          <th>說明</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>AES 對稱加密</strong></td>
+          <td><code>AES</code></td>
+          <td><code class="reg">0x1</code></td>
+          <td>128/192/256-bit，ECB/CBC/CTR，Zero/CS2/CS3 padding</td>
+          <td><code>TEE_CipherInit</code><br><code>TEE_CipherUpdate</code></td>
+          <td>symmetric encryption / decryption</td>
+        </tr>
+        <tr>
+          <td><strong>HMAC / 雜湊</strong></td>
+          <td><code>HMAC</code></td>
+          <td><code class="reg">0x2</code></td>
+          <td>SHA-256/384/512，SHA3-512，MD5</td>
+          <td><code>TEE_DigestUpdate</code><br><code>TEE_MACUpdate</code></td>
+          <td>integrity check / MAC generation</td>
+        </tr>
+        <tr>
+          <td><strong>RSA 非對稱</strong></td>
+          <td><code>RSA</code></td>
+          <td><code class="reg">0x3</code></td>
+          <td>RSA-512/1024/2048，PKCS#1 v1.5 padding</td>
+          <td><code>TEE_AsymmetricEncrypt</code><br><code>TEE_AsymmetricDecrypt</code></td>
+          <td>encryption / decryption / signing</td>
+        </tr>
+        <tr>
+          <td><strong>TRNG 亂數</strong></td>
+          <td><code>TRNG</code></td>
+          <td><code class="reg">0x4</code></td>
+          <td>output length</td>
+          <td><code>TEE_GenerateRandom</code></td>
+          <td>nonce 生成、session key 生成</td>
+        </tr>
+        <tr style="background:#fafff5">
+          <td><strong>ROK 安裝</strong></td>
+          <td><code>INSTALL_ROK</code></td>
+          <td><code class="reg">0x11</code></td>
+          <td>ROK password</td>
+          <td>Secure Storage init</td>
+          <td>Root of Key 安裝 / 認證</td>
+        </tr>
+        <tr style="background:#fafff5">
+          <td><strong>Black Key 生成</strong></td>
+          <td><code>CREATE_BK</code></td>
+          <td><code class="reg">0x12</code></td>
+          <td>—</td>
+          <td>SFS key provisioning</td>
+          <td>TRNG + ROK 加密 → Black Key</td>
+        </tr>
+        <tr style="background:#fafff5">
+          <td><strong>Black Key AES</strong></td>
+          <td><code>AES_BK</code></td>
+          <td><code class="reg">0x14</code></td>
+          <td>Black Key + payload addr</td>
+          <td>Secure Storage R/W</td>
+          <td>raw HUK 不離開 Soteria</td>
+        </tr>
+        <tr style="background:#fff8f0">
+          <td><strong>Image Hash 驗證</strong></td>
+          <td><code>KEY_HASH_CHK</code></td>
+          <td><code class="reg">0x15</code></td>
+          <td>image hash</td>
+          <td>Secure Boot verification</td>
+          <td>對照 OTP pubkey hash</td>
+        </tr>
+        <tr style="background:#fff8f0">
+          <td><strong>RSA 簽章驗證</strong></td>
+          <td><code>RSA_OTP</code></td>
+          <td><code class="reg">0x16</code></td>
+          <td>OTP public key</td>
+          <td>Secure Boot verification</td>
+          <td>image signature vs OTP RSA key</td>
+        </tr>
+        <tr style="background:#fff8f0">
+          <td><strong>Boot Image ID</strong></td>
+          <td><code>BOOT_IMG_ID</code></td>
+          <td><code class="reg">0x17</code></td>
+          <td>—</td>
+          <td>Anti-rollback check</td>
+          <td>active boot image 查詢</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- G. Driver Workflow -->
+<section id="driver">
+  <div class="sec-head">
+    <div class="sec-num">G</div>
+    <h2 class="sec-title">OP-TEE Soteria Driver Workflow</h2>
+    <p class="sec-desc">OP-TEE Secure World 中呼叫 Soteria 的標準流程</p>
+  </div>
+
+  <div class="grid g2" style="align-items:start">
+    <div>
+      <div class="workflow">
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">1</div><div class="wf-line"></div></div>
+          <div class="wf-body">
+            <h4>Interrupt Setup</h4>
+            <p>啟用 Soteria 中斷（<code class="reg">INT_EN @ 0x4C</code>），在 OP-TEE 中為 Soteria IRQ line 註冊 secure interrupt handler</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">2</div><div class="wf-line"></div></div>
+          <div class="wf-body">
+            <h4>Busy Wait</h4>
+            <p>確認 <code class="reg">PROC_BUSY @ 0x48</code> 為 <code>0</code>（idle）。Soteria 每次只能處理一個請求，需等待上一個操作完成。</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">3</div><div class="wf-line"></div></div>
+          <div class="wf-body">
+            <h4>Buffer Preparation</h4>
+            <ul>
+              <li>確認 input / output buffer 在 Secure RAM</li>
+              <li>Flush data cache（確保 Soteria DMA 讀到最新資料）</li>
+              <li>確認 <code class="reg">MSG3</code>（input）與 <code class="reg">MSG5</code>（output）指向 Secure RAM</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">4</div><div class="wf-line"></div></div>
+          <div class="wf-body">
+            <h4>Message Configuration</h4>
+            <p>依序寫入 <code class="reg">MSG0–MSG15</code>（registers <code class="reg">0x00–0x3C</code>）：</p>
+            <ul>
+              <li><code class="reg">MSG0</code>：命令代碼（如 <code>0x1</code> AES，<code>0x14</code> AES_BK）</li>
+              <li><code class="reg">MSG1</code>：操作模式 / key size / padding</li>
+              <li><code class="reg">MSG2</code>：data length</li>
+              <li><code class="reg">MSG3</code>：input buffer address（Secure RAM）</li>
+              <li><code class="reg">MSG5</code>：output buffer address（Secure RAM）</li>
+            </ul>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">5</div><div class="wf-line"></div></div>
+          <div class="wf-body">
+            <h4>Trigger Execution</h4>
+            <p>寫入 <code>1</code> 到 <code class="reg">PROC_START @ 0x40</code>，Soteria 內部 ibex processor 開始執行 firmware routine</p>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-num"><div class="wf-circle">6</div></div>
+          <div class="wf-body">
+            <h4>Completion &amp; Status Check</h4>
+            <p>OP-TEE yield 或 poll，等待 Soteria IRQ。收到後讀取 <code class="reg">INT_STATUS @ 0x50</code>：</p>
+            <ul>
+              <li><code>INT_STATUS[0] = 1</code>：操作成功</li>
+              <li><code>INT_STATUS[1] = 1</code>：操作失敗（invalid parameters）</li>
+              <li><code>INT_STATUS[2] = 1</code>：取消操作完成</li>
+              <li>寫入 <code>1</code> 清除對應 bit</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:14px">
+        <h3>🔑 Control Register 總覽</h3>
+        <div style="font-size:.82rem;line-height:1.9">
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><code class="reg">PROC_START  @ 0x40</code><span style="color:var(--ink-3)">寫 1 啟動操作</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><code class="reg">PROC_CANCEL @ 0x44</code><span style="color:var(--ink-3)">寫 1 中止（BUSY=1 時）</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><code class="reg">PROC_BUSY   @ 0x48</code><span style="color:var(--ink-3)">讀 0=idle, 1=busy</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)"><code class="reg">INT_EN      @ 0x4C</code><span style="color:var(--ink-3)">中斷啟用設定</span></div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0"><code class="reg">INT_STATUS  @ 0x50</code><span style="color:var(--ink-3)">[0]成功 [1]失敗 [2]取消</span></div>
+        </div>
+      </div>
+
+      <div class="card warn-card">
+        <h3>⚠ Security Considerations</h3>
+        <ul>
+          <li><strong>Process Cancellation：</strong>寫 <code>1</code> 到 <code class="reg">PROC_CANCEL @ 0x44</code>（需 <code>PROC_BUSY = 1</code>）；處理 <code>INT_STATUS[2]</code></li>
+          <li><strong>Magic Numbers 保護：</strong>對 critical operations（Debug <code class="reg">MSG0=0x7</code>，OTP access <code class="reg">MSG0=0x8</code>），<code class="reg">MSG3</code> 和 <code class="reg">MSG4</code> 必須包含 Magic Numbers（<code>0x6C33B567</code>、<code>0x473FA4AE</code>），防止 driver bug 造成意外 OTP 操作</li>
+          <li><strong>Single operation model：</strong>Soteria 每次處理一個操作，driver 必須管理 concurrency（busy wait + IRQ）</li>
+          <li><strong>Secure RAM enforcement：</strong>所有 payload buffer 必須在 Secure RAM；driver 需在每次操作前驗證地址範圍</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- H. CRA-Ready Value -->
+<section id="cra">
+  <div class="sec-head">
+    <div class="sec-num">H</div>
+    <h2 class="sec-title">CRA-Ready Value Mapping / CRA 支援價值</h2>
+    <p class="sec-desc">Soteria + OP-TEE 架構對 CRA Annex I 各技術要求的支援能力</p>
+  </div>
+
+  <div class="notice notice-warn">
+    <strong>⚠ 聲明：</strong> 此架構支援 CRA readiness 與合規證據準備，但<strong>不等於單獨保證完整 CRA compliance</strong>。Conformity assessment 與 CE marking 的法律責任在 OEM 製造商，FiduciaEdge 提供技術服務。
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:14px">
+    <table>
+      <thead>
+        <tr>
+          <th>CRA-ready 領域</th>
+          <th>Annex I</th>
+          <th>Soteria + OP-TEE 貢獻</th>
+          <th>Evidence / Artifact</th>
+          <th>待確認</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Secure by design</strong></td>
+          <td>(1)(a)</td>
+          <td>Soteria hardware isolation + OP-TEE Secure World + Bus protection</td>
+          <td class="ok">✓ Architecture doc</td>
+          <td class="tbd">⚠ TX8 bus isolation 設定</td>
+        </tr>
+        <tr>
+          <td><strong>防未授權存取</strong></td>
+          <td>(2)(a)(b)</td>
+          <td>Bus isolation（TZASC/PMP）；Soteria Secure World-only；Magic Number 保護</td>
+          <td class="ok">✓ Bus config + audit</td>
+          <td class="tbd">⚠ TZASC/PMP 設定 TBC</td>
+        </tr>
+        <tr>
+          <td><strong>Secure key storage</strong></td>
+          <td>(2)(e)</td>
+          <td>Black Key mechanism；raw HUK 不離開 Soteria；OP-TEE SFS 加密</td>
+          <td class="ok">✓ Soteria API flow</td>
+          <td class="tbd">⚠ Black Key path 驗證</td>
+        </tr>
+        <tr>
+          <td><strong>Key non-exportability</strong></td>
+          <td>(2)(e)</td>
+          <td>Soteria OTP-bound key；Black Key 加密保護；raw key 不進入 OP-TEE RAM</td>
+          <td class="ok">✓ Black Key design</td>
+          <td class="tbd">⚠ TBC</td>
+        </tr>
+        <tr>
+          <td><strong>Firmware / boot integrity</strong></td>
+          <td>(2)(f)</td>
+          <td>Secure Boot via KEY_HASH_CHK / RSA_OTP；OTP public key hash；anti-rollback</td>
+          <td class="ok">✓ Boot flow log</td>
+          <td class="tbd">⚠ OTP pubkey 配置確認</td>
+        </tr>
+        <tr>
+          <td><strong>密碼能力</strong></td>
+          <td>(2)(e)(f)</td>
+          <td>AES/HMAC/RSA/TRNG hardware accelerators（Soteria IP）</td>
+          <td class="ok">✓ Crypto offload test</td>
+          <td class="tbd">⚠ TBC</td>
+        </tr>
+        <tr>
+          <td><strong>Anti-rollback</strong></td>
+          <td>(2)(f)</td>
+          <td>BOOT_IMG_ID（MSG0=0x17）；OTP-bound image version</td>
+          <td class="tbd">⚠ Boot audit log</td>
+          <td class="tbd">⚠ Anti-rollback policy 設計</td>
+        </tr>
+        <tr>
+          <td><strong>Device identity</strong></td>
+          <td>(2)(d)</td>
+          <td>Soteria OTP-bound unique secrets（identity API 待確認）</td>
+          <td class="tbd">⚠ Device cert / prov. flow</td>
+          <td class="tbd">⚠ Soteria identity 命令待確認</td>
+        </tr>
+        <tr>
+          <td><strong>Remote attestation</strong></td>
+          <td>(2)(f)(k)(l)</td>
+          <td>Soteria attestation quote 能力待確認；或搭配 fTPM TA（candidate path）</td>
+          <td class="tbd">⚠ Quote report TBD</td>
+          <td class="no">⚠ 需確認 Soteria quote 支援</td>
+        </tr>
+        <tr>
+          <td><strong>Evidence readiness</strong></td>
+          <td>Doc req.</td>
+          <td>Architecture + Boot flow + Crypto + Key management 技術文件</td>
+          <td class="ok">✓ 本文件為基礎</td>
+          <td class="tbd">⚠ 完整 document set</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="notice notice-info" style="margin-top:12px">
+    ℹ <strong>CRA 還需要（不在 RoT / OP-TEE 範圍）：</strong> Vulnerability handling / PSIRT 程序 · Security updates pipeline（OEM 責任）· Product risk assessment（OEM 責任）· Conformity assessment 文件（OEM 責任）
+  </div>
+</section>
+
+<!-- I. Integration Paths A/B/C -->
+<section id="paths">
+  <div class="sec-head">
+    <div class="sec-num">I</div>
+    <h2 class="sec-title">TX8 Integration Path Options / 整合路線選項</h2>
+    <p class="sec-desc">在已知 Soteria AHB 架構的基礎上，評估三條路線</p>
+  </div>
+
+  <div class="notice notice-info">
+    ℹ 新架構資訊顯示：Soteria 透過 AHB interface 可被 OP-TEE Secure World 完整存取，因此 <strong>Path B（OP-TEE fTPM）與 Path C（Hybrid）的前提在架構上是合理的</strong>——關鍵前提仍是 TX8 主處理器是否支援 TrustZone 或等價 secure execution environment。
+  </div>
+
+  <div style="margin-top:16px">
+    <div class="pillar" style="border-top:4px solid var(--green);margin-bottom:14px">
+      <div class="pillar-header">
+        <span class="b b-green">Path A</span>
+        <h3>Soteria hRoT API Only（Primary Known Path）</h3>
+        <span class="b b-gray">不需 TrustZone / OP-TEE</span>
+      </div>
+      <p>直接透過 Soteria vendor API 存取所有 RoT 能力。不需要 OP-TEE。現在有了 Soteria AHB 架構，可以更明確地評估 Soteria API 涵蓋哪些 CRA-ready 能力。</p>
+      <div class="grid g2" style="margin-top:12px">
+        <div>
+          <div style="font-size:.75rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px">優點</div>
+          <ul style="font-size:.83rem;padding-left:14px;color:var(--ink-2)">
+            <li>TX8 已有 Soteria，不需額外平台變更</li>
+            <li>不依賴 BSP TrustZone 支援</li>
+            <li>Soteria 提供 AES/HMAC/RSA/TRNG + Black Key + Secure Boot</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;margin-bottom:6px">待確認</div>
+          <ul style="font-size:.83rem;padding-left:14px;color:var(--ink-2)">
+            <li>需開發 custom adapter（Soteria API → TTPS DI）</li>
+            <li>Soteria attestation quote / PCR-like measurement 待確認</li>
+            <li>TPM 2.0 API compatibility 不支援</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="pillar" style="border-top:4px solid var(--blue);margin-bottom:14px">
+      <div class="pillar-header">
+        <span class="b b-blue">Path B</span>
+        <h3>OP-TEE fTPM Only（Candidate Path）</h3>
+        <span class="b b-amber">前提：TX8 主處理器支援 TrustZone / OP-TEE</span>
+      </div>
+      <p>在主處理器 TrustZone Secure World 跑 OP-TEE + fTPM TA，提供標準 TPM 2.0 API。<strong>Soteria 在此路線中可作為 OP-TEE 的 secure boot anchor 與 crypto backend</strong>，即使 fTPM TA 的 persistent state 仍由 OP-TEE secure storage 管理（而非直接 Soteria）。</p>
+      <div class="notice notice-warn" style="margin-top:10px">
+        <strong>⚠ 前提仍待確認：</strong> TX8 主處理器型號、TrustZone 支援、BSP TF-A + OP-TEE OS 狀態。若已有 OP-TEE，則 Soteria AHB 架構已提供完整的 crypto + secure boot 支援基礎。
+      </div>
+    </div>
+
+    <div class="pillar" style="border-top:4px solid var(--purple)">
+      <div class="pillar-header">
+        <span class="b b-purple">Path C</span>
+        <h3>Hybrid：OP-TEE fTPM + Soteria-Backed Secure Storage</h3>
+        <span class="b b-amber">研究 Candidate</span>
+      </div>
+      <p>OP-TEE fTPM 提供 TPM 2.0 API；Soteria hRoT 透過 Black Key mechanism 提供 fTPM persistent state 的 hardware-backed key protection。新架構資訊顯示此路線在技術上是合理的方向，但仍需驗證：</p>
+      <ul style="font-size:.84rem;padding-left:16px;margin-top:8px;color:var(--ink-2)">
+        <li>OP-TEE fTPM TA 的 NV storage 是否可透過 OP-TEE secure storage 間接使用 Soteria Black Key 加密</li>
+        <li>OP-TEE secure storage driver 是否支援 Soteria 作為 custom hardware backend</li>
+        <li>或：fTPM 直接呼叫 Soteria crypto API 做 key wrapping</li>
+      </ul>
+      <div class="notice notice-ok" style="margin-top:10px">
+        <strong>✓ 架構合理性：</strong> Soteria 在 Secure World 可存取，且有完整 AES / Black Key API。與 OP-TEE 的整合在架構上沒有根本性阻礙，但需要驗證 OP-TEE fTPM 的 storage backend 是否支援 custom driver injection。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- J. Questions -->
+<section id="questions">
+  <div class="sec-head">
+    <div class="sec-num">J</div>
+    <h2 class="sec-title">Open Questions / 待確認問題</h2>
+    <p class="sec-desc">確認架構可行性與實際部署所需的關鍵問題</p>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:#0f3460;text-transform:uppercase;margin-bottom:10px">TX8 主處理器 / TrustZone</div>
+      <ol class="q-list">
+        <li>TX8 main processor 是 ARM Cortex-A（TrustZone）還是 RISC-V（PMP）？</li>
+        <li>TX8 是否已有 OP-TEE port / BSP 支援？TF-A + OP-TEE OS 狀態？</li>
+        <li>Soteria register region（<code class="reg">0x00–0x60</code>）是否可由 TZASC / PMP 設成 Secure World-only？</li>
+        <li>PROC_BUSY / INT_STATUS 的 IRQ line 如何對應到 OP-TEE secure interrupt？</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:10px">Soteria API / Black Key</div>
+      <ol class="q-list">
+        <li>Black Key mechanism 是否可直接對應 OP-TEE Secure Storage HUK（SFS encryption key）？</li>
+        <li>Soteria AHB Master Port 存取的 payload buffer 是否能限制在 Secure RAM？</li>
+        <li>Soteria 是否能作為 OP-TEE fTPM persistent state / key wrapping backend？</li>
+        <li>Soteria 是否有 device unique identity API（用於 IDevID / device certificate）？</li>
+        <li>Soteria 是否支援 attestation quote / signed measurement report？</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:var(--purple);text-transform:uppercase;margin-bottom:10px">整合路線 / CRA</div>
+      <ol class="q-list">
+        <li>是否需要 TPM 2.0 API compatibility（TCG spec / TSS2）？還是 Soteria API 足夠？</li>
+        <li>Remote attestation evidence 要走 TPM quote、Soteria vendor evidence，還是 hybrid model？</li>
+        <li>CRA evidence 可以接受 Soteria vendor-specific measurement report 嗎？</li>
+        <li>Magic Numbers、OTP access（<code class="reg">MSG0=0x8</code>）、Debug control（<code class="reg">MSG0=0x7</code>）的安全 policy 如何設計？</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;margin-bottom:10px">Driver / 工程實作</div>
+      <ol class="q-list">
+        <li>OP-TEE driver interrupt handler 如何安全處理 cache flush、busy wait、error handling？</li>
+        <li>Soteria driver 是否需要 TEE-side mutex 管理 concurrent requests？</li>
+        <li>是否有 Techmation 提供的 reference driver 或 porting guide？</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- K. Recommended Position -->
+<section id="position">
+  <div class="sec-head">
+    <div class="sec-num">K</div>
+    <h2 class="sec-title">Recommended Position / 建議說法</h2>
+  </div>
+
+  <div class="pos-box" style="margin-bottom:12px">
+    <div class="lang">繁體中文</div>
+    <blockquote>
+      在 Techmation TX8 情境下，<strong>若主處理器支援 OP-TEE / TrustZone 或等價 secure execution environment</strong>，Soteria hRoT 可以作為 OP-TEE 的 <strong>hardware Root-of-Trust、hardware-backed secure storage provider、cryptographic co-processor</strong>，以及 <strong>secure boot verification anchor</strong>。<br><br>
+      OP-TEE 不是在 Soteria hRoT 上執行，而是在主處理器 Secure World 執行；Soteria 則透過 AHB memory-mapped interface 由 Secure World driver 存取，且必須透過 bus isolation（TZASC / PMP）確保 Normal World 無法直接存取 Soteria register region 或 crypto payload buffer。
+    </blockquote>
+  </div>
+
+  <div class="pos-box" style="background:#f0fdf4;border-color:#bbf7d0;margin-bottom:12px">
+    <div class="lang" style="color:var(--green)">English</div>
+    <blockquote style="border-left-color:var(--green)">
+      In the Techmation TX8 context, <strong>if the main processor supports OP-TEE / TrustZone or an equivalent secure execution environment</strong>, the Soteria hRoT can serve as the <strong>hardware Root-of-Trust, hardware-backed secure storage provider, cryptographic co-processor</strong>, and <strong>secure boot verification anchor</strong> for OP-TEE.<br><br>
+      OP-TEE does not run on Soteria; OP-TEE runs on the host processor Secure World, while Soteria is accessed through a Secure World-only AHB interface. Bus isolation (TZASC / PMP) must be configured to prevent Normal World access to the Soteria register region and crypto payload buffers.
+    </blockquote>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+    <div style="background:var(--red-l);border-left:4px solid var(--red);border-radius:10px;padding:14px 16px">
+      <div style="font-size:.74rem;font-weight:700;color:var(--red);text-transform:uppercase;margin-bottom:6px">❌ 不可說</div>
+      <div style="font-size:.82rem;color:var(--ink-2);line-height:2">
+        OP-TEE 跑在 Soteria hRoT 上<br>
+        Soteria hRoT 等於 TPM<br>
+        TX8 一定支援 TrustZone / OP-TEE<br>
+        Hybrid path 已確認可行<br>
+        此架構保證完整 CRA compliance
+      </div>
+    </div>
+    <div style="background:var(--green-l);border-left:4px solid var(--green);border-radius:10px;padding:14px 16px">
+      <div style="font-size:.74rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:6px">✓ 正確說法</div>
+      <div style="font-size:.82rem;color:var(--ink-2);line-height:2">
+        OP-TEE 執行於主處理器 Secure World<br>
+        Soteria 是 AHB-connected hardware RoT<br>
+        Soteria 提供 crypto / boot / storage 能力給 OP-TEE<br>
+        Bus isolation 確保 Normal World 無法存取<br>
+        CRA-ready foundation，待確認 TX8 TrustZone
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- L. Actions -->
+<section id="actions">
+  <div class="sec-head">
+    <div class="sec-num">L</div>
+    <h2 class="sec-title">Action Items / 後續行動</h2>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:10px">向 Techmation 確認</div>
+      <ul class="act-list">
+        <li>確認 TX8 主處理器架構（ARM / RISC-V？TrustZone / PMP？）</li>
+        <li>確認 TX8 是否已有 OP-TEE port / BSP 支援</li>
+        <li>取得 Soteria SDK / API spec 文件</li>
+        <li>確認 Soteria register region bus isolation 設定方式</li>
+        <li>確認 Soteria device identity API（用於 IDevID 生成）</li>
+        <li>確認 Soteria attestation quote / measurement report 支援</li>
+        <li>詢問是否有 OP-TEE driver porting guide / reference implementation</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div style="font-size:.75rem;font-weight:700;color:var(--green);text-transform:uppercase;margin-bottom:10px">內部技術驗證</div>
+      <ul class="act-list">
+        <li>評估 Black Key mechanism 與 OP-TEE Secure Storage HUK 的對應</li>
+        <li>評估 OP-TEE secure storage driver 是否支援 custom hardware backend</li>
+        <li>評估 Path B（OP-TEE fTPM）可行性（確認 TrustZone 後）</li>
+        <li>評估 Path C（Hybrid）的 fTPM ↔ Soteria storage backend 整合</li>
+        <li>補 Soteria API capability matrix（逐條驗證）</li>
+        <li>補 CRA Annex mapping（TX8 specific evidence path）</li>
+        <li>補 customer-facing wording（依確認結果選擇路線）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:16px">
+    <div style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-3);margin-bottom:8px">來源資料狀態</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>資料</th><th>狀態</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>Soteria AHB interface / register spec</td><td class="ok">✓ 已掌握架構</td><td>本分析所基於的 Soteria architecture design document</td></tr>
+          <tr><td>TX8 主處理器型號 / TrustZone 支援</td><td class="tbd">⚠ 未確認</td><td>需問 Techmation</td></tr>
+          <tr><td>Soteria SDK / API spec 完整版</td><td class="tbd">⚠ 未取得</td><td>需向 Techmation 申請（含 device identity / attestation API）</td></tr>
+          <tr><td>OP-TEE BSP for TX8</td><td class="tbd">⚠ 未確認</td><td>需問 Techmation BSP 狀況</td></tr>
+          <tr><td>MS TPM 2.0 Reference Implementation</td><td class="ok">✓ 公開可用</td><td>github.com/microsoft/ms-tpm-20-ref</td></tr>
+          <tr><td>CRA Annex I 原文</td><td class="ok">✓ 可參閱</td><td>references/cra/OJ_L_202402847_EN_TXT.pdf</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <strong>Techmation TX8 + Soteria hRoT + OP-TEE Integration Architecture</strong><br>
+  FiduciaEdge TTPS 團隊 · 內部研究文件，非法律合規聲明<br>
+  所有 TX8 / Soteria 相關技術細節均需向 Techmation 確認後方可採用<br>
+  <br>
+  <a href="./index.html">← Device Trust Playbook 首頁</a> ·
+  <a href="./platform-solution-decision-map.html">Platform Decision Map →</a> ·
+  <a href="./rot-methods-comparison.html">RoT Methods →</a>
+</footer>
+
+</body>
+</html>

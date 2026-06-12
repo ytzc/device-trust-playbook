@@ -427,10 +427,17 @@
   <div class="sec-head">
     <div class="sec-num">07</div>
     <h2 class="sec-title">Soteria hRoT — TX8 Vendor-specific RoT</h2>
-    <p class="sec-desc">不走 TPM API，需要另外確認能力。</p>
+    <p class="sec-desc">不走 TPM API，需要另外確認能力。TX8 有三種整合路線候選。</p>
   </div>
   <div class="notice notice-warn">
-    <strong>⚠ 注意：</strong> Soteria hRoT 是 hardware RoT，但不等於 TPM。不要把它說成「TX8 的 TPM」。正確說法是「TX8 的 hardware Root of Trust 是 Soteria hRoT，使用 vendor-specific API」。
+    <strong>⚠ 注意：</strong> Soteria hRoT 是 hardware RoT，但不等於 TPM。不要把它說成「TX8 的 TPM」。正確說法是「TX8 的 hardware Root of Trust 是 Soteria hRoT，使用 AHB memory-mapped interface」。<br>
+    <strong>✓ 架構釐清（2026-06-12）：</strong> Soteria 是 AHB-connected IP（RISC-V ibex + 8KB OTP + AES/HMAC/RSA/TRNG）。OP-TEE 執行於主處理器 TrustZone Secure World（不是在 Soteria 上），透過 Secure World-only AHB driver 存取 Soteria。Soteria 可作為 OP-TEE 的 <strong>HRoT、Black Key / HUK secure storage provider、crypto co-processor 與 secure boot anchor</strong>。
+  </div>
+
+  <div class="notice notice-info" style="margin-top:8px">
+    ℹ <strong>Soteria AHB Register Summary：</strong>
+    MSG0–MSG15 命令暫存器（<code>0x00–0x3C</code>）；PROC_START/CANCEL/BUSY（<code>0x40–0x48</code>）；INT_EN/STATUS（<code>0x4C–0x50</code>）。
+    主要命令：AES（0x1）、HMAC（0x2）、RSA（0x3）、TRNG（0x4）、INSTALL_ROK（0x11）、CREATE_BK（0x12）、AES_BK（0x14）、KEY_HASH_CHK（0x15）、RSA_OTP（0x16）、BOOT_IMG_ID（0x17）。
   </div>
   <div class="method-card">
     <div class="mh">
@@ -460,6 +467,43 @@
         <li>工程量高於標準 TPM2 Provider path，但避免硬體重設計</li>
         <li>若 Phase 3 不可行，TX8 仍可在 Phase 1/2 提供有意義的 CRA support</li>
       </ul>
+    </div>
+  </div>
+
+  <div class="method-card" style="margin-top:14px;border-top:3px solid #1d4ed8">
+    <div class="mh">
+      <h3>TX8 三種整合路線分析（2026-06-12 新增）</h3>
+      <span class="b b-blue">研究分析</span>
+      <a href="./techmation-tx8-soteria-optee-ftpm-analysis.html" style="font-size:.78rem;color:var(--blue);text-decoration:none;border:1px solid var(--blue-m,#bfdbfe);padding:2px 9px;border-radius:99px">完整分析 →</a>
+    </div>
+    <div class="body">
+      <p style="margin-bottom:10px">TX8 的 RoT 整合路線不只 Soteria API 一種。若 TX8 主 SoC 支援 ARM TrustZone / OP-TEE，尚有兩種 candidate path：</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
+        <div style="background:var(--green-l,#f0fdf4);border:1px solid #bbf7d0;border-radius:10px;padding:14px">
+          <div style="font-size:.72rem;font-weight:700;color:#15803d;text-transform:uppercase;margin-bottom:6px">Path A — Soteria API Only（Primary）</div>
+          <ul style="padding-left:14px;margin:0">
+            <li>不需要 TrustZone / OP-TEE</li>
+            <li>Custom adapter: Soteria API → TTPS DI</li>
+            <li>Soteria API 能力待確認</li>
+          </ul>
+        </div>
+        <div style="background:var(--blue-l,#eff6ff);border:1px solid #bfdbfe;border-radius:10px;padding:14px">
+          <div style="font-size:.72rem;font-weight:700;color:#1d4ed8;text-transform:uppercase;margin-bottom:6px">Path B — OP-TEE fTPM（Candidate）</div>
+          <ul style="padding-left:14px;margin:0">
+            <li>前提：TX8 SoC 支援 TrustZone（待確認）</li>
+            <li>標準 TPM 2.0 API；TTPS DI 直接移植</li>
+            <li>BSP TF-A + OP-TEE + fTPM TA 需就緒</li>
+          </ul>
+        </div>
+        <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px">
+          <div style="font-size:.72rem;font-weight:700;color:#7c3aed;text-transform:uppercase;margin-bottom:6px">Path C — Hybrid（研究 Candidate）</div>
+          <ul style="padding-left:14px;margin:0">
+            <li>OP-TEE fTPM + Soteria hRoT-backed storage</li>
+            <li>整合複雜度最高</li>
+            <li>Soteria Secure World 可見性待確認</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </section>

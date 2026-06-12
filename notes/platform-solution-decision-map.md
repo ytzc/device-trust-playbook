@@ -39,13 +39,32 @@
 - **狀態：** 需先啟用 OP-TEE + fTPM TA，完成後等同 Path ARM-A
 - **工程：** BSP 評估 + TF-A / OP-TEE 啟用（+3w Lead Time 如 MTK BSP 未設定）
 
-### Path TX8：Techmation TX8 + Soteria hRoT
+### Path TX8：Techmation TX8 — 三種可能路線
 
-- **RoT：** Soteria hRoT（hardware RoT，非 TPM）
-- **API：** Soteria vendor SDK → 需 custom adapter layer
+**Primary known path：Soteria hRoT API**
+
+- **RoT：** Soteria hRoT（AHB-connected HW IP，非 TPM）
+- **Soteria 元件：** RISC-V ibex processor + 8KB OTP + AES/HMAC/RSA/TRNG 加速器
+- **API：** Soteria AHB MSG0–MSG15 commands → 需 custom adapter → TTPS DI flow
+- **Soteria 能力：** Secure Boot（KEY_HASH_CHK/RSA_OTP）、Black Key / HUK secure storage（AES_BK）、Crypto offload（AES/HMAC/RSA/TRNG）、Anti-rollback（BOOT_IMG_ID）
 - **Phase 1/2：** 可行（secure key storage + device identity + key protection）
 - **Phase 3：** 待確認 Soteria 是否支援 attestation quote / PCR-like measurement
-- **工程量：** 高於標準 TPM2 Provider path
+- **工程量：** 高於標準 TPM2 Provider path（需 custom adapter，但 Soteria 已提供完整 crypto foundation）
+
+**Candidate path：OP-TEE fTPM（若 TX8 SoC 支援 TrustZone）**
+
+- **前提：** TX8 main SoC 支援 ARM TrustZone + BSP 含 TF-A + OP-TEE OS + fTPM TA
+- **TX8 SoC 型號 / TrustZone 支援：** ⚠️ 未確認
+- **API：** 相同的 TSS2 / TPM2 Provider（標準 TPM 2.0）
+- **優勢：** TTPS DI 可直接移植，不需 custom adapter
+
+**Hybrid candidate：OP-TEE fTPM + Soteria hRoT-backed storage（研究方向）**
+
+- OP-TEE fTPM 提供 TPM API；Soteria hRoT 作為底層硬體 key protection 加固
+- 整合複雜度最高；目前為研究 candidate
+- 需確認 Soteria 是否在 TrustZone Secure World 可見
+
+詳細分析請見：[notes/techmation-tx8-soteria-optee-ftpm-analysis.md](./techmation-tx8-soteria-optee-ftpm-analysis.md)
 
 ### Path SE：任意平台 + External SE + PKCS#11
 
@@ -75,7 +94,9 @@
 |------|---------|------|-----|---------|---------|---------|---------|
 | x86 | hTPM | TPM 2.0 | TSS2 / TPM2 Provider | ✅ | ✅ | ✅ | 強 |
 | ARM + OP-TEE | fTPM TA | fTPM | TSS2 / TPM2 Provider | ✅ | ✅ | ✅ | 強 |
-| TX8 | Soteria hRoT | 非 TPM | Soteria vendor SDK | ✅ | ✅ | ⚠️ TBD | 中 |
+| TX8 (Path A) | Soteria hRoT API | 非 TPM | Soteria vendor SDK | ✅ | ✅ | ⚠️ TBD | 中 |
+| TX8 (Path B) | OP-TEE fTPM（若支援 TZ） | fTPM | TSS2 / TPM2 Provider | ⚠️ TZ待確認 | ⚠️ | ⚠️ | 強（若就緒） |
+| TX8 (Path C) | Hybrid fTPM + Soteria | fTPM + hRoT | TSS2 + Soteria API | 🔬 研究中 | 🔬 | 🔬 | 最強（若可行） |
 | Legacy MIPS | 先 feasibility study | 無 | — | ❌ | ❌ | ❌ | 有限 |
 | VM / KVM | vTPM / swtpm | vTPM | TPM2 Provider | 測試 | 測試 | 測試 | 不可生產 |
 
@@ -86,8 +107,10 @@
 | 路線 | 風險 / 待確認 | 緊急程度 |
 |------|-------------|---------|
 | ARM-A/B | MTK BSP OP-TEE + fTPM TA 就緒狀態；Secure Boot | Critical |
-| TX8 | Soteria API attestation quote / PCR support | Critical |
-| TX8 | Soteria SDK 文件；custom adapter 工程量 | High |
+| TX8 Path A | Soteria API attestation quote / PCR support | Critical |
+| TX8 Path A | Soteria SDK 文件；custom adapter 工程量 | High |
+| TX8 Path B | TX8 main SoC 型號；是否支援 ARM TrustZone；BSP TF-A + OP-TEE 狀態 | Critical |
+| TX8 Path C | Soteria hRoT 是否在 TrustZone Secure World 可見；OP-TEE storage backend | Medium（研究） |
 | MIPS | 各型號 SoC 清單；external SE 接頭存在 | High |
 | ARM-A | MS TPM 2.0 Reference Impl 版本與 OP-TEE 整合狀態 | Medium |
 

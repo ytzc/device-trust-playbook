@@ -198,14 +198,34 @@ flowchart TD
           <td><span class="b b-orange">潛力強（需評估）</span></td>
         </tr>
         <tr>
-          <td><strong>Techmation TX8</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path TX8</span></td>
-          <td>Soteria hRoT（hardware RoT）</td>
-          <td><span class="b b-gray">非 TPM API</span></td>
+          <td><strong>TX8 <span class="b b-green" style="font-size:.65rem">Path A</span></strong><br><span style="font-size:.78rem;color:var(--ink-3)">Soteria API（Primary）</span></td>
+          <td>Soteria hRoT（hardware RoT，非 TPM）</td>
+          <td><span class="b b-gray">非 TPM</span></td>
           <td><code>Soteria vendor SDK</code></td>
           <td><span class="b b-green">可行</span></td>
           <td><span class="b b-green">可行</span></td>
           <td><span class="b b-orange">TBD（quote?）</span></td>
-          <td><span class="b b-blue">中（Phase 1/2）</span></td>
+          <td><span class="b b-blue">中（API 待確認）</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8 <span class="b b-blue" style="font-size:.65rem">Path B</span></strong><br><span style="font-size:.78rem;color:var(--ink-3)">OP-TEE fTPM（Candidate）</span></td>
+          <td>OP-TEE fTPM TA（若 SoC 支援 TrustZone）</td>
+          <td><span class="b b-blue">fTPM（待確認）</span></td>
+          <td><code>TSS2 / TPM2 Provider</code></td>
+          <td><span class="b b-orange">待確認 TZ</span></td>
+          <td><span class="b b-orange">待確認 TZ</span></td>
+          <td><span class="b b-orange">待確認 TZ</span></td>
+          <td><span class="b b-orange">強（若 TrustZone 就緒）</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8 <span style="background:#f5f3ff;color:#7c3aed;padding:1px 6px;border-radius:99px;font-size:.65rem;font-weight:600">Path C</span></strong><br><span style="font-size:.78rem;color:var(--ink-3)">Hybrid（研究 Candidate）</span></td>
+          <td>OP-TEE fTPM + Soteria hRoT-backed storage</td>
+          <td><span class="b b-blue">fTPM + hRoT</span></td>
+          <td><code>TSS2 + Soteria API</code></td>
+          <td><span class="b b-gray">🔬 研究中</span></td>
+          <td><span class="b b-gray">🔬 研究中</span></td>
+          <td><span class="b b-gray">🔬 研究中</span></td>
+          <td><span class="b b-gray">最強（若可行）</span></td>
         </tr>
         <tr>
           <td><strong>任意平台 + External SE</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path SE</span></td>
@@ -285,18 +305,40 @@ flowchart TD
 
   <div class="path-card">
     <div class="ph">
-      <h3>Path TX8：Techmation TX8 + Soteria hRoT</h3>
+      <h3>Path TX8：Techmation TX8 — 三種整合路線</h3>
       <span class="b b-orange">評估中</span><span class="b b-blue">Phase 3 待確認</span>
+      <a href="./techmation-tx8-soteria-optee-ftpm-analysis.html" style="font-size:.78rem;color:var(--blue);text-decoration:none;border:1px solid var(--blue-m);padding:2px 9px;border-radius:99px">詳細分析 →</a>
     </div>
     <div class="body">
-      <p>TX8 搭載 Soteria hardware RoT 模組，透過 vendor-specific API 存取。不走標準 TPM API，需要開發 custom adapter layer。</p>
-      <ul>
-        <li><strong>RoT：</strong>Soteria hRoT（hardware RoT，非 TPM）</li>
-        <li><strong>API：</strong>Soteria vendor SDK → 需開發 custom adapter 接 TTPS DI flow</li>
-        <li><strong>Phase 1/2：</strong>可行（secure key storage + device identity + key protection）</li>
-        <li><strong>Phase 3 阻擋條件：</strong>Soteria 是否支援 attestation quote / measurement mechanism（待確認）</li>
-        <li><strong>工程量：</strong>高於標準 TPM2 Provider path（需 custom adapter）</li>
-      </ul>
+      <p>TX8 搭載 Soteria hardware RoT 模組。Primary known path 是 Soteria hRoT API；若 TX8 主 SoC 支援 TrustZone，尚有 OP-TEE fTPM 及 Hybrid 兩種 candidate path。</p>
+
+      <div style="margin:12px 0;padding:10px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #15803d;font-size:.83rem">
+        <strong>✓ 架構釐清（2026-06-12）：</strong> Soteria 是 AHB-connected HW IP（RISC-V ibex + OTP + AES/HMAC/RSA/TRNG）。OP-TEE 執行於主處理器 Secure World，透過 Secure World-only AHB driver 存取 Soteria。Soteria 可作為 OP-TEE 的 HRoT、secure storage provider（Black Key / HUK）、crypto co-processor 與 secure boot verification anchor。<strong>TX8 主處理器 TrustZone 支援仍待確認。</strong>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-top:10px">
+        <thead><tr style="background:#f3f4f6"><th style="padding:6px 10px;text-align:left;font-weight:600">路線</th><th style="padding:6px 10px;text-align:left;font-weight:600">說明</th><th style="padding:6px 10px;text-align:left;font-weight:600">前提</th><th style="padding:6px 10px;text-align:left;font-weight:600">狀態</th></tr></thead>
+        <tbody>
+          <tr style="border-top:1px solid var(--border)">
+            <td style="padding:6px 10px"><span class="b b-green">Path A</span> Soteria API</td>
+            <td style="padding:6px 10px">Soteria vendor API；custom adapter → TTPS DI</td>
+            <td style="padding:6px 10px">取得 Soteria SDK</td>
+            <td style="padding:6px 10px;color:var(--orange)">⚠ API 待確認</td>
+          </tr>
+          <tr style="border-top:1px solid var(--border)">
+            <td style="padding:6px 10px"><span class="b b-blue">Path B</span> OP-TEE fTPM</td>
+            <td style="padding:6px 10px">OP-TEE Secure World + fTPM TA；標準 TPM 2.0 API</td>
+            <td style="padding:6px 10px">TX8 SoC 支援 TrustZone + BSP OP-TEE 就緒</td>
+            <td style="padding:6px 10px;color:var(--orange)">⚠ TrustZone 未確認</td>
+          </tr>
+          <tr style="border-top:1px solid var(--border)">
+            <td style="padding:6px 10px"><span class="b b-purple" style="background:var(--purple-l,#f5f3ff);color:#7c3aed">Path C</span> Hybrid</td>
+            <td style="padding:6px 10px">OP-TEE fTPM + Soteria hRoT-backed secure storage</td>
+            <td style="padding:6px 10px">Path B 前提 + Soteria Secure World 可見</td>
+            <td style="padding:6px 10px;color:#7c3aed">🔬 研究 candidate</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -360,12 +402,13 @@ flowchart TD
       </ul>
     </div>
     <div class="card">
-      <h3>為什麼 TX8 不強制走 TPM API</h3>
+      <h3>為什麼 TX8 有三種路線需要評估</h3>
       <ul>
-        <li>TX8 已有 Soteria hardware RoT，強制加 TPM 晶片代表重複硬體</li>
-        <li>Soteria API 可以提供 secure key storage / device identity 等等效功能</li>
-        <li>不需要硬套 TPM terminology；只要能提供 RoT 功能即可作為 CRA foundation</li>
-        <li>custom adapter 工程量雖高，但避免硬體重設計</li>
+        <li><strong>Path A (Soteria API)：</strong> TX8 已有 Soteria hRoT，Primary path，不需額外平台變更；Soteria API 能力與 attestation quote 機制待確認</li>
+        <li><strong>Path B (OP-TEE fTPM)：</strong> 若 TX8 主 SoC 支援 TrustZone / OP-TEE，可採標準 TPM 2.0 API，TTPS DI 直接移植，但 TX8 TrustZone 支援未確認</li>
+        <li><strong>Path C (Hybrid)：</strong> OP-TEE fTPM + Soteria hRoT-backed storage，能力最完整，但整合複雜度最高，為研究 candidate</li>
+        <li>⚠ OP-TEE 跑在主 SoC TrustZone Secure World，<strong>不是跑在 Soteria hRoT 上</strong></li>
+        <li>詳細分析：<a href="./techmation-tx8-soteria-optee-ftpm-analysis.html">TX8 + Soteria + OP-TEE fTPM Analysis →</a></li>
       </ul>
     </div>
     <div class="card">
@@ -400,16 +443,28 @@ flowchart TD
           <td><span class="b b-red">Critical</span></td>
         </tr>
         <tr>
-          <td><strong>TX8</strong></td>
+          <td><strong>TX8 Path A</strong></td>
           <td>Soteria API 是否支援 attestation quote / PCR-like measurement</td>
           <td>Phase 3 阻擋條件</td>
           <td><span class="b b-red">Critical</span></td>
         </tr>
         <tr>
-          <td><strong>TX8</strong></td>
+          <td><strong>TX8 Path A</strong></td>
           <td>Soteria API spec / SDK 文件取得；custom adapter 工程量估算</td>
           <td>Phase 1/2 工程計畫</td>
           <td><span class="b b-orange">High</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8 Path B</strong></td>
+          <td>TX8 main SoC 型號確認；是否支援 ARM TrustZone；BSP TF-A + OP-TEE 狀態</td>
+          <td>決定 Path B 是否可行</td>
+          <td><span class="b b-red">Critical</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8 Path C</strong></td>
+          <td>Soteria hRoT 是否在 TrustZone Secure World 可見；OP-TEE storage backend 支援</td>
+          <td>Hybrid path 可行性</td>
+          <td><span class="b b-blue">Medium（研究性質）</span></td>
         </tr>
         <tr>
           <td><strong>MIPS</strong></td>
