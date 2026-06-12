@@ -28,15 +28,17 @@
       --radius: 14px;
       --shadow: 0 4px 24px rgba(17,24,39,.08);
       --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+      --shadow-md: 0 8px 32px rgba(17,24,39,.12);
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
     a { color: var(--blue); }
 
+    /* ── Hero ─────────────────────────────────────────────────── */
     .hero {
       background: linear-gradient(140deg, #0f172a 0%, #1e3a5f 55%, #0f2d4a 100%);
       color: #fff;
-      padding: 72px 24px 56px;
+      padding: 72px 24px 96px;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -59,14 +61,23 @@
     .chip-hot  { background: rgba(251,146,60,.2); color: #fdba74; border: 1px solid rgba(251,146,60,.35); }
     .version-badge { display: inline-block; padding: 6px 16px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7); font-size: .78rem; font-weight: 600; }
 
+    /* wave separator at bottom of hero */
+    .hero-wave {
+      position: absolute; bottom: -1px; left: 0; right: 0;
+      height: 64px; pointer-events: none; line-height: 0;
+    }
+    .hero-wave svg { display: block; width: 100%; height: 64px; }
+
+    /* ── Page ─────────────────────────────────────────────────── */
     .page { max-width: 980px; margin: 0 auto; padding: 0 20px 60px; }
     .section { margin-top: 48px; }
     .sec-label { font-size: .7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
     .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: -32px; }
+    /* ── Stats ────────────────────────────────────────────────── */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
     @media (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } }
-    .stat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm); text-align: center; }
+    .stat { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-md); text-align: center; }
     .stat-num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
     .stat-num.blue { color: var(--blue); }
     .stat-num.green { color: var(--green); }
@@ -74,7 +85,7 @@
     .stat-num.orange { color: var(--orange); }
     .stat-lbl { font-size: .78rem; color: var(--ink-3); margin-top: 4px; }
 
-    /* Report cards */
+    /* ── Report cards ─────────────────────────────────────────── */
     .report-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     @media (max-width: 660px) { .report-grid { grid-template-columns: 1fr; } }
     .report-card {
@@ -84,7 +95,7 @@
       text-decoration: none; color: inherit;
       transition: box-shadow .15s, transform .15s, border-color .15s;
     }
-    .report-card:hover { box-shadow: 0 8px 32px rgba(17,24,39,.12); transform: translateY(-2px); border-color: var(--blue-m); }
+    .report-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--blue-m); }
     .report-card.hot { border-color: #fcd34d; background: linear-gradient(135deg, #fff, #fffbeb); }
     .report-card.hot:hover { border-color: var(--orange); }
     .rc-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
@@ -111,7 +122,7 @@
     .badge-new { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; font-size: .65rem; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
     .badge-hot { background: var(--red-l); color: var(--red); border: 1px solid #fecaca; font-size: .65rem; font-weight: 700; padding: 1px 7px; border-radius: 999px; margin-left: 6px; vertical-align: middle; }
 
-    /* Topics */
+    /* ── Topics ───────────────────────────────────────────────── */
     .topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     @media (max-width: 640px) { .topic-grid { grid-template-columns: 1fr 1fr; } }
     .topic { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow-sm); }
@@ -119,7 +130,7 @@
     .topic h4 { font-size: .88rem; font-weight: 700; margin-bottom: 3px; }
     .topic p { font-size: .78rem; color: var(--ink-3); line-height: 1.45; }
 
-    /* CRA Timeline */
+    /* ── CRA Timeline ─────────────────────────────────────────── */
     .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
     @media (max-width: 640px) { .timeline { grid-template-columns: 1fr; } }
     .tl-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; box-shadow: var(--shadow-sm); border-top: 4px solid transparent; position: relative; }
@@ -136,7 +147,41 @@
     .tl-badge.soon { background: var(--orange-l); color: var(--orange); }
     .tl-badge.enforce { background: var(--red-l); color: var(--red); }
 
-    /* Notice */
+    /* ── Reference Links ──────────────────────────────────────── */
+    .ref-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 860px) { .ref-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 540px) { .ref-grid { grid-template-columns: 1fr; } }
+    .ref-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px 20px; box-shadow: var(--shadow-sm);
+      border-top: 3px solid transparent;
+    }
+    .ref-card.c-cra    { border-top-color: #dc2626; }
+    .ref-card.c-tpm    { border-top-color: #1d4ed8; }
+    .ref-card.c-optee  { border-top-color: #0f766e; }
+    .ref-card.c-ra     { border-top-color: #7c3aed; }
+    .ref-card.c-devid  { border-top-color: #15803d; }
+    .ref-card.c-prov   { border-top-color: #b45309; }
+    .ref-cat-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+    .ref-cat-icon { font-size: 1.1rem; line-height: 1; }
+    .ref-cat-title { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; }
+    .ref-cat-title.c-cra   { color: #dc2626; }
+    .ref-cat-title.c-tpm   { color: #1d4ed8; }
+    .ref-cat-title.c-optee { color: #0f766e; }
+    .ref-cat-title.c-ra    { color: #7c3aed; }
+    .ref-cat-title.c-devid { color: #15803d; }
+    .ref-cat-title.c-prov  { color: #b45309; }
+    .ref-links { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .ref-links li { display: flex; align-items: baseline; gap: 6px; }
+    .ref-links li::before { content: '↗'; font-size: .65rem; color: var(--ink-3); flex-shrink: 0; margin-top: 1px; }
+    .ref-links a { font-size: .82rem; color: var(--ink-2); text-decoration: none; line-height: 1.4; transition: color .12s; }
+    .ref-links a:hover { color: var(--blue); text-decoration: underline; }
+    .ref-badge { display: inline-block; font-size: .6rem; font-weight: 700; padding: 1px 5px; border-radius: 4px; background: var(--blue-l); color: var(--blue); margin-left: 4px; vertical-align: middle; }
+    .ref-badge.std { background: var(--green-l); color: var(--green); }
+    .ref-badge.rfc { background: var(--purple-l); color: var(--purple); }
+    .ref-badge.oss { background: #f3f4f6; color: var(--ink-3); }
+
+    /* ── Notice ───────────────────────────────────────────────── */
     .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 16px 0; }
     .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
     .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
@@ -149,7 +194,7 @@
 </head>
 <body>
 
-<!-- HERO -->
+<!-- ─── HERO ────────────────────────────────────────────────────── -->
 <div class="hero">
   <div class="hero-logo">FiduciaEdge · TTPS Team</div>
   <h1>Device Trust &amp; <span>Platform Security</span><br>Playbook</h1>
@@ -161,6 +206,13 @@
     <span class="chip chip-fe">🔐 FiduciaEdge Internal</span>
   </div>
   <div class="version-badge" id="site-version">Version: __VERSION__</div>
+
+  <!-- wave transition to page background -->
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 64" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#f6f8fb" d="M0,64 L0,36 C160,60 320,16 480,32 C640,48 800,56 960,40 C1120,24 1280,44 1440,36 L1440,64 Z"/>
+    </svg>
+  </div>
 </div>
 <script>
   (function () {
@@ -173,7 +225,7 @@
 
 <div class="page">
 
-  <!-- STATS -->
+  <!-- ─── STATS ─────────────────────────────────────────────────── -->
   <div class="stats">
     <div class="stat"><div class="stat-num blue">8</div><div class="stat-lbl">知識頁面</div></div>
     <div class="stat"><div class="stat-num green">3</div><div class="stat-lbl">RA 交付 Phases</div></div>
@@ -181,7 +233,7 @@
     <div class="stat"><div class="stat-num red">2027</div><div class="stat-lbl">CRA 強制執行年</div></div>
   </div>
 
-  <!-- MEETING PREP HIGHLIGHT -->
+  <!-- ─── MEETING PREP HIGHLIGHT ──────────────────────────────────── -->
   <div class="section">
     <div class="sec-label">今日重點 Today's Focus</div>
     <a href="./meeting-prep-2026-06-12-rot-discussion.html" class="report-card hot">
@@ -201,7 +253,7 @@
     </a>
   </div>
 
-  <!-- REPORTS -->
+  <!-- ─── KNOWLEDGE PAGES ──────────────────────────────────────────── -->
   <div class="section">
     <div class="sec-label">知識庫頁面 Knowledge Pages</div>
     <div class="report-grid">
@@ -325,7 +377,7 @@
     </div>
   </div>
 
-  <!-- PLAYBOOK TOPICS -->
+  <!-- ─── PLAYBOOK TOPICS ──────────────────────────────────────────── -->
   <div class="section">
     <div class="sec-label">Playbook 涵蓋主題</div>
     <div class="topic-grid">
@@ -338,7 +390,7 @@
     </div>
   </div>
 
-  <!-- CRA TIMELINE -->
+  <!-- ─── CRA TIMELINE ─────────────────────────────────────────────── -->
   <div class="section">
     <div class="sec-label">EU CRA 2024/2847 關鍵時程</div>
     <div class="timeline">
@@ -363,7 +415,104 @@
     </div>
   </div>
 
-  <!-- TONE RULES -->
+  <!-- ─── REFERENCE LINKS ──────────────────────────────────────────── -->
+  <div class="section">
+    <div class="sec-label">延伸參考資源 External References</div>
+    <div class="ref-grid">
+
+      <!-- CRA / Regulation -->
+      <div class="ref-card c-cra">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">🇪🇺</span>
+          <span class="ref-cat-title c-cra">CRA &amp; Regulation</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R2847" target="_blank" rel="noopener">EU CRA 2024/2847 官方條文 <span class="ref-badge std">EUR-Lex</span></a></li>
+          <li><a href="https://www.enisa.europa.eu/topics/cybersecurity-policy/cyber-resilience-act" target="_blank" rel="noopener">ENISA CRA 技術指引</a></li>
+          <li><a href="https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act" target="_blank" rel="noopener">EC CRA Policy Overview</a></li>
+          <li><a href="https://www.bsi.bund.de/EN/Themen/Unternehmen-und-Organisationen/Cyber-Sicherheitslage/Reaktion/CERT-Bund/CERT-Bund_node.html" target="_blank" rel="noopener">BSI (德國) CRA 指引</a></li>
+        </ul>
+      </div>
+
+      <!-- TPM / TCG -->
+      <div class="ref-card c-tpm">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">🔐</span>
+          <span class="ref-cat-title c-tpm">TPM &amp; TCG Standards</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://trustedcomputinggroup.org/resource/tpm-library-specification/" target="_blank" rel="noopener">TCG TPM 2.0 Library Specification <span class="ref-badge std">STD</span></a></li>
+          <li><a href="https://tpm2-software.github.io/" target="_blank" rel="noopener">tpm2-software Project <span class="ref-badge oss">OSS</span></a></li>
+          <li><a href="https://github.com/microsoft/ms-tpm-20-ref" target="_blank" rel="noopener">MS TPM 2.0 Reference Implementation <span class="ref-badge oss">GitHub</span></a></li>
+          <li><a href="https://trustedcomputinggroup.org/resource/dice-attestation-architecture/" target="_blank" rel="noopener">TCG DICE Attestation Architecture <span class="ref-badge std">STD</span></a></li>
+          <li><a href="https://github.com/tpm2-software/tpm2-tools" target="_blank" rel="noopener">tpm2-tools CLI <span class="ref-badge oss">OSS</span></a></li>
+        </ul>
+      </div>
+
+      <!-- TrustZone / OP-TEE -->
+      <div class="ref-card c-optee">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">🛡</span>
+          <span class="ref-cat-title c-optee">TrustZone &amp; OP-TEE</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://optee.readthedocs.io/" target="_blank" rel="noopener">OP-TEE Documentation <span class="ref-badge oss">Docs</span></a></li>
+          <li><a href="https://github.com/OP-TEE/optee_os" target="_blank" rel="noopener">OP-TEE OS <span class="ref-badge oss">GitHub</span></a></li>
+          <li><a href="https://www.trustedfirmware.org/projects/tf-a/" target="_blank" rel="noopener">Trusted Firmware-A (TF-A)</a></li>
+          <li><a href="https://github.com/microsoft/ms-tpm-20-ref/tree/master/Samples/ARM32-FirmwareTPM" target="_blank" rel="noopener">OP-TEE fTPM TA (MS ref) <span class="ref-badge oss">GitHub</span></a></li>
+          <li><a href="https://developer.arm.com/documentation/den0024/latest" target="_blank" rel="noopener">ARM TrustZone Architecture Guide</a></li>
+        </ul>
+      </div>
+
+      <!-- Remote Attestation -->
+      <div class="ref-card c-ra">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">📡</span>
+          <span class="ref-cat-title c-ra">Remote Attestation</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://datatracker.ietf.org/wg/rats/about/" target="_blank" rel="noopener">IETF RATS WG <span class="ref-badge rfc">IETF</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/rfc9711/" target="_blank" rel="noopener">RFC 9711 — Entity Attestation Token (EAT) <span class="ref-badge rfc">RFC</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/draft-ietf-rats-corim/" target="_blank" rel="noopener">CoRIM — Concise Ref Integrity Manifest <span class="ref-badge rfc">Draft</span></a></li>
+          <li><a href="https://keylime.dev/" target="_blank" rel="noopener">Keylime — TPM-based attestation <span class="ref-badge oss">OSS</span></a></li>
+          <li><a href="https://github.com/veraison/services" target="_blank" rel="noopener">Veraison Attestation Verifier <span class="ref-badge oss">GitHub</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Device Identity -->
+      <div class="ref-card c-devid">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">🪪</span>
+          <span class="ref-cat-title c-devid">Device Identity</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://1.ieee802.org/security/802-1ar/" target="_blank" rel="noopener">IEEE 802.1AR — DevID Standard <span class="ref-badge std">IEEE</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/rfc8995/" target="_blank" rel="noopener">RFC 8995 — BRSKI Bootstrap <span class="ref-badge rfc">RFC</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/rfc8366/" target="_blank" rel="noopener">RFC 8366 — Voucher Artifact <span class="ref-badge rfc">RFC</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/rfc7030/" target="_blank" rel="noopener">RFC 7030 — EST (Enrollment over TLS) <span class="ref-badge rfc">RFC</span></a></li>
+          <li><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lamps-rfc7030-csrattrs" target="_blank" rel="noopener">EST CSR Attributes Extension <span class="ref-badge rfc">Draft</span></a></li>
+        </ul>
+      </div>
+
+      <!-- Provisioning & Key Management -->
+      <div class="ref-card c-prov">
+        <div class="ref-cat-header">
+          <span class="ref-cat-icon">🏭</span>
+          <span class="ref-cat-title c-prov">Provisioning &amp; Key Mgmt</span>
+        </div>
+        <ul class="ref-links">
+          <li><a href="https://fidoalliance.org/specs/FDO/" target="_blank" rel="noopener">FIDO Device Onboard (FDO) Spec <span class="ref-badge std">FIDO</span></a></li>
+          <li><a href="https://www.nxp.com/products/security-and-authentication/authentication/edgelock-2go:EDGELOCK-2GO" target="_blank" rel="noopener">NXP EdgeLock 2GO</a></li>
+          <li><a href="https://www.openssl.org/docs/man3.0/man7/provider.html" target="_blank" rel="noopener">OpenSSL Provider API (TPM2 Provider)</a></li>
+          <li><a href="https://github.com/tpm2-software/tpm2-pkcs11" target="_blank" rel="noopener">tpm2-pkcs11 <span class="ref-badge oss">OSS</span></a></li>
+          <li><a href="https://www.rfc-editor.org/rfc/rfc4210" target="_blank" rel="noopener">RFC 4210 — CMP (Cert Mgmt Protocol) <span class="ref-badge rfc">RFC</span></a></li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ─── TONE RULES ───────────────────────────────────────────────── -->
   <div class="section">
     <div class="sec-label">語氣規則 Tone Rules</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
