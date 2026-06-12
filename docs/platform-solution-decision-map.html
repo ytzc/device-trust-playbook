@@ -96,7 +96,16 @@
   <a href="#paths">各路線說明</a>
   <a href="#rationale">決策理由</a>
   <a href="#risks">風險與待確認</a>
+<span id="site-version" style="margin-left:auto;padding:0 14px;color:rgba(255,255,255,.55);font-size:.72rem;font-weight:600;white-space:nowrap;align-self:center">__VERSION__</span>
 </nav>
+<script>
+  (function () {
+    var el = document.getElementById('site-version');
+    if (el && !/^v\d/.test((el.textContent.split(': ')[1] || el.textContent).trim())) {
+      el.textContent = 'dev (local)';
+    }
+  })();
+</script>
 
 <div class="page">
 
