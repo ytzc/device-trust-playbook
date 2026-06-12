@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoT Methods Comparison — Device Trust Playbook</title>
+<style>
+  :root {
+    --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+    --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+    --blue: #1d4ed8; --blue-l: #eff6ff; --blue-m: #bfdbfe;
+    --green: #15803d; --green-l: #f0fdf4;
+    --orange: #b45309; --orange-l: #fffbeb;
+    --red: #b91c1c; --red-l: #fef2f2;
+    --purple: #7c3aed; --purple-l: #f5f3ff;
+    --teal: #0f766e; --teal-l: #f0fdfa;
+    --radius: 14px; --shadow: 0 4px 24px rgba(17,24,39,.07); --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+  .hero { background: linear-gradient(135deg, #1e1b4b 0%, #3730a3 55%, #4338ca 100%); color: #fff; padding: 60px 32px 52px; text-align: center; }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .hero .hero-sub { font-size: 1rem; opacity: .85; margin-bottom: 8px; }
+  .hero .hero-date { font-size: .82rem; opacity: .6; margin-bottom: 20px; }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .htag { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+  nav { background: #1e1b4b; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #3730a3; }
+  nav a { color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 16px; font-size: .8rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 48px 0 40px; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-head { margin-bottom: 22px; }
+  .sec-num { display: inline-block; background: var(--purple); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: .75rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  h2.sec-title { font-size: 1.35rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .sec-desc { font-size: .9rem; color: var(--ink-3); }
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-green { background: var(--green-l); color: var(--green); }
+  .b-blue { background: var(--blue-l); color: var(--blue); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red { background: var(--red-l); color: var(--red); }
+  .b-gray { background: #f3f4f6; color: #374151; }
+  .b-purple { background: var(--purple-l); color: var(--purple); }
+  .b-teal { background: var(--teal-l); color: var(--teal); }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; }
+  .card .card-sub { font-size: .78rem; color: var(--ink-3); font-style: italic; margin-bottom: 10px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 6px; }
+  .card ul li { margin-bottom: 4px; }
+  .card .cra-tag { margin-top: 10px; background: var(--blue-l); color: var(--blue); border-radius: 6px; padding: 5px 9px; font-size: .77rem; display: block; }
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th { background: #1e1b4b; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafafa; }
+  tbody tr:hover td { background: var(--purple-l); }
+  .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 14px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-err { background: var(--red-l); border-left: 4px solid var(--red); }
+  .notice-purple { background: var(--purple-l); border-left: 4px solid var(--purple); }
+  .method-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-sm); margin-bottom: 14px; }
+  .method-card .mh { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .method-card h3 { font-size: 1rem; font-weight: 700; }
+  .method-card .body { font-size: .86rem; color: var(--ink-2); }
+  .method-card .body ul { padding-left: 16px; margin: 6px 0; }
+  .method-card .body li { margin-bottom: 4px; }
+  .method-card .detail-label { font-size: .72rem; font-weight: 700; color: var(--ink-3); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; margin-top: 10px; }
+  .method-card .detail-label:first-child { margin-top: 0; }
+  footer { background: #1e1b4b; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
+  footer strong { color: rgba(255,255,255,.85); }
+  footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+  @media (max-width: 640px) { .hero h1 { font-size: 1.5rem; } .g2, .g3 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="./index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;margin-bottom:20px;">← Device Trust Playbook</a>
+  <h1>⚓ RoT Methods Comparison</h1>
+  <p class="hero-sub">Root of Trust 方法比較 — 從 hTPM 到 fTPM、vTPM、hRoT、SE、PUF</p>
+  <p class="hero-date">最後更新：2026-06-12 · FiduciaEdge Device Trust Playbook</p>
+  <div class="hero-chips">
+    <span class="htag">hTPM</span>
+    <span class="htag">fTPM</span>
+    <span class="htag">vTPM</span>
+    <span class="htag">hRoT</span>
+    <span class="htag">Secure Element</span>
+    <span class="htag">PUF</span>
+    <span class="htag">fTPM ≠ vTPM</span>
+  </div>
+</div>
+
+<nav>
+  <a href="./index.html">← 首頁</a>
+  <a href="#overview">方法總覽</a>
+  <a href="#comparison-table">比較表</a>
+  <a href="#ftpm-vtpm">fTPM vs vTPM</a>
+  <a href="#optee">OP-TEE fTPM</a>
+  <a href="#msft">MS TPM 2.0 Ref</a>
+  <a href="#swtpm">swtpm</a>
+  <a href="#soteria">Soteria hRoT</a>
+  <a href="#cra-role">CRA 中的角色</a>
+</nav>
+
+<div class="page">
+
+<!-- 1. 方法總覽 -->
+<section id="overview">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <h2 class="sec-title">Root of Trust 方法總覽</h2>
+    <p class="sec-desc">各種 RoT 技術的定位、使用場景與信任基礎。</p>
+  </div>
+  <div class="notice notice-purple">
+    <strong>核心原則：</strong> RoT（Root of Trust）是設備安全的信任起點。hardware RoT 將 private key 和 secret 保護在硬體邊界內，讓 OS 無法直接讀取或提取。這是 CRA-ready 設備安全的技術基礎。
+  </div>
+  <div class="grid g3">
+    <div class="card">
+      <h3>hTPM</h3>
+      <div class="card-sub">Hardware TPM — 實體晶片</div>
+      <p>Dedicated 硬體 TPM 2.0 晶片。x86 平台標準方案。Discrete（焊在主板上）或 Integrated（Intel PTT / AMD PSP fTPM）。</p>
+      <span class="cra-tag">📌 x86 Default Path</span>
+    </div>
+    <div class="card">
+      <h3>fTPM</h3>
+      <div class="card-sub">Firmware TPM — TEE 中的軟體 TPM</div>
+      <p>在 TEE（如 ARM TrustZone / OP-TEE）Secure World 中執行的 TPM 實作。對外提供 TPM 2.0 API。ARM 平台主要路線。</p>
+      <span class="cra-tag">📌 ARM + OP-TEE Path</span>
+    </div>
+    <div class="card">
+      <h3>vTPM</h3>
+      <div class="card-sub">Virtual TPM — 虛擬化環境</div>
+      <p>在 VM / hypervisor 環境中使用的虛擬化 TPM。常見實作：swtpm。信任基礎是 hypervisor，不適合生產設備。</p>
+      <span class="cra-tag">📌 VM/KVM/QEMU 測試用</span>
+    </div>
+    <div class="card">
+      <h3>hRoT</h3>
+      <div class="card-sub">Hardware Root of Trust — 專用安全晶片</div>
+      <p>專用硬體安全模組，提供 secure key storage、設備身份、可能的 firmware integrity。例如 Soteria hRoT（TX8）、NXP ELE。</p>
+      <span class="cra-tag">📌 TX8 / Vendor-specific</span>
+    </div>
+    <div class="card">
+      <h3>Secure Element（SE）</h3>
+      <div class="card-sub">External Secure Element</div>
+      <p>可加入現有平台的外接安全元件，提供 hardware-isolated key storage。透過 PKCS#11 標準介面整合。適合 Legacy 平台補強。</p>
+      <span class="cra-tag">📌 Legacy MIPS Path B 選項</span>
+    </div>
+    <div class="card">
+      <h3>PUF</h3>
+      <div class="card-sub">Physical Unclonable Function</div>
+      <p>利用晶片製造差異產生唯一識別碼（device fingerprint）。可作為 key derivation 的 root secret。部分 SoC 內建（如 NXP ELE）。</p>
+      <span class="cra-tag">📌 Key derivation 基礎</span>
+    </div>
+    <div class="card" style="border-top:3px solid var(--red)">
+      <h3>Pure Software Key Storage</h3>
+      <div class="card-sub">不建議用於生產設備</div>
+      <p>Key 儲存在 OS 檔案系統，無硬體保護邊界。OS root 使用者可讀取或複製。只適合開發環境，CRA production 場景不建議。</p>
+      <span class="cra-tag" style="background:var(--red-l);color:var(--red)">❌ 不適合 CRA production</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2. 比較表 -->
+<section id="comparison-table">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <h2 class="sec-title">RoT 方法比較表</h2>
+    <p class="sec-desc">從安全強度、使用場景、API 標準化程度等維度比較。</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>方法</th>
+          <th>信任基礎</th>
+          <th>使用場景</th>
+          <th>API</th>
+          <th>Key 保護</th>
+          <th>Measured Boot</th>
+          <th>Attestation</th>
+          <th>CRA 生產適用</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>hTPM</strong><br><span style="font-size:.75rem;color:var(--ink-3)">Hardware TPM</span></td>
+          <td>TPM 晶片硬體邊界</td>
+          <td>x86 PC / Server</td>
+          <td>TSS2 / TPM2 Provider</td>
+          <td><span class="b b-green">強（晶片隔離）</span></td>
+          <td><span class="b b-green">是（PCR 0–23）</span></td>
+          <td><span class="b b-green">是（TPM Quote）</span></td>
+          <td><span class="b b-green">是</span></td>
+        </tr>
+        <tr>
+          <td><strong>fTPM</strong><br><span style="font-size:.75rem;color:var(--ink-3)">OP-TEE fTPM TA</span></td>
+          <td>TrustZone 硬體隔離</td>
+          <td>ARM IoT / Gateway</td>
+          <td>TSS2 / TPM2 Provider（同 hTPM）</td>
+          <td><span class="b b-green">強（TZ 隔離）</span></td>
+          <td><span class="b b-green">是（PCR-like）</span></td>
+          <td><span class="b b-green">是（TPM Quote）</span></td>
+          <td><span class="b b-green">是</span></td>
+        </tr>
+        <tr>
+          <td><strong>vTPM</strong><br><span style="font-size:.75rem;color:var(--ink-3)">swtpm</span></td>
+          <td>Hypervisor 軟體</td>
+          <td>VM / KVM / QEMU</td>
+          <td>TSS2 / TPM2 Provider（同 hTPM）</td>
+          <td><span class="b b-orange">中（hypervisor 隔離）</span></td>
+          <td><span class="b b-orange">是（可信度有限）</span></td>
+          <td><span class="b b-orange">是（可信度有限）</span></td>
+          <td><span class="b b-red">不可用於生產</span></td>
+        </tr>
+        <tr>
+          <td><strong>hRoT</strong><br><span style="font-size:.75rem;color:var(--ink-3)">Soteria（TX8）</span></td>
+          <td>專用安全晶片</td>
+          <td>TX8 embedded</td>
+          <td>Vendor SDK（非標準）</td>
+          <td><span class="b b-green">強（hardware 隔離）</span></td>
+          <td><span class="b b-orange">待確認</span></td>
+          <td><span class="b b-orange">待確認 quote</span></td>
+          <td><span class="b b-blue">Phase 1/2 是</span></td>
+        </tr>
+        <tr>
+          <td><strong>Secure Element</strong><br><span style="font-size:.75rem;color:var(--ink-3)">External SE</span></td>
+          <td>SE 晶片硬體邊界</td>
+          <td>任意平台（加裝）</td>
+          <td>PKCS#11 標準</td>
+          <td><span class="b b-green">強（SE 隔離）</span></td>
+          <td><span class="b b-red">通常不支援</span></td>
+          <td><span class="b b-red">通常不支援</span></td>
+          <td><span class="b b-blue">Phase 1/2 是</span></td>
+        </tr>
+        <tr>
+          <td><strong>PUF</strong></td>
+          <td>晶片物理特性</td>
+          <td>Key derivation 基礎</td>
+          <td>SoC-specific</td>
+          <td><span class="b b-green">強（物理唯一性）</span></td>
+          <td><span class="b b-gray">不直接提供</span></td>
+          <td><span class="b b-gray">不直接提供</span></td>
+          <td><span class="b b-gray">依上層整合</span></td>
+        </tr>
+        <tr>
+          <td><strong>Pure Software</strong></td>
+          <td>OS 檔案系統</td>
+          <td>開發環境</td>
+          <td>OpenSSL / 標準</td>
+          <td><span class="b b-red">弱（OS root 可讀）</span></td>
+          <td><span class="b b-red">不支援</span></td>
+          <td><span class="b b-red">不支援</span></td>
+          <td><span class="b b-red">不適合</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3. fTPM vs vTPM -->
+<section id="ftpm-vtpm">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <h2 class="sec-title">fTPM vs vTPM — 關鍵區分</h2>
+    <p class="sec-desc">John 特別提醒這兩者不一樣，請嚴格區分使用場景。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>⚠ 常見混淆：</strong> 兩者名稱相似，但使用場景完全不同。fTPM 用於實體 embedded 設備；vTPM 用於 VM 虛擬化環境。不要混用。
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>比較項目</th><th>fTPM（Firmware TPM）</th><th>vTPM（Virtual TPM）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>全名</strong></td><td>Firmware Trusted Platform Module</td><td>Virtual Trusted Platform Module</td></tr>
+        <tr><td><strong>使用場景</strong></td><td>實體 IoT / embedded / ARM device</td><td>VM / KVM / QEMU 虛擬化環境</td></tr>
+        <tr><td><strong>執行環境</strong></td><td>TEE / TrustZone Secure World（firmware）</td><td>Hypervisor / QEMU 模擬器（軟體）</td></tr>
+        <tr><td><strong>硬體隔離</strong></td><td>ARM TrustZone TZASC 硬體記憶體隔離</td><td>無實體隔離，依 hypervisor</td></tr>
+        <tr><td><strong>常見實作</strong></td><td>OP-TEE fTPM TA（基於 MS TPM 2.0 Ref Impl）</td><td>swtpm（Stefan Berger / IBM）</td></tr>
+        <tr><td><strong>信任基礎</strong></td><td>ARM TrustZone 硬體機制</td><td>Hypervisor 軟體安全</td></tr>
+        <tr><td><strong>TPM 2.0 API 相容</strong></td><td>是（TSS2 完整相容）</td><td>是（相同 API）</td></tr>
+        <tr><td><strong>Key 保護強度</strong></td><td>強（Secure World 無法從 Normal World 直接存取）</td><td>依 hypervisor；VM escape 可能暴露 key</td></tr>
+        <tr><td><strong>PCR / Measured Boot</strong></td><td>支援（OP-TEE fTPM 有 PCR 0–23）</td><td>支援（但 PCR 可信度取決於 hypervisor）</td></tr>
+        <tr><td><strong>Attestation Quote</strong></td><td>支援（hardware-backed 高可信度）</td><td>支援（但可信度有限）</td></tr>
+        <tr><td><strong>適合 PLANET ARM gateway</strong></td><td>是（若有 TrustZone + OP-TEE）</td><td>不適合（需 hypervisor）</td></tr>
+        <tr><td><strong>適合 VM 開發測試</strong></td><td>不適合（embedded 用）</td><td>是</td></tr>
+        <tr><td><strong>CRA production 適用</strong></td><td>是</td><td>否（不可用於生產設備）</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 4. OP-TEE fTPM -->
+<section id="optee">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <h2 class="sec-title">OP-TEE fTPM TA — ARM 平台主要路線</h2>
+    <p class="sec-desc">OP-TEE fTPM 的技術架構、整合方式與 PLANET 適用性。</p>
+  </div>
+  <div class="grid g2">
+    <div class="method-card">
+      <div class="mh">
+        <h3>OP-TEE fTPM TA 技術架構</h3>
+        <span class="b b-blue">ARM 主要路線</span>
+      </div>
+      <div class="body">
+        <div class="detail-label">TrustZone 架構</div>
+        <ul>
+          <li><strong>Normal World：</strong>Linux OS / OpenWRT，透過 TSS2 library 發送 TPM 命令</li>
+          <li><strong>Secure World：</strong>OP-TEE OS 執行環境，fTPM TA 在其中運行</li>
+          <li><strong>通訊路徑：</strong>Normal World → TEE Client API → OP-TEE OS → fTPM TA</li>
+          <li><strong>記憶體隔離：</strong>TZASC / TZMA 確保 Secure World 記憶體無法從 Normal World 存取</li>
+        </ul>
+        <div class="detail-label">關鍵元件</div>
+        <ul>
+          <li><strong>TF-A（Trusted Firmware-A）：</strong>BL1/BL2/BL31 bootloader，建立安全的 boot chain</li>
+          <li><strong>OP-TEE OS：</strong>BL32，TrustZone Secure World TEE kernel</li>
+          <li><strong>fTPM TA：</strong>在 OP-TEE 中運行的 TPM 2.0 Trusted Application</li>
+          <li><strong>tpm2-abrmd：</strong>TPM Access Broker & Resource Manager daemon</li>
+        </ul>
+      </div>
+    </div>
+    <div class="method-card">
+      <div class="mh">
+        <h3>整合 API 與 FiduciaEdge 使用方式</h3>
+      </div>
+      <div class="body">
+        <div class="detail-label">API 介面（對外與 hTPM 一致）</div>
+        <ul>
+          <li><strong>TSS2：</strong>TPM Software Stack 2（tpm2-tss），Linux 標準 TPM library</li>
+          <li><strong>OpenSSL TPM2 Provider：</strong>tpm2-openssl，透過 OpenSSL 使用 TPM key</li>
+          <li><strong>PKCS#11 bridge：</strong>tpm2-pkcs11，PKCS#11 標準介面整合</li>
+          <li><strong>tpm2-tools：</strong>命令列工具，方便測試與自動化</li>
+        </ul>
+        <div class="detail-label">FiduciaEdge Phase 1 任務（PLANET）</div>
+        <ul>
+          <li>TTPS DI 移植：Ubuntu + hTPM → MTK OpenWRT + OP-TEE fTPM</li>
+          <li>fTPM TA 啟用與 TSS2 stack 整合</li>
+          <li>Hardware-bound IDevID / LDevID provisioning</li>
+          <li>CLI 工具自動化 DI 流程</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Microsoft TPM 2.0 Reference Implementation -->
+<section id="msft">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <h2 class="sec-title">Microsoft TPM 2.0 Reference Implementation</h2>
+    <p class="sec-desc">OP-TEE fTPM 通常基於此實作，了解其定位有助於技術溝通。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>什麼是 MS TPM 2.0 Reference Impl</h3>
+      <ul>
+        <li>Microsoft 開源的 TPM 2.0 完整 firmware 實作（C 語言）</li>
+        <li>GitHub: <code>microsoft/ms-tpm-20-ref</code></li>
+        <li>符合 TCG TPM 2.0 specification Part 1–4</li>
+        <li>可移植到各種 TEE / firmware 環境</li>
+        <li>是許多 ARM fTPM TA 的基礎實作（包括 OP-TEE fTPM）</li>
+        <li>與 Windows fTPM（Intel ME / AMD PSP）使用相同基礎</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>在 OP-TEE 中的使用</h3>
+      <ul>
+        <li>OP-TEE fTPM TA 移植自 MS TPM 2.0 Reference Impl</li>
+        <li>提供完整 TPM 2.0 命令集支援（Key Gen, Sign, PCR, Quote 等）</li>
+        <li>Storage: 使用 OP-TEE Secure Storage（加密於 hardware-protected key）</li>
+        <li>Entropy: 依 OP-TEE platform entropy source（ARM TRNG 或其他）</li>
+        <li><strong>⚠ 需確認：</strong>John 使用的 OP-TEE fTPM 版本與 MS Ref Impl 基礎關係</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6. swtpm -->
+<section id="swtpm">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <h2 class="sec-title">swtpm — vTPM 的常見實作</h2>
+    <p class="sec-desc">FiduciaEdge CI/CD 測試環境使用的 virtual TPM 後端。</p>
+  </div>
+  <div class="method-card">
+    <div class="mh">
+      <h3>swtpm 定位與使用方式</h3>
+      <span class="b b-gray">開發測試用</span>
+      <span class="b b-red">不可用於生產</span>
+    </div>
+    <div class="body">
+      <div class="detail-label">技術背景</div>
+      <ul>
+        <li>開源軟體 TPM 2.0 模擬器，作者：Stefan Berger（IBM）</li>
+        <li>GitHub: <code>stefanberger/swtpm</code></li>
+        <li>提供與實體 TPM 相同的 API（通過 socket 或 char device）</li>
+        <li>KVM/QEMU 透過 <code>-tpmdev emulator,id=tpm0,chardev=chrtpm</code> 啟用</li>
+      </ul>
+      <div class="detail-label">與 KVM / QEMU 整合</div>
+      <ul>
+        <li>QEMU 透過 <code>tpm-tis-device</code>（virtio-tpm）或 <code>tpm-tis</code>（ISA）暴露給 guest OS</li>
+        <li>Guest Linux 使用標準 TPM2 Provider，感覺不到是 vTPM</li>
+        <li>適合測試 TTPS DI flow、Phase 1/2/3 功能驗證</li>
+      </ul>
+      <div class="detail-label">限制（不可用於生產）</div>
+      <ul>
+        <li>TPM state 存在 host 檔案系統（無硬體保護）</li>
+        <li>hypervisor / host OS 可讀取 TPM internal state</li>
+        <li>不符合 CRA production 設備的 hardware RoT 要求</li>
+        <li><strong>FiduciaEdge 使用場景：</strong>CI/CD pipeline 測試環境，不是交付給客戶的 production 設備方案</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Soteria hRoT -->
+<section id="soteria">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <h2 class="sec-title">Soteria hRoT — TX8 Vendor-specific RoT</h2>
+    <p class="sec-desc">不走 TPM API，需要另外確認能力。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>⚠ 注意：</strong> Soteria hRoT 是 hardware RoT，但不等於 TPM。不要把它說成「TX8 的 TPM」。正確說法是「TX8 的 hardware Root of Trust 是 Soteria hRoT，使用 vendor-specific API」。
+  </div>
+  <div class="method-card">
+    <div class="mh">
+      <h3>Soteria hRoT 技術定位</h3>
+      <span class="b b-orange">TX8 only</span>
+      <span class="b b-orange">Phase 3 待確認</span>
+    </div>
+    <div class="body">
+      <div class="detail-label">已知資訊</div>
+      <ul>
+        <li>Techmation TX8 內建 Soteria hardware RoT 模組</li>
+        <li>提供 hardware-level key isolation（hardware boundary）</li>
+        <li>透過 Soteria vendor SDK / proprietary API 存取</li>
+        <li>不使用 TCG TPM 2.0 standard API（非 TSS2 compatible）</li>
+        <li>Phase 1（device identity）與 Phase 2（key protection）技術上可行</li>
+      </ul>
+      <div class="detail-label">待確認（Phase 3 阻擋條件）</div>
+      <ul>
+        <li>Soteria API 是否支援：secure key storage、non-exportable key generation</li>
+        <li>Soteria 是否有 PCR-like measurement slots（Measured Boot 基礎）</li>
+        <li>Soteria 是否支援 attestation quote / signed measurement report</li>
+        <li>Soteria SDK 文件取得、custom adapter 工程量估算</li>
+      </ul>
+      <div class="detail-label">整合架構（已知）</div>
+      <ul>
+        <li>需開發 <strong>custom adapter layer</strong>：Soteria vendor API → TTPS DI flow</li>
+        <li>工程量高於標準 TPM2 Provider path，但避免硬體重設計</li>
+        <li>若 Phase 3 不可行，TX8 仍可在 Phase 1/2 提供有意義的 CRA support</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8. CRA 中的角色 -->
+<section id="cra-role">
+  <div class="sec-head">
+    <div class="sec-num">08</div>
+    <h2 class="sec-title">RoT 在 CRA Support 中的角色</h2>
+    <p class="sec-desc">RoT 是 CRA-ready 安全基礎，但不等於完整 CRA compliance。</p>
+  </div>
+  <div class="notice notice-info">
+    <strong>定位說法：</strong> RoT（hTPM / fTPM / hRoT）提供 <strong>device identity、key protection、firmware integrity、attestation foundation</strong>，是 CRA compliance support 的技術基礎，但 CRA 合規還需要 OEM 執行 vulnerability handling、security updates、conformity assessment 等額外工作。
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>CRA-related Capability</th><th>RoT 提供的技術基礎</th><th>CRA Annex I 對應</th><th>還需要什麼</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Device Identity</strong></td>
+          <td>Hardware-bound IDevID/LDevID，non-exportable key in RoT</td>
+          <td>(2)(d) AuthN &amp; Identity</td>
+          <td>OEM 應用層 AuthZ policy</td>
+        </tr>
+        <tr>
+          <td><strong>Key Protection</strong></td>
+          <td>Private key 不離開 hardware boundary（VPN/mTLS hardening）</td>
+          <td>(2)(e) Confidentiality</td>
+          <td>所有管理介面強制 TLS</td>
+        </tr>
+        <tr>
+          <td><strong>Firmware Integrity</strong></td>
+          <td>Secure Boot + Measured Boot，每個 boot 階段 hash 進 PCR</td>
+          <td>(2)(f) Integrity</td>
+          <td>OEM 需建立 Secure Boot chain + SBOM pipeline</td>
+        </tr>
+        <tr>
+          <td><strong>Attestation Foundation</strong></td>
+          <td>Signed attestation quote（hardware-backed），NMS 可驗證</td>
+          <td>(2)(f)(k)(l) Integrity/Monitoring</td>
+          <td>NMS verifier + Known-Good baseline DB</td>
+        </tr>
+        <tr>
+          <td><strong>Attack Surface Reduction</strong></td>
+          <td>Cert-based auth 取代預設密碼，DI 消除臨時設定路徑</td>
+          <td>(2)(j) Attack surface</td>
+          <td>停用 JTAG/SWD；關閉未使用 port</td>
+        </tr>
+        <tr>
+          <td><strong>Vulnerability Handling</strong></td>
+          <td>SBOM 支援 CVE correlation</td>
+          <td>Part II (2)–(6)</td>
+          <td>OEM 必須建立 PSIRT + CVD policy</td>
+        </tr>
+        <tr>
+          <td><strong>Security Updates</strong></td>
+          <td>Firmware signed update；attestation 驗證更新後狀態</td>
+          <td>(2)(c), Part II (7)(8)</td>
+          <td>OEM 需建立 OTA pipeline + 簽名金鑰管理</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <strong>RoT Methods Comparison</strong><br>
+  FiduciaEdge Device Trust &amp; Platform Security Playbook · 內部知識整理，非法律合規聲明<br>
+  最後更新：2026-06-12 · <a href="./index.html">← 返回首頁</a>
+</footer>
+
+</body>
+</html>

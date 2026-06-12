@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLANET Analysis — Device Trust Playbook</title>
+<style>
+  :root {
+    --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+    --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+    --blue: #1d4ed8; --blue-l: #eff6ff; --blue-m: #bfdbfe;
+    --green: #15803d; --green-l: #f0fdf4;
+    --orange: #b45309; --orange-l: #fffbeb;
+    --red: #b91c1c; --red-l: #fef2f2;
+    --radius: 14px; --shadow: 0 4px 24px rgba(17,24,39,.07); --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+  .hero { background: linear-gradient(135deg, #0c4a6e 0%, #075985 50%, #0369a1 100%); color: #fff; padding: 60px 32px 52px; text-align: center; }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .hero .hero-sub { font-size: 1rem; opacity: .85; margin-bottom: 8px; }
+  .hero .hero-date { font-size: .82rem; opacity: .6; margin-bottom: 20px; }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .htag { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+  nav { background: #0c4a6e; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #075985; }
+  nav a { color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 16px; font-size: .8rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 48px 0 40px; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-head { margin-bottom: 22px; }
+  .sec-num { display: inline-block; background: var(--blue); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: .75rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  h2.sec-title { font-size: 1.35rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .sec-desc { font-size: .9rem; color: var(--ink-3); }
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-green { background: var(--green-l); color: var(--green); }
+  .b-blue { background: var(--blue-l); color: var(--blue); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red { background: var(--red-l); color: var(--red); }
+  .b-gray { background: #f3f4f6; color: #374151; }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 6px; }
+  .card ul li { margin-bottom: 4px; }
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th { background: #0c4a6e; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafafa; }
+  tbody tr:hover td { background: var(--blue-l); }
+  .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 14px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-err { background: var(--red-l); border-left: 4px solid var(--red); }
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+  @media (max-width: 760px) { .roadmap { grid-template-columns: 1fr; } }
+  .rm { border-radius: var(--radius); padding: 22px; }
+  .rm.p1 { background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd; }
+  .rm.p2 { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; }
+  .rm.p3 { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; }
+  .rm h3 { font-size: .95rem; font-weight: 700; margin-bottom: 2px; }
+  .rm .rm-sub { font-size: .77rem; color: var(--ink-3); font-style: italic; margin-bottom: 10px; }
+  .rm ul { padding-left: 16px; font-size: .84rem; }
+  .rm ul li { margin-bottom: 3px; }
+  .rm .rm-block { margin-top: 10px; font-size: .78rem; color: #555; border-top: 1px solid rgba(0,0,0,.08); padding-top: 8px; }
+  .oc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  @media (max-width: 680px) { .oc-grid { grid-template-columns: 1fr; } }
+  .oc-bad { background: var(--red-l); border-left: 4px solid var(--red); border-radius: 10px; padding: 16px 18px; }
+  .oc-good { background: var(--green-l); border-left: 4px solid var(--green); border-radius: 10px; padding: 16px 18px; }
+  .oc-bad h4 { color: var(--red); font-size: .88rem; margin-bottom: 10px; }
+  .oc-good h4 { color: var(--green); font-size: .88rem; margin-bottom: 10px; }
+  .oc-row { font-size: .84rem; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,.06); display: flex; align-items: flex-start; gap: 8px; }
+  .oc-row:last-child { border-bottom: none; }
+  .oc-bad .oc-row::before { content: "✗"; color: var(--red); font-weight: 700; flex-shrink: 0; }
+  .oc-good .oc-row::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .checklist { list-style: none; padding: 0; margin-top: 8px; }
+  .checklist li { background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin-bottom: 7px; font-size: .85rem; display: flex; gap: 10px; align-items: flex-start; }
+  .checklist li::before { content: "☐"; color: var(--blue); font-size: 1rem; flex-shrink: 0; line-height: 1.5; }
+  .checklist li strong { color: var(--blue); }
+  footer { background: #0c4a6e; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
+  footer strong { color: rgba(255,255,255,.85); }
+  footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+  @media (max-width: 640px) { .hero h1 { font-size: 1.5rem; } .g2, .g3, .roadmap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="./index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;margin-bottom:20px;">← Device Trust Playbook</a>
+  <h1>🌏 PLANET Analysis</h1>
+  <p class="hero-sub">PLANET Technology Gateway 產品線 — CRA Readiness 分析與三階段提案</p>
+  <p class="hero-date">最後更新：2026-06-12 · 來源：GG2 EF1 技術提案</p>
+  <div class="hero-chips">
+    <span class="htag">ARM Gateway</span>
+    <span class="htag">Legacy MIPS</span>
+    <span class="htag">OP-TEE fTPM</span>
+    <span class="htag">三階段提案</span>
+    <span class="htag">CRA Important Class I</span>
+  </div>
+</div>
+
+<nav>
+  <a href="./index.html">← 首頁</a>
+  <a href="#background">背景</a>
+  <a href="#arm-gateway">ARM Gateway</a>
+  <a href="#mips-limit">MIPS 限制</a>
+  <a href="#phases">三階段提案</a>
+  <a href="#positioning">客戶定位</a>
+  <a href="#overclaim">勿過度承諾</a>
+  <a href="#dependencies">依賴項目</a>
+</nav>
+
+<div class="page">
+
+<!-- 1. 背景 -->
+<section id="background">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <h2 class="sec-title">PLANET Technology 背景</h2>
+    <p class="sec-desc">台灣網路設備製造商，產品線跨越多個平台架構。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>公司與產品線概況</h3>
+      <ul>
+        <li>台灣網路設備製造商，主要產品：Managed Switch、L2/L3 Gateway、Industrial Edge Gateway</li>
+        <li>產品銷售歐洲市場 → 需符合 EU CRA 2024/2847</li>
+        <li>高階 Gateway 可能落入 <strong>CRA Important Class I</strong>（Annex III）</li>
+        <li>Important Class I 需通過 harmonized standard 或第三方 conformity assessment</li>
+        <li>平台架構多元：ARM（MediaTek）/ MIPS / 可能有 x86</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>FiduciaEdge 方案背景</h3>
+      <ul>
+        <li>FiduciaEdge 提出三階段 Remote Attestation 提案（GG2 EF1）</li>
+        <li>Phase 1 核心：TTPS DI <strong>移植</strong>（Ubuntu+TPM → MTK OpenWRT + OP-TEE fTPM）</li>
+        <li>目前 TTPS DI 已在 Ubuntu + hTPM 環境驗證（不是從零開發）</li>
+        <li>Phase 1 的主要工程工作是移植，不是全新開發</li>
+        <li>⚠ 關鍵前提：MTK BSP 須已含 TF-A + OP-TEE + fTPM TA</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notice notice-warn" style="margin-top:14px">
+    <strong>⚠ CRA 時程壓力：</strong>
+    2026-09-11 漏洞通報義務生效 →
+    2027-12-11 CRA 全面強制執行（距今約 18 個月）。
+    PLANET 如屬於 Important Class I，需要及早建立 security foundation。
+  </div>
+</section>
+
+<!-- 2. ARM Gateway 潛力 -->
+<section id="arm-gateway">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <h2 class="sec-title">高階 ARM / MediaTek Gateway 潛力</h2>
+    <p class="sec-desc">有 TrustZone 的 ARM gateway 是三階段提案的主要目標平台。</p>
+  </div>
+  <div class="notice notice-ok">
+    <strong>✓ 正確說法：</strong> 問題不在於「MIPS 架構」——問題在於特定 SoC 是否有 hardware RoT。高階 ARM + MediaTek 平台若有 TrustZone 且 BSP 含 OP-TEE + fTPM TA，是三階段 RA 提案的最佳目標平台。
+  </div>
+  <div class="grid g3">
+    <div class="card" style="border-top:3px solid var(--blue)">
+      <h3>Device Identity &amp; Secure Provisioning</h3>
+      <p style="font-size:.78rem;color:var(--blue);margin-bottom:8px">Phase 1</p>
+      <ul>
+        <li>OP-TEE fTPM TA 提供 hardware-bound key generation</li>
+        <li>TTPS DI 移植後，ARM gateway 可自動佈建 IDevID / LDevID</li>
+        <li>Hardware-bound identity：private key 在 TrustZone，Normal World 不可讀</li>
+        <li>TWCA certificate chain 確保 CA 主導權在 FiduciaEdge</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--green)">
+      <h3>Hardware-Bound VPN / mTLS</h3>
+      <p style="font-size:.78rem;color:var(--green);margin-bottom:8px">Phase 2</p>
+      <ul>
+        <li>VPN/mTLS private key 移入 TrustZone Secure World</li>
+        <li>OpenSSL TPM2 Provider / PKCS#11 bridge 整合 StrongSwan / OpenVPN</li>
+        <li>即使 OS root 被入侵，key 仍不可提取</li>
+        <li>對應 CRA Annex I (2)(e) Data Confidentiality</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <h3>Firmware Integrity &amp; Remote Attestation</h3>
+      <p style="font-size:.78rem;color:var(--orange);margin-bottom:8px">Phase 3</p>
+      <ul>
+        <li>Measured Boot：BL2→BL32→Linux 每階段 hash extend 至 fTPM PCR</li>
+        <li>RA Client 產生 signed attestation report</li>
+        <li>NMS Verifier 比對 Known-Good SBOM baseline</li>
+        <li>Pass/Fail/Unknown policy → 管理存取控制</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notice notice-info" style="margin-top:14px">
+    <strong>⚠ ARM BSP 前置條件（PLANET 端）：</strong>
+    MTK BSP 須含 TF-A（BL1/BL2/BL31）+ OP-TEE OS（BL32）+ fTPM TA，且 Secure Boot 已啟用。
+    這是 Phase 1 的阻擋條件，FiduciaEdge 無法單方面解決。
+  </div>
+</section>
+
+<!-- 3. Legacy MIPS 限制 -->
+<section id="mips-limit">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <h2 class="sec-title">Legacy MIPS Switch / Bridge 的限制</h2>
+    <p class="sec-desc">沒有 hardware RoT 的平台，能力有限但仍有可做的事。</p>
+  </div>
+  <div class="notice notice-err">
+    <strong>常見誤解：</strong> 「MIPS 做不到」— 正確說法是「<strong>缺乏 hardware RoT 的 MIPS SoC 做不到 hardware-bound identity 和 Remote Attestation</strong>」。如果可以加入 external hRoT 或 SE，仍有可行路徑。
+  </div>
+  <div class="grid g2">
+    <div class="card" style="border-top:3px solid var(--red)">
+      <h3>沒有 hardware RoT 時的限制</h3>
+      <ul>
+        <li>無法提供 hardware-bound device identity（只能做軟體金鑰，可被複製）</li>
+        <li>無法提供 non-exportable private key</li>
+        <li>無 Measured Boot / PCR-like registers → 無法提供 Remote Attestation evidence</li>
+        <li>CRA-ready 程度有限，只能提供補償控制</li>
+        <li>可以做：Gap analysis + signed firmware update + mTLS（軟體金鑰）+ CVD policy</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <h3>External hRoT / SE 可行路徑</h3>
+      <ul>
+        <li>先做 feasibility study：評估 MIPS SoC 是否能加入 external hRoT 或 SE</li>
+        <li>若有 External SE + PKCS#11 介面：Phase 1（hardware-bound identity）仍可行</li>
+        <li>Phase 2（key protection）透過 PKCS#11 也可行</li>
+        <li>Phase 3（Measured Boot + RA）需另確認 SE 是否有 measurement 能力（通常不支援）</li>
+        <li>需確認：SE 型號、介面相容性（I2C / SPI / USB）、BOM cost impact</li>
+      </ul>
+    </div>
+  </div>
+  <div class="notice notice-info" style="margin-top:14px">
+    <strong>建議客戶說法：</strong> 「PLANET 的 MIPS 產品線，我們建議先進行 feasibility study，評估是否能加入 external secure element。若可行，Phase 1/2 仍能建立 hardware-bound identity 與 key protection。若不可行，我們提供 CRA gap analysis 與補償控制建議，協助 PLANET 了解差距並優先強化高風險項目。」
+  </div>
+</section>
+
+<!-- 4. 三階段提案 -->
+<section id="phases">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <h2 class="sec-title">三階段 Remote Attestation 提案（GG2 EF1）</h2>
+    <p class="sec-desc">針對 ARM + MediaTek gateway 的三個 Phase。時程為工程任務循序總和，許多可並行。</p>
+  </div>
+  <div class="roadmap">
+    <div class="rm p1">
+      <h3>Phase 1 — 安全身份佈建 [10w]</h3>
+      <div class="rm-sub">Hardware-Bound Device Identity via OP-TEE fTPM</div>
+      <ul>
+        <li>TTPS DI 移植：Ubuntu+TPM → MTK OpenWRT + OP-TEE fTPM</li>
+        <li>fTPM TA 部署 + TSS2 stack 整合</li>
+        <li>TWCA Device Identity Provisioning CLI [4w]</li>
+        <li>Hardware-bound IDevID / LDevID 佈建</li>
+        <li>Initialize HRoT on ARM TrustZone [6w]</li>
+      </ul>
+      <div class="rm-block">
+        <strong>阻擋條件：</strong> MTK BSP 含 TF-A（未設定 +3w Lead Time）・硬體樣品<br>
+        <strong>Out of Scope：</strong>整合 PLANET 客製 BSP 分支（~3w）、GUI 管理介面
+      </div>
+    </div>
+    <div class="rm p2">
+      <h3>Phase 2 — 硬體綁定 VPN 強化 [9w]</h3>
+      <div class="rm-sub">Hardware-Bound VPN/mTLS Key Protection</div>
+      <ul>
+        <li>TrustZone Crypto Key &amp; Engine Offloading [4w]</li>
+        <li>OpenSSL TPM2 Provider / PKCS#11 橋接 VPN 引擎</li>
+        <li>mTLS Isolation Verification &amp; Testing [2w]</li>
+        <li>Network Bandwidth &amp; Crypto Benchmarking [3w]</li>
+      </ul>
+      <div class="rm-block">
+        <strong>阻擋條件：</strong> Phase 1 完成・VPN 技術選定（StrongSwan / OpenVPN）<br>
+        <strong>Out of Scope：</strong>OpenWRT nftables / VLAN 網路切片（PLANET 負責）
+      </div>
+    </div>
+    <div class="rm p3">
+      <h3>Phase 3 — Remote Attestation [25w]</h3>
+      <div class="rm-sub">Measured Boot + RA + NMS Policy + CRA Evidence</div>
+      <ul>
+        <li>Measured Boot Instrumentation BL2→BL32 [8w]</li>
+        <li>OpenWRT Kernel Runtime Integrity [3w]</li>
+        <li>Attestation Client &amp; Challenge Protocol [8w]</li>
+        <li>Standalone Attestor Service + web UI [6w]</li>
+        <li>NMS Verifier + Known-Good Baseline DB</li>
+        <li>Policy Engine：Pass / Fail / Unknown</li>
+      </ul>
+      <div class="rm-block">
+        <strong>前置（PLANET 端）：</strong>Phase 1/2 完成・Secure Boot 設定・SBOM pipeline・NMS API<br>
+        <strong>Out of Scope：</strong>PLANET CI/CD SBOM 簽署管線（FE 提供規格指導）
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 客戶定位 -->
+<section id="positioning">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <h2 class="sec-title">對 PLANET 的 Customer-facing Positioning</h2>
+    <p class="sec-desc">如何向 PLANET 正確說明我們的方案價值與邊界。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card" style="border-top:3px solid var(--blue)">
+      <h3>ARM Gateway — 強力定位</h3>
+      <ul>
+        <li>FiduciaEdge 提供 <strong>CRA-Ready Device Trust &amp; Platform Security Solution</strong></li>
+        <li>三階段方案直接對應 CRA Annex I (2)(d)(e)(f)</li>
+        <li>基於 ARM TrustZone 的 hardware RoT，提供業界認可的安全隔離</li>
+        <li>相比軟體方案，hardware-bound key 和 attestation 可信度更強</li>
+        <li>Phase 1 移植既有驗證方案（不是從零開發），降低技術風險</li>
+        <li>支援 CRA conformity assessment 的技術 evidence 準備</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <h3>MIPS / 舊型號 — 誠實說明</h3>
+      <ul>
+        <li>先提供 <strong>CRA Gap Analysis</strong>，讓 PLANET 了解目前差距</li>
+        <li>評估 external SE 可行性後，說明 Phase 1/2 的可能路徑</li>
+        <li>建議 PLANET 識別高風險 / 高出貨量型號，優先升級</li>
+        <li>MIPS 平台可做：SBOM、signed firmware update、mTLS（軟體金鑰）</li>
+        <li>CRA 2027 deadline → 硬體改版的窗口有限，需要及早決策</li>
+        <li>若 PLANET 決定不升級，提供 compensating controls 作為過渡</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6. 勿過度承諾 -->
+<section id="overclaim">
+  <div class="sec-head">
+    <div class="sec-num">06</div>
+    <h2 class="sec-title">對 PLANET 不應過度承諾</h2>
+    <p class="sec-desc">避免在客戶面前說出這些話。</p>
+  </div>
+  <div class="oc-grid">
+    <div class="oc-bad">
+      <h4>❌ 不可說</h4>
+      <div class="oc-row">我們保證 PLANET 產品完整 CRA compliance</div>
+      <div class="oc-row">所有 PLANET 型號都可以做到三階段</div>
+      <div class="oc-row">MIPS 不改硬體也能做 Remote Attestation</div>
+      <div class="oc-row">Phase 1 移植很簡單，三個月就能完成（不知道 BSP 狀態）</div>
+      <div class="oc-row">OP-TEE fTPM 等於 hardware TPM 一樣安全</div>
+      <div class="oc-row">Remote Attestation Phase 3 可以立即在所有型號上線</div>
+    </div>
+    <div class="oc-good">
+      <h4>✓ 正確說法</h4>
+      <div class="oc-row">我們提供 CRA compliance support 的技術基礎（CRA-ready foundation）</div>
+      <div class="oc-row">ARM + TrustZone 型號可做完整三階段；MIPS 需先做 feasibility study</div>
+      <div class="oc-row">無 hardware RoT 的 MIPS 只能提供 gap analysis + compensating controls</div>
+      <div class="oc-row">Phase 1 時程取決於 MTK BSP OP-TEE + fTPM TA 就緒狀態</div>
+      <div class="oc-row">TrustZone fTPM 提供強硬體隔離，安全性有其信任假設與邊界</div>
+      <div class="oc-row">Remote Attestation 是 Phase 3 roadmap，需逐型號確認完整能力棧</div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PLANET-side Dependencies -->
+<section id="dependencies">
+  <div class="sec-head">
+    <div class="sec-num">07</div>
+    <h2 class="sec-title">PLANET-side Dependencies</h2>
+    <p class="sec-desc">FiduciaEdge 無法單獨完成的事項，需 PLANET 配合提供。</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>項目</th><th>用途</th><th>緊急程度</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td>MTK BSP OP-TEE + fTPM TA + 硬體樣品</td><td>Phase 1 阻擋條件</td><td><span class="b b-red">Critical</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>各產品型號 SoC 型號清單（ARM/MIPS/RISC-V 分布）</td><td>Platform path decision</td><td><span class="b b-red">Critical</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>SBOM 生成 + 簽署 pipeline</td><td>Phase 3 attestation baseline</td><td><span class="b b-red">Critical</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>Secure Boot 啟用狀態</td><td>Phase 3 前提</td><td><span class="b b-orange">High</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>VPN/mTLS 技術選定</td><td>Phase 2 整合設計</td><td><span class="b b-orange">High</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>NMS API 邊界定義</td><td>Phase 3 NMS 整合</td><td><span class="b b-orange">High</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>External SE 存在確認（MIPS 型號）</td><td>MIPS feasibility study</td><td><span class="b b-orange">High</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>Device certificate CA 選擇</td><td>Provisioning flow 設計</td><td><span class="b b-blue">Medium</span></td><td><span class="b b-gray">待確認</span></td></tr>
+        <tr><td>各產品線出貨量 / EOL 狀態</td><td>決定升級優先順序</td><td><span class="b b-blue">Medium</span></td><td><span class="b b-gray">待確認</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <strong>PLANET Analysis</strong><br>
+  FiduciaEdge Device Trust &amp; Platform Security Playbook · 內部知識整理，非法律合規聲明<br>
+  最後更新：2026-06-12 · <a href="./index.html">← 返回首頁</a>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Solution Decision Map — Device Trust Playbook</title>
+<style>
+  :root {
+    --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+    --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+    --blue: #1d4ed8; --blue-l: #eff6ff; --blue-m: #bfdbfe;
+    --green: #15803d; --green-l: #f0fdf4;
+    --orange: #b45309; --orange-l: #fffbeb;
+    --red: #b91c1c; --red-l: #fef2f2;
+    --radius: 14px; --shadow: 0 4px 24px rgba(17,24,39,.07); --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #064e3b 55%, #065f46 100%); color: #fff; padding: 60px 32px 52px; text-align: center; }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .hero .hero-sub { font-size: 1rem; opacity: .85; margin-bottom: 8px; }
+  .hero .hero-date { font-size: .82rem; opacity: .6; margin-bottom: 20px; }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .htag { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+  nav { background: #022c22; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #065f46; }
+  nav a { color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 16px; font-size: .8rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 48px 0 40px; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-head { margin-bottom: 22px; }
+  .sec-num { display: inline-block; background: var(--green); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: .75rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  h2.sec-title { font-size: 1.35rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .sec-desc { font-size: .9rem; color: var(--ink-3); }
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-green { background: var(--green-l); color: var(--green); }
+  .b-blue { background: var(--blue-l); color: var(--blue); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red { background: var(--red-l); color: var(--red); }
+  .b-gray { background: #f3f4f6; color: #374151; }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 6px; }
+  .card ul li { margin-bottom: 4px; }
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .83rem; }
+  thead th { background: #022c22; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafafa; }
+  tbody tr:hover td { background: var(--green-l); }
+  .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 14px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-err { background: var(--red-l); border-left: 4px solid var(--red); }
+  .mermaid-wrap { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 16px; overflow-x: auto; }
+  .mermaid { text-align: center; }
+  .path-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow-sm); margin-bottom: 14px; }
+  .path-card .ph { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .path-card h3 { font-size: 1rem; font-weight: 700; }
+  .path-card .body { font-size: .86rem; color: var(--ink-2); }
+  .path-card .body ul { padding-left: 16px; margin: 8px 0; }
+  .path-card .body li { margin-bottom: 4px; }
+  footer { background: #022c22; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
+  footer strong { color: rgba(255,255,255,.85); }
+  footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+  @media (max-width: 640px) { .hero h1 { font-size: 1.5rem; } .g2, .g3 { grid-template-columns: 1fr; } }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+</head>
+<body>
+
+<div class="hero">
+  <a href="./index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;margin-bottom:20px;">← Device Trust Playbook</a>
+  <h1>🗺 Platform Solution Decision Map</h1>
+  <p class="hero-sub">平台方案決策圖 — 依平台 hardware RoT 能力選擇正確技術路線</p>
+  <p class="hero-date">最後更新：2026-06-12 · 來源：John 2026-06-10 技術方向討論</p>
+  <div class="hero-chips">
+    <span class="htag">x86 → hTPM</span>
+    <span class="htag">ARM + OP-TEE → fTPM</span>
+    <span class="htag">TX8 → Soteria hRoT</span>
+    <span class="htag">Legacy MIPS → Feasibility Study</span>
+    <span class="htag">VM → vTPM</span>
+  </div>
+</div>
+
+<nav>
+  <a href="./index.html">← 首頁</a>
+  <a href="#flowchart">決策流程圖</a>
+  <a href="#table">決策表</a>
+  <a href="#paths">各路線說明</a>
+  <a href="#rationale">決策理由</a>
+  <a href="#risks">風險與待確認</a>
+</nav>
+
+<div class="page">
+
+<!-- 1. 流程圖 -->
+<section id="flowchart">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <h2 class="sec-title">Platform RoT 決策流程圖</h2>
+    <p class="sec-desc">三階段 RA 可行性由 hardware root-of-trust capability 決定，不由處理器架構名稱決定。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>⚠ 核心原則：</strong> MIPS 架構本身不是阻礙——問題在於特定 MIPS SoC 是否缺乏 hardware RoT。PKCS#11 ≠ 完整 Remote Attestation。
+  </div>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+flowchart TD
+    START([🔍 產品平台評估\nPlatform Assessment]) --> Q1{x86 平台\n有 hardware TPM?}
+
+    Q1 -->|是 Yes| X86["🔵 Path X86: x86 + hTPM\n✅ hTPM — hardware TPM 2.0\nTSS2 / OpenSSL TPM2 Provider\n三階段完整適用 · 已驗證"]
+
+    Q1 -->|否 No| Q2{ARM TrustZone\nOP-TEE 可啟用?}
+    Q2 -->|是 — BSP 已啟用| ARM1["🔵 Path ARM-A: ARM + OP-TEE fTPM\n✅ optee_ftpm TA in Secure World\n基於 MS TPM 2.0 Reference Impl\nTPM2 Provider API · 三階段完整"]
+
+    Q2 -->|BSP 未啟用| ARM2["🟡 Path ARM-B: ARM TZ 存在但未啟用\n先啟用 OP-TEE + fTPM TA\n完成後等同 Path ARM-A\n需 BSP 工程評估"]
+
+    Q2 -->|否 No| Q3{Techmation TX8\nSoteria hRoT?}
+    Q3 -->|是 Yes| TX8["🟢 Path TX8: TX8 + Soteria hRoT\n✅ Phase 1/2 可行\nvendor-specific API (非 TPM)\n⚠ Phase 3 需確認 quote mechanism"]
+
+    Q3 -->|否 No| Q4{VM / KVM\n虛擬化環境?}
+    Q4 -->|是 Yes| VM["⚪ Path VM: VM/KVM/QEMU\nvTPM / swtpm\n開發測試用途\n❌ 不可用於生產設備"]
+
+    Q4 -->|否 No| Q5{Legacy MIPS 或\n無 hardware RoT}
+    Q5 -->|先評估| MIPS_EXT["🟡 先做 Feasibility Study\n評估能否加入 External hRoT\n或 Secure Element + PKCS#11\n再決定 Path"]
+    MIPS_EXT -->|可加入| SE["🟡 Path SE: External SE + PKCS#11\nPhase 1/2 可行\nPhase 3 需確認 Measured Boot"]
+    MIPS_EXT -->|不可加入| MIPS["🔴 Path MIPS: Gap Analysis only\n補償控制 · 文件 · SBOM\n❌ 不可承諾 hardware-bound RA"]
+
+    style X86 fill:#c9dcf7,stroke:#1a6fc4
+    style ARM1 fill:#c9dcf7,stroke:#1a6fc4
+    style ARM2 fill:#fef3cd,stroke:#c47a1a
+    style TX8 fill:#d4edda,stroke:#1a8a4a
+    style VM fill:#e2e3e5,stroke:#555
+    style SE fill:#fef3cd,stroke:#c47a1a
+    style MIPS fill:#f8d7da,stroke:#c42a1a
+    style MIPS_EXT fill:#fef3cd,stroke:#c47a1a
+    </div>
+  </div>
+</section>
+
+<!-- 2. 決策表 -->
+<section id="table">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <h2 class="sec-title">平台方案決策表</h2>
+    <p class="sec-desc">各平台的 RoT 選擇、API、三階段適用性與 CRA-ready 程度。</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>平台 / Path</th>
+          <th>推薦 RoT</th>
+          <th>TPM?</th>
+          <th>Integration API</th>
+          <th>Phase 1</th>
+          <th>Phase 2</th>
+          <th>Phase 3</th>
+          <th>CRA-ready</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>x86 + hTPM</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path X86</span></td>
+          <td>hardware TPM 2.0（discrete / integrated）</td>
+          <td><span class="b b-green">TPM 2.0</span></td>
+          <td><code>TSS2 / OpenSSL TPM2 Provider</code></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">強（全三階段）</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM + OP-TEE fTPM</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path ARM-A</span></td>
+          <td>optee_ftpm TA（MS TPM 2.0 Ref Impl）</td>
+          <td><span class="b b-blue">fTPM</span></td>
+          <td><code>TPM2 Provider / tpm2-pkcs11</code></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">完整</span></td>
+          <td><span class="b b-green">強（全三階段）</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM TZ（BSP 未啟用）</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path ARM-B</span></td>
+          <td>先啟用 OP-TEE + fTPM TA</td>
+          <td><span class="b b-blue">fTPM（待建立）</span></td>
+          <td>同上（啟用後）</td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">需先啟用 TEE</span></td>
+          <td><span class="b b-orange">潛力強（需評估）</span></td>
+        </tr>
+        <tr>
+          <td><strong>Techmation TX8</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path TX8</span></td>
+          <td>Soteria hRoT（hardware RoT）</td>
+          <td><span class="b b-gray">非 TPM API</span></td>
+          <td><code>Soteria vendor SDK</code></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-orange">TBD（quote?）</span></td>
+          <td><span class="b b-blue">中（Phase 1/2）</span></td>
+        </tr>
+        <tr>
+          <td><strong>任意平台 + External SE</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path SE</span></td>
+          <td>External Secure Element</td>
+          <td><span class="b b-gray">非 TPM（SE）</span></td>
+          <td><code>PKCS#11 standard</code></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-green">可行</span></td>
+          <td><span class="b b-orange">需確認 Measured Boot</span></td>
+          <td><span class="b b-blue">中（identity+mTLS）</span></td>
+        </tr>
+        <tr>
+          <td><strong>Legacy MIPS（無 hardware RoT）</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path MIPS</span></td>
+          <td>Gap Analysis + 補償控制</td>
+          <td><span class="b b-red">無</span></td>
+          <td>無 hardware anchor</td>
+          <td><span class="b b-red">不可承諾</span></td>
+          <td><span class="b b-red">不可承諾</span></td>
+          <td><span class="b b-red">不適用</span></td>
+          <td><span class="b b-red">有限（補償控制）</span></td>
+        </tr>
+        <tr>
+          <td><strong>VM / KVM / QEMU</strong><br><span style="font-size:.78rem;color:var(--ink-3)">Path VM</span></td>
+          <td>vTPM / swtpm</td>
+          <td><span class="b b-gray">vTPM（軟體）</span></td>
+          <td><code>TPM2 Provider（同實體）</code></td>
+          <td><span class="b b-gray">開發/測試</span></td>
+          <td><span class="b b-gray">開發/測試</span></td>
+          <td><span class="b b-gray">開發/測試</span></td>
+          <td><span class="b b-red">不可用於生產</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 3. 各路線說明 -->
+<section id="paths">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <h2 class="sec-title">各路線詳細說明</h2>
+    <p class="sec-desc">每個決策路線的技術架構、整合方式與主要考量。</p>
+  </div>
+
+  <div class="path-card">
+    <div class="ph">
+      <h3>Path X86：x86 + hTPM（hardware TPM）</h3>
+      <span class="b b-green">Default Path</span><span class="b b-green">已驗證</span>
+    </div>
+    <div class="body">
+      <p>x86 平台通常內建 discrete 或 integrated TPM 2.0 晶片，符合 TCG specification。TTPS DI 已在 Ubuntu + TPM 環境驗證。</p>
+      <ul>
+        <li><strong>RoT：</strong>硬體 TPM 晶片（discrete：例如 Infineon SLB9670；integrated：Intel PTT / AMD fTPM on PSP）</li>
+        <li><strong>API：</strong>TSS2（TPM Software Stack 2）→ OpenSSL TPM2 Provider → PKCS#11 bridge</li>
+        <li><strong>三階段：</strong>Phase 1（device identity）→ Phase 2（VPN/mTLS key hardening）→ Phase 3（Measured Boot + RA）完整適用</li>
+        <li><strong>現狀：</strong>Phase 1 TTPS DI 已驗證；Phase 2/3 路線清楚</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="path-card">
+    <div class="ph">
+      <h3>Path ARM-A：ARM + TrustZone + OP-TEE fTPM TA</h3>
+      <span class="b b-green">主要交付目標</span><span class="b b-blue">規劃中</span>
+    </div>
+    <div class="body">
+      <p>ARM 平台使用 OP-TEE（Open Portable TEE）作為 TrustZone Secure World 環境，在其中運行 fTPM TA（Trusted Application），提供與 hTPM 相同的 TPM 2.0 API 介面。</p>
+      <ul>
+        <li><strong>RoT：</strong>OP-TEE Secure World + fTPM TA（通常基於 Microsoft TPM 2.0 Reference Implementation）</li>
+        <li><strong>API：</strong>相同的 TSS2 / TPM2 Provider，對上層應用透明</li>
+        <li><strong>前置條件：</strong>BSP 需含 TF-A（Trusted Firmware-A）+ OP-TEE OS + fTPM TA；Secure Boot 啟用</li>
+        <li><strong>PLANET 適用性：</strong>MediaTek ARM gateway 若 BSP 已含 OP-TEE + fTPM，則此為主要路線</li>
+        <li><strong>Phase 1 工程任務：</strong>TTPS DI 移植（Ubuntu+TPM → MTK OpenWRT + OP-TEE fTPM）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="path-card">
+    <div class="ph">
+      <h3>Path TX8：Techmation TX8 + Soteria hRoT</h3>
+      <span class="b b-orange">評估中</span><span class="b b-blue">Phase 3 待確認</span>
+    </div>
+    <div class="body">
+      <p>TX8 搭載 Soteria hardware RoT 模組，透過 vendor-specific API 存取。不走標準 TPM API，需要開發 custom adapter layer。</p>
+      <ul>
+        <li><strong>RoT：</strong>Soteria hRoT（hardware RoT，非 TPM）</li>
+        <li><strong>API：</strong>Soteria vendor SDK → 需開發 custom adapter 接 TTPS DI flow</li>
+        <li><strong>Phase 1/2：</strong>可行（secure key storage + device identity + key protection）</li>
+        <li><strong>Phase 3 阻擋條件：</strong>Soteria 是否支援 attestation quote / measurement mechanism（待確認）</li>
+        <li><strong>工程量：</strong>高於標準 TPM2 Provider path（需 custom adapter）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="path-card">
+    <div class="ph">
+      <h3>Path MIPS：Legacy MIPS — Feasibility Study First</h3>
+      <span class="b b-red">無 hardware RoT</span><span class="b b-gray">補償控制</span>
+    </div>
+    <div class="body">
+      <p>部分舊有產品使用 MIPS SoC（優化封包處理，通常無 TrustZone / hardware TPM 接頭）。MIPS 架構本身不是阻礙——問題在於缺乏 hardware RoT。</p>
+      <ul>
+        <li><strong>第一步：</strong>Feasibility study — 評估該 MIPS SoC 是否能加入 external hRoT 或 secure element</li>
+        <li><strong>可加入 external SE：</strong>Phase 1/2 透過 PKCS#11 仍可能可行（需確認 SE 型號與介面）</li>
+        <li><strong>無法加入：</strong>只能提供 gap analysis + compensating controls（簽名 firmware update / mTLS 軟體金鑰 / CVD policy）</li>
+        <li><strong>不可承諾：</strong>hardware-bound identity、non-exportable key、Remote Attestation evidence 可信度</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="path-card">
+    <div class="ph">
+      <h3>Path VM：VM / KVM / QEMU — vTPM / swtpm</h3>
+      <span class="b b-gray">開發測試用</span><span class="b b-red">不可用於生產</span>
+    </div>
+    <div class="body">
+      <p>虛擬化環境使用 vTPM（virtual TPM），常見實作為 swtpm。信任基礎是 hypervisor，不適合生產嵌入式設備。</p>
+      <ul>
+        <li><strong>RoT：</strong>swtpm（software TPM emulator，Stefan Berger / IBM）</li>
+        <li><strong>用途：</strong>CI/CD pipeline 測試、開發環境驗證、功能性測試</li>
+        <li><strong>API：</strong>與實體 TPM 相同（TSS2 / TPM2 Provider），便於移植測試</li>
+        <li><strong>限制：</strong>無實體隔離，安全性取決於 hypervisor；不可用於生產 embedded 設備</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 4. 決策理由 -->
+<section id="rationale">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <h2 class="sec-title">決策理由</h2>
+    <p class="sec-desc">為何這樣選擇 RoT 方法。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <h3>為什麼 x86 用 hTPM 而非軟體方案</h3>
+      <ul>
+        <li>x86 平台幾乎都有內建 TPM 2.0 晶片，啟用成本低</li>
+        <li>Hardware TPM 提供實體隔離，private key 在晶片內部，OS 無法直接讀取</li>
+        <li>標準化 TSS2 API 生態完整，工程整合相對成熟</li>
+        <li>Phase 3 所需的 PCR registers 是 TPM 標準功能</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>為什麼 ARM 優先 OP-TEE fTPM 而非 external SE</h3>
+      <ul>
+        <li>ARM TrustZone 是 SoC 內建硬體機制，不需額外硬體成本</li>
+        <li>OP-TEE + fTPM 提供相同的 TPM 2.0 API，移植 x86 方案成本低</li>
+        <li>TrustZone 隔離強度已被廣泛驗證（PSA Certified、SESIP）</li>
+        <li>external SE 雖然更安全，但 BOM 增加且整合複雜度更高</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>為什麼 TX8 不強制走 TPM API</h3>
+      <ul>
+        <li>TX8 已有 Soteria hardware RoT，強制加 TPM 晶片代表重複硬體</li>
+        <li>Soteria API 可以提供 secure key storage / device identity 等等效功能</li>
+        <li>不需要硬套 TPM terminology；只要能提供 RoT 功能即可作為 CRA foundation</li>
+        <li>custom adapter 工程量雖高，但避免硬體重設計</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>為什麼 Legacy MIPS 先做 feasibility study</h3>
+      <ul>
+        <li>MIPS 本身不是問題——問題是特定 SoC 是否有 hardware RoT 接頭</li>
+        <li>先評估再決定，避免預先宣告「無法做」或「可以做」</li>
+        <li>external SE 是一個可能路徑，需確認 MIPS SoC 介面相容性</li>
+        <li>若確認無法加入 hardware RoT，才正式進入 gap analysis 模式</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5. 風險與待確認 -->
+<section id="risks">
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <h2 class="sec-title">風險與待確認事項</h2>
+    <p class="sec-desc">各路線的主要風險與需要進一步確認的技術細節。</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>路線</th><th>風險 / 待確認</th><th>影響</th><th>緊急程度</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ARM-A / ARM-B</strong></td>
+          <td>MTK BSP 是否已含 OP-TEE + fTPM TA；Secure Boot 是否啟用</td>
+          <td>Phase 1 阻擋條件</td>
+          <td><span class="b b-red">Critical</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8</strong></td>
+          <td>Soteria API 是否支援 attestation quote / PCR-like measurement</td>
+          <td>Phase 3 阻擋條件</td>
+          <td><span class="b b-red">Critical</span></td>
+        </tr>
+        <tr>
+          <td><strong>TX8</strong></td>
+          <td>Soteria API spec / SDK 文件取得；custom adapter 工程量估算</td>
+          <td>Phase 1/2 工程計畫</td>
+          <td><span class="b b-orange">High</span></td>
+        </tr>
+        <tr>
+          <td><strong>MIPS</strong></td>
+          <td>各 PLANET MIPS 型號 SoC 清單；external SE 接頭是否存在</td>
+          <td>決定是否走 Path SE 或 Gap Analysis</td>
+          <td><span class="b b-orange">High</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM-A</strong></td>
+          <td>Microsoft TPM 2.0 Reference Implementation 版本與 OP-TEE 整合狀態</td>
+          <td>Phase 1 工程細節</td>
+          <td><span class="b b-blue">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>全部</strong></td>
+          <td>CRA Annex I 官方條文對照驗證（EUR-Lex 原文）</td>
+          <td>文件正確性</td>
+          <td><span class="b b-blue">Medium</span></td>
+        </tr>
+        <tr>
+          <td><strong>ARM-A</strong></td>
+          <td>PLANET 各型號 TrustZone 啟用狀態；BSP 工程量</td>
+          <td>PLANET Phase 1 時程</td>
+          <td><span class="b b-orange">High</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="notice notice-warn" style="margin-top:16px">
+    <strong>⚠ 聲明：</strong> 此頁面為 CRA-related platform decision map，仍需依各平台實際 BSP 情況、Soteria API spec、以及官方 CRA Annex 條文與客戶產品範圍進一步驗證。
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <strong>Platform Solution Decision Map</strong><br>
+  FiduciaEdge Device Trust &amp; Platform Security Playbook · 內部知識整理，非法律合規聲明<br>
+  最後更新：2026-06-12 · <a href="./index.html">← 返回首頁</a>
+</footer>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { fontSize: '13px' }, flowchart: { curve: 'basis', htmlLabels: true } });
+</script>
+</body>
+</html>

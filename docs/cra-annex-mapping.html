@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRA Annex Mapping — Device Trust Playbook</title>
+<style>
+  :root {
+    --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+    --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+    --blue: #1d4ed8; --blue-l: #eff6ff; --blue-m: #bfdbfe;
+    --green: #15803d; --green-l: #f0fdf4;
+    --orange: #b45309; --orange-l: #fffbeb;
+    --red: #b91c1c; --red-l: #fef2f2;
+    --teal: #0f766e; --teal-l: #f0fdfa;
+    --radius: 14px; --shadow: 0 4px 24px rgba(17,24,39,.07); --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+  .hero { background: linear-gradient(135deg, #042f2e 0%, #134e4a 55%, #115e59 100%); color: #fff; padding: 60px 32px 52px; text-align: center; }
+  .hero h1 { font-size: 1.9rem; font-weight: 800; letter-spacing: -.5px; margin-bottom: 8px; }
+  .hero .hero-sub { font-size: 1rem; opacity: .85; margin-bottom: 8px; }
+  .hero .hero-date { font-size: .82rem; opacity: .6; margin-bottom: 20px; }
+  .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .htag { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 99px; padding: 4px 12px; font-size: .78rem; }
+  nav { background: #042f2e; position: sticky; top: 0; z-index: 200; display: flex; overflow-x: auto; border-bottom: 1px solid #134e4a; }
+  nav a { color: rgba(255,255,255,.7); text-decoration: none; padding: 11px 16px; font-size: .8rem; white-space: nowrap; transition: all .15s; }
+  nav a:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .page { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 48px 0 40px; }
+  section + section { border-top: 1px solid var(--border); }
+  .sec-head { margin-bottom: 22px; }
+  .sec-num { display: inline-block; background: var(--teal); color: #fff; border-radius: 8px; padding: 2px 10px; font-size: .75rem; font-weight: 700; letter-spacing: .5px; margin-bottom: 6px; }
+  h2.sec-title { font-size: 1.35rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .sec-desc { font-size: .9rem; color: var(--ink-3); }
+  .b { display: inline-block; padding: 2px 9px; border-radius: 99px; font-size: .72rem; font-weight: 600; }
+  .b-green { background: var(--green-l); color: var(--green); }
+  .b-blue { background: var(--blue-l); color: var(--blue); }
+  .b-orange { background: var(--orange-l); color: var(--orange); }
+  .b-red { background: var(--red-l); color: var(--red); }
+  .b-gray { background: #f3f4f6; color: #374151; }
+  .b-teal { background: var(--teal-l); color: var(--teal); }
+  .tbl-wrap { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); margin-top: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  thead th { background: #042f2e; color: #fff; padding: 10px 12px; text-align: left; font-weight: 600; white-space: nowrap; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: #fafafa; }
+  tbody tr:hover td { background: var(--teal-l); }
+  .notice { border-radius: 10px; padding: 14px 18px; font-size: .86rem; margin: 14px 0; }
+  .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); }
+  .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); }
+  .notice-ok { background: var(--green-l); border-left: 4px solid var(--green); }
+  .notice-teal { background: var(--teal-l); border-left: 4px solid var(--teal); }
+  .grid { display: grid; gap: 14px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card { background: var(--bg-2); border-radius: var(--radius); border: 1px solid var(--border); padding: 20px 22px; box-shadow: var(--shadow-sm); }
+  .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+  .card p, .card li { font-size: .86rem; color: var(--ink-2); }
+  .card ul { padding-left: 16px; margin-top: 6px; }
+  .card ul li { margin-bottom: 4px; }
+  .strength-strong { color: var(--green); font-weight: 600; }
+  .strength-medium { color: var(--orange); font-weight: 600; }
+  .strength-limited { color: var(--red); font-weight: 600; }
+  footer { background: #042f2e; color: rgba(255,255,255,.5); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 0; }
+  footer strong { color: rgba(255,255,255,.85); }
+  footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+  @media (max-width: 640px) { .hero h1 { font-size: 1.5rem; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <a href="./index.html" style="display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.55);text-decoration:none;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;margin-bottom:20px;">← Device Trust Playbook</a>
+  <h1>🇪🇺 CRA Annex Mapping</h1>
+  <p class="hero-sub">EU CRA 2024/2847 Annex I 要求對應 — Device Trust Platform Security Capability</p>
+  <p class="hero-date">最後更新：2026-06-12 · 基於 EU CRA (Regulation 2024/2847)</p>
+  <div class="hero-chips">
+    <span class="htag">Secure by Design</span>
+    <span class="htag">Authentication</span>
+    <span class="htag">Integrity</span>
+    <span class="htag">Vulnerability Handling</span>
+    <span class="htag">CRA Annex I</span>
+  </div>
+</div>
+
+<nav>
+  <a href="./index.html">← 首頁</a>
+  <a href="#disclaimer">聲明</a>
+  <a href="#mapping">Annex I 對應表</a>
+  <a href="#phases">Phase 覆蓋</a>
+  <a href="#gaps">Gap Summary</a>
+</nav>
+
+<div class="page">
+
+<!-- 聲明 -->
+<section id="disclaimer">
+  <div class="sec-head">
+    <div class="sec-num">00</div>
+    <h2 class="sec-title">重要聲明</h2>
+    <p class="sec-desc">閱讀此頁面前請先了解範圍限制。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>⚠ 此頁為 CRA-related requirement mapping，仍需依官方 CRA Annex 條文（EUR-Lex OJ/L/2024/2847）與客戶產品範圍進一步驗證。</strong><br>
+    以下對應表係根據 EU CRA 2024/2847 Annex I 內容整理，非正式法律解釋。FiduciaEdge 提供技術實作基礎，不能單獨保證客戶產品完整符合 CRA。Conformity assessment 為 OEM 製造商責任。
+  </div>
+  <div class="notice notice-teal">
+    <strong>📌 閱讀說明：</strong> 「CRA-ready 強度」欄位說明 FiduciaEdge 方案對該要求的技術支援程度。<strong>強</strong>表示直接對應；<strong>部分</strong>表示技術上有所支援但需 OEM 配合；<strong>設計考量</strong>表示架構層面支援，實作仍需 OEM。
+  </div>
+</section>
+
+<!-- 主要對應表 -->
+<section id="mapping">
+  <div class="sec-head">
+    <div class="sec-num">01</div>
+    <h2 class="sec-title">CRA Annex I 要求對應表</h2>
+    <p class="sec-desc">11 個主要 CRA requirement 領域的中文說明與技術對應。</p>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>CRA 要求領域</th>
+          <th>Annex I 條文</th>
+          <th>中文說明</th>
+          <th>Device Trust / Platform Security 能力</th>
+          <th>可產出的 Evidence / Artifact</th>
+          <th>CRA-ready 強度</th>
+          <th>Gap / 需 OEM 配合</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Secure by Design &amp; by Default</strong></td>
+          <td>(1)(a), (2)(b)</td>
+          <td>設備出廠時即具備安全預設配置，設計時已考量安全性</td>
+          <td>
+            硬體綁定 device identity 出廠即佈建（DI 自動化）；<br>
+            OP-TEE fTPM / hTPM 作為 hardware RoT 基礎；<br>
+            mTLS cert-based auth 取代預設密碼
+          </td>
+          <td>
+            Provisioning log；DI CLI output；<br>
+            Hardware-bound cert；TPM attestation
+          </td>
+          <td><span class="strength-strong">強（Phase 1）</span></td>
+          <td>停用 JTAG/SWD；factory reset SOP；OEM threat model</td>
+        </tr>
+        <tr>
+          <td><strong>Product Risk Assessment</strong></td>
+          <td>(1), (1)(b)</td>
+          <td>製造商需對產品執行安全風險評估</td>
+          <td>
+            FiduciaEdge 提供技術架構說明與 threat model 框架；<br>
+            CRA Annex I 技術控制對應文件作為佐證
+          </td>
+          <td>
+            Threat model 文件（OEM 主導）；<br>
+            技術控制對應表（FiduciaEdge 提供）
+          </td>
+          <td><span class="strength-medium">支援架構設計</span></td>
+          <td>OEM 需執行 formal threat model + product risk assessment</td>
+        </tr>
+        <tr>
+          <td><strong>Vulnerability Handling</strong></td>
+          <td>Part II (2)–(6)</td>
+          <td>製造商需建立漏洞通報、追蹤與修補流程（PSIRT）</td>
+          <td>
+            SBOM 支援 CVE correlation；<br>
+            Attestation mismatch log 提供 indicator；<br>
+            2026-09-11 起強制義務
+          </td>
+          <td>
+            SBOM（SPDX/CycloneDX）；<br>
+            CVE scan report；attestation mismatch log
+          </td>
+          <td><span class="strength-medium">部分支援</span></td>
+          <td>OEM 必須建立 PSIRT + CVD policy + security contact + disclosure process</td>
+        </tr>
+        <tr>
+          <td><strong>Security Updates</strong></td>
+          <td>(2)(c), Part II (7)(8)</td>
+          <td>製造商需提供安全更新並確保 OTA 更新安全性</td>
+          <td>
+            Firmware update 以 OEM release key 簽署；<br>
+            Attestation 驗證更新後的 firmware state；<br>
+            Phase 3：Known-Good Baseline 更新機制
+          </td>
+          <td>
+            Signed firmware update package；<br>
+            Post-update attestation report
+          </td>
+          <td><span class="strength-medium">部分（Phase 3）</span></td>
+          <td>OEM 需建立 OTA pipeline、簽名金鑰管理、安全更新發布流程</td>
+        </tr>
+        <tr>
+          <td><strong>Protection Against Unauthorized Access</strong></td>
+          <td>(2)(d)</td>
+          <td>對未授權存取提供適當保護，包括身份驗證</td>
+          <td>
+            IDevID / LDevID（hardware-bound）；<br>
+            mTLS client cert authentication；<br>
+            Phase 3：Attestation-gated management access
+          </td>
+          <td>
+            IDevID / LDevID certificate；<br>
+            mTLS connection log；<br>
+            Attestation-gated access policy
+          </td>
+          <td><span class="strength-strong">強（Phase 1–3）</span></td>
+          <td>OEM 應用層 AuthZ policy；管理介面 mTLS 強制</td>
+        </tr>
+        <tr>
+          <td><strong>Confidentiality of Stored &amp; Transmitted Data</strong></td>
+          <td>(2)(e)</td>
+          <td>保護傳輸中與儲存的資料機密性</td>
+          <td>
+            Hardware-protected VPN/mTLS private key（不可提取）；<br>
+            Private key 永不離開 hardware boundary；<br>
+            Encrypted channel（TLS 1.3 / IPSec）
+          </td>
+          <td>
+            Key non-extractability proof（TPM attestation）；<br>
+            mTLS session log；<br>
+            VPN encryption benchmark
+          </td>
+          <td><span class="strength-strong">強（Phase 1–2）</span></td>
+          <td>所有管理介面強制 TLS；靜態資料加密 OEM 負責</td>
+        </tr>
+        <tr>
+          <td><strong>Integrity of Software, Firmware &amp; Configuration</strong></td>
+          <td>(2)(b)(f)</td>
+          <td>確保韌體、軟體、設定未被篡改</td>
+          <td>
+            Secure Boot chain（BL1→BL2→BL32→Linux）；<br>
+            Measured Boot：每個 boot stage hash extend 至 fTPM PCR；<br>
+            Phase 3：RA quote 包含 firmware digest
+          </td>
+          <td>
+            Measured Boot log；<br>
+            TPM PCR values；<br>
+            Attestation report（含 firmware digest）；<br>
+            SBOM baseline
+          </td>
+          <td><span class="strength-medium">強（Phase 3）</span></td>
+          <td>OEM 需建立 Secure Boot chain；SBOM 生成 pipeline</td>
+        </tr>
+        <tr>
+          <td><strong>Authentication &amp; Identity Management</strong></td>
+          <td>(2)(d)</td>
+          <td>設備和使用者的身份管理與認證機制</td>
+          <td>
+            Device identity（IDevID/LDevID）作為認證基礎；<br>
+            TTPS DI service 自動化身份佈建；<br>
+            Certificate lifecycle management
+          </td>
+          <td>
+            Device certificate（IDevID / LDevID）；<br>
+            Provisioning audit log；<br>
+            CA chain documentation
+          </td>
+          <td><span class="strength-strong">強（Phase 1）</span></td>
+          <td>Root CA 選擇（TWCA / 自建 PKI）；cert lifecycle SOP</td>
+        </tr>
+        <tr>
+          <td><strong>Secure Boot / Boot Integrity</strong></td>
+          <td>(2)(b)(f)</td>
+          <td>確保設備 boot 過程的完整性與安全性</td>
+          <td>
+            Secure Boot：每個 boot stage 驗證簽名才能執行；<br>
+            TF-A（Trusted Firmware-A）建立可信 boot chain；<br>
+            Measured Boot：boot digest extend 至 TPM PCR
+          </td>
+          <td>
+            Secure Boot policy 文件；<br>
+            Boot log + TPM PCR snapshot；<br>
+            RA quote（含 boot measurement）
+          </td>
+          <td><span class="strength-medium">強（Phase 3）</span></td>
+          <td>OEM 需啟用 Secure Boot；建立 OEM release key policy</td>
+        </tr>
+        <tr>
+          <td><strong>Logging / Monitoring / Evidence Readiness</strong></td>
+          <td>(2)(l)</td>
+          <td>設備應產生可用於安全事件調查的 log</td>
+          <td>
+            RA attestation audit log（boot state history）；<br>
+            Certificate event log（provisioning / renewal）；<br>
+            mTLS auth failure log；<br>
+            Attestation mismatch alert
+          </td>
+          <td>
+            Attestation audit log；<br>
+            Certificate event log；<br>
+            RA Pass/Fail/Unknown verdict history
+          </td>
+          <td><span class="strength-medium">強（Phase 3）</span></td>
+          <td>OEM 非 attestation 相關 event log（系統 log / application log）</td>
+        </tr>
+        <tr>
+          <td><strong>Supply Chain / Component Transparency</strong></td>
+          <td>Part II (1)</td>
+          <td>產品應有 SBOM 紀錄所有軟體元件</td>
+          <td>
+            SBOM 以 OEM release key 簽署；<br>
+            Phase 3：Known-Good Firmware SBOM Baseline DB；<br>
+            Attestation 驗證 runtime firmware 是否匹配 SBOM baseline
+          </td>
+          <td>
+            SPDX / CycloneDX SBOM；<br>
+            Signed SBOM package；<br>
+            SBOM attestation baseline record
+          </td>
+          <td><span class="strength-medium">Phase 3 前提</span></td>
+          <td>OEM 必須建立 SBOM 生成 + 簽署 pipeline（build system 整合）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- Phase 覆蓋 -->
+<section id="phases">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <h2 class="sec-title">三階段 CRA 覆蓋範圍</h2>
+    <p class="sec-desc">不同 Phase 各自能覆蓋哪些 CRA 要求領域。</p>
+  </div>
+  <div class="grid g2">
+    <div class="card" style="border-top:3px solid var(--blue)">
+      <h3>Phase 1 — Device Identity Foundation</h3>
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:8px">Hardware-bound device identity + secure provisioning</p>
+      <ul>
+        <li>(2)(b) Secure by default — 出廠即有 hardware-bound identity</li>
+        <li>(2)(d) AuthN &amp; Identity — IDevID / LDevID cert-based auth</li>
+        <li>(2)(j) Attack surface — 消除預設密碼 / 臨時身份</li>
+        <li>Provisioning audit log — evidence readiness 基礎</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--green)">
+      <h3>Phase 2 — Key Protection &amp; Channel Hardening</h3>
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:8px">VPN/mTLS private key → hardware boundary</p>
+      <ul>
+        <li>(2)(e) Data Confidentiality — hardware-protected key，breach isolation</li>
+        <li>(2)(k) Incident Mitigation — private key non-exportable</li>
+        <li>(2)(d) 延伸 — mTLS mutual auth，管理通道強化</li>
+        <li>Key non-extractability proof（TPM attestation）</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--orange)">
+      <h3>Phase 3 — Firmware Integrity &amp; Remote Attestation</h3>
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:8px">Measured Boot + RA + SBOM + CRA evidence</p>
+      <ul>
+        <li>(2)(f) Integrity — Measured Boot + PCR + attestation quote</li>
+        <li>(2)(l) Logging / Monitoring — attestation audit trail</li>
+        <li>Part II (1) SBOM — Known-Good baseline + attestation 驗證</li>
+        <li>(2)(c) Security Updates — post-update attestation</li>
+        <li>CRA Annex I evidence documentation 完整化</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:3px solid var(--teal)">
+      <h3>全程 — CRA Evidence Readiness</h3>
+      <p style="font-size:.8rem;color:var(--ink-3);margin-bottom:8px">貫穿三個 Phase 的文件與佐證準備</p>
+      <ul>
+        <li>CRA Annex I 技術控制對應文件</li>
+        <li>Platform security architecture 說明</li>
+        <li>支援 OEM conformity assessment 的技術佐證</li>
+        <li>Threat model 框架提供（OEM 主導執行）</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Gap Summary -->
+<section id="gaps">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <h2 class="sec-title">Gap Summary — OEM 責任範圍</h2>
+    <p class="sec-desc">這些是 FiduciaEdge 技術方案無法單獨覆蓋、需要 OEM 自行處理的 CRA 要求。</p>
+  </div>
+  <div class="notice notice-warn">
+    <strong>⚠ CRA 合規不等於只做 RoT：</strong> 以下 OEM 責任項目是 CRA conformity assessment 的必要條件，FiduciaEdge 無法代替 OEM 執行。
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>OEM 責任項目</th><th>對應 CRA 要求</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>PSIRT 程序建立</strong></td>
+          <td>Part II (2)–(6)</td>
+          <td>漏洞通報、追蹤、修補、揭露的正式程序；security contact 設置</td>
+        </tr>
+        <tr>
+          <td><strong>Product Risk Assessment</strong></td>
+          <td>(1)(b)</td>
+          <td>Threat model + formal risk assessment；OEM 依產品特性執行</td>
+        </tr>
+        <tr>
+          <td><strong>Secure Boot 啟用</strong></td>
+          <td>(2)(f)</td>
+          <td>OEM 需在 BSP 層啟用並鎖定 Secure Boot chain</td>
+        </tr>
+        <tr>
+          <td><strong>SBOM 生成 pipeline</strong></td>
+          <td>Part II (1)</td>
+          <td>Build system 整合 SBOM 生成（SPDX / CycloneDX）+ OEM release key 簽署</td>
+        </tr>
+        <tr>
+          <td><strong>OTA 更新 pipeline</strong></td>
+          <td>(2)(c), Part II (7)(8)</td>
+          <td>安全 firmware update 機制；簽名金鑰管理；update rollback policy</td>
+        </tr>
+        <tr>
+          <td><strong>Attack surface 管理</strong></td>
+          <td>(2)(j)</td>
+          <td>停用 JTAG/SWD in production；關閉未使用 port / service</td>
+        </tr>
+        <tr>
+          <td><strong>Factory reset SOP</strong></td>
+          <td>(2)(b)</td>
+          <td>安全重置回出廠預設值的程序</td>
+        </tr>
+        <tr>
+          <td><strong>Secure decommission</strong></td>
+          <td>(2)(m)</td>
+          <td>安全刪除 LDevID、私鑰、trust anchor 的流程</td>
+        </tr>
+        <tr>
+          <td><strong>Conformity assessment</strong></td>
+          <td>全部 Annex I</td>
+          <td>OEM 製造商的法律責任；CE marking；自評或第三方評估</td>
+        </tr>
+        <tr>
+          <td><strong>System-level log 管理</strong></td>
+          <td>(2)(l)</td>
+          <td>非 attestation 的應用層 event log；log 保留政策；SIEM 整合</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div>
+
+<footer>
+  <strong>CRA Annex Mapping</strong><br>
+  此頁為 CRA-related requirement mapping，仍需依官方 CRA Annex 條文（EUR-Lex OJ/L/2024/2847）與客戶產品範圍進一步驗證。<br>
+  FiduciaEdge Device Trust &amp; Platform Security Playbook · 內部知識整理，非法律合規聲明<br>
+  最後更新：2026-06-12 · <a href="./index.html">← 返回首頁</a>
+</footer>
+
+</body>
+</html>
