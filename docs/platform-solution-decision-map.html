@@ -307,13 +307,17 @@ flowchart TD
     <div class="ph">
       <h3>Path TX8：Techmation TX8 — 三種整合路線</h3>
       <span class="b b-orange">評估中</span><span class="b b-blue">Phase 3 待確認</span>
-      <a href="./techmation-tx8-soteria-optee-ftpm-analysis.html" style="font-size:.78rem;color:var(--blue);text-decoration:none;border:1px solid var(--blue-m);padding:2px 9px;border-radius:99px">詳細分析 →</a>
+      <a href="./techmation-tx8-soteria-optee-ftpm-analysis.html" style="font-size:.78rem;color:var(--blue);text-decoration:none;border:1px solid var(--blue-m);padding:2px 9px;border-radius:99px">AHB 架構分析 →</a>
+      <a href="./soteria-native-device-identity-provisioning-survey.html" style="font-size:.78rem;color:#92400e;text-decoration:none;border:1px solid #fde68a;background:#fffbeb;padding:2px 9px;border-radius:99px">DevID Survey →</a>
     </div>
     <div class="body">
-      <p>TX8 搭載 Soteria hardware RoT 模組。Primary known path 是 Soteria hRoT API；若 TX8 主 SoC 支援 TrustZone，尚有 OP-TEE fTPM 及 Hybrid 兩種 candidate path。</p>
+      <p>TX8 搭載 Soteria hardware RoT 模組。<strong>研究方向更新（2026-06-12）：</strong>主要研究路線從 OP-TEE fTPM 可行性，轉為評估 Soteria 能否直接支援 DevID / provisioning / mTLS（避免 OP-TEE 記憶體開銷）。</p>
 
-      <div style="margin:12px 0;padding:10px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #15803d;font-size:.83rem">
-        <strong>✓ 架構釐清（2026-06-12）：</strong> Soteria 是 AHB-connected HW IP（RISC-V ibex + OTP + AES/HMAC/RSA/TRNG）。OP-TEE 執行於主處理器 Secure World，透過 Secure World-only AHB driver 存取 Soteria。Soteria 可作為 OP-TEE 的 HRoT、secure storage provider（Black Key / HUK）、crypto co-processor 與 secure boot verification anchor。<strong>TX8 主處理器 TrustZone 支援仍待確認。</strong>
+      <div style="margin:12px 0;padding:10px 14px;background:#fffbeb;border-radius:8px;border-left:3px solid #92400e;font-size:.83rem">
+        <strong>🔄 研究方向更新（2026-06-12）：</strong> 主要研究軸心：「Soteria-native DevID & Provisioning vs OP-TEE fTPM」。
+        Soteria 已確認：RSA/HMAC/AES/TRNG/Black Key/OTP。待確認：ECDSA、non-exportable key gen API、cert 儲存方案、firmware measurement / attestation。
+        設計 <strong>Device Trust Abstraction Layer</strong>，保留未來 Remote Attestation 擴展空間。
+        <a href="./soteria-native-device-identity-provisioning-survey.html" style="color:#92400e;font-weight:700">完整能力調查 →</a>
       </div>
 
       <table style="width:100%;border-collapse:collapse;font-size:.82rem;margin-top:10px">

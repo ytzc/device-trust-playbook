@@ -41,22 +41,24 @@
 
 ### Path TX8：Techmation TX8 — 三種可能路線
 
-**Primary known path：Soteria hRoT API**
+**研究方向更新（2026-06-12）：** 主要研究軸心從「OP-TEE fTPM 可行性」改為「Soteria-native DevID & Provisioning vs OP-TEE fTPM」。John 的擔憂：OP-TEE 記憶體佔用大、整合成本高、如果只需要 DevID/mTLS 不需要完整 fTPM。
+
+**Primary research：Soteria-native DevID Path**
 
 - **RoT：** Soteria hRoT（AHB-connected HW IP，非 TPM）
 - **Soteria 元件：** RISC-V ibex processor + 8KB OTP + AES/HMAC/RSA/TRNG 加速器
-- **API：** Soteria AHB MSG0–MSG15 commands → 需 custom adapter → TTPS DI flow
-- **Soteria 能力：** Secure Boot（KEY_HASH_CHK/RSA_OTP）、Black Key / HUK secure storage（AES_BK）、Crypto offload（AES/HMAC/RSA/TRNG）、Anti-rollback（BOOT_IMG_ID）
-- **Phase 1/2：** 可行（secure key storage + device identity + key protection）
-- **Phase 3：** 待確認 Soteria 是否支援 attestation quote / PCR-like measurement
-- **工程量：** 高於標準 TPM2 Provider path（需 custom adapter，但 Soteria 已提供完整 crypto foundation）
+- **研究問題：** Soteria 能否直接支援 DevID / mTLS / provisioning（不依賴 OP-TEE fTPM）？
+- **已確認：** RSA (0x3) / HMAC (0x2) / AES (0x1) / TRNG (0x4) / Black Key (0x12/0x14) / OTP / Secure Boot anchor
+- **TBC：** ECDSA 支援、non-exportable key gen API、cert 儲存方案（OTP 8KB 限制）、mTLS 工作流程
+- **未來擴展：** Firmware measurement / attestation quote（❌ TBC；CRA Phase 3 阻擋條件）
+- **設計目標：** Device Trust Abstraction Layer（backend-agnostic，未來可切換 OP-TEE fTPM 後端）
 
 **Candidate path：OP-TEE fTPM（若 TX8 SoC 支援 TrustZone）**
 
 - **前提：** TX8 main SoC 支援 ARM TrustZone + BSP 含 TF-A + OP-TEE OS + fTPM TA
 - **TX8 SoC 型號 / TrustZone 支援：** ⚠️ 未確認
 - **API：** 相同的 TSS2 / TPM2 Provider（標準 TPM 2.0）
-- **優勢：** TTPS DI 可直接移植，不需 custom adapter
+- **優勢：** TTPS DI 可直接移植，完整 PCR / attestation 支援
 
 **Hybrid candidate：OP-TEE fTPM + Soteria hRoT-backed storage（研究方向）**
 
@@ -64,7 +66,8 @@
 - 整合複雜度最高；目前為研究 candidate
 - 需確認 Soteria 是否在 TrustZone Secure World 可見
 
-詳細分析請見：[notes/techmation-tx8-soteria-optee-ftpm-analysis.md](./techmation-tx8-soteria-optee-ftpm-analysis.md)
+詳細分析：[notes/techmation-tx8-soteria-optee-ftpm-analysis.md](./techmation-tx8-soteria-optee-ftpm-analysis.md)  
+DevID 能力調查：[notes/soteria-native-device-identity-provisioning-survey.md](./soteria-native-device-identity-provisioning-survey.md)
 
 ### Path SE：任意平台 + External SE + PKCS#11
 

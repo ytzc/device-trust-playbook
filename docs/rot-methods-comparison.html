@@ -106,6 +106,7 @@
   <a href="#msft">MS TPM 2.0 Ref</a>
   <a href="#swtpm">swtpm</a>
   <a href="#soteria">Soteria hRoT</a>
+  <a href="#soteria-devid">Soteria-native DevID</a>
   <a href="#cra-role">CRA 中的角色</a>
 </nav>
 
@@ -505,6 +506,109 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Soteria-native Device Identity Path -->
+<section id="soteria-devid">
+  <div class="sec-head">
+    <div class="sec-num" style="background:#92400e">更新</div>
+    <h2 class="sec-title">Soteria-native Device Identity Path（研究更新）</h2>
+    <p class="sec-desc">John 2026-06-12 方向：評估 Soteria 能否直接支援 DevID / mTLS / provisioning，而不依賴 OP-TEE fTPM。</p>
+  </div>
+  <div class="notice" style="background:#fffbeb;border-left:4px solid #92400e">
+    <strong>🔄 研究軸心更新（2026-06-12）：</strong> TX8 的研究重點從「OP-TEE fTPM 是否可行」改為「Soteria 能否直接支援 DevID / mTLS 而避免 OP-TEE 的記憶體開銷與整合成本」。架構需保留未來 Remote Attestation 與 CRA evidence 的擴展空間。
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:14px">
+    <table>
+      <thead>
+        <tr><th>比較維度</th><th>Soteria-native DevID</th><th>OP-TEE fTPM DevID</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>TX8 平台前提</strong></td>
+          <td>僅需 Soteria AHB driver（已就緒）</td>
+          <td>TrustZone + TF-A + OP-TEE OS（未確認）</td>
+        </tr>
+        <tr>
+          <td><strong>記憶體佔用</strong></td>
+          <td><span class="b b-green">低</span>（Soteria 是 HW IP，無 SW overhead）</td>
+          <td><span class="b b-red">高</span>（4–16 MB Secure World）</td>
+        </tr>
+        <tr>
+          <td><strong>DevID 加密基礎</strong></td>
+          <td>RSA / HMAC / AES / TRNG 已確認</td>
+          <td>完整 TPM 2.0 標準</td>
+        </tr>
+        <tr>
+          <td><strong>Non-exportable private key</strong></td>
+          <td><span class="b b-orange">⚠️ TBC</span> Black Key 機制存在；API 待確認</td>
+          <td><span class="b b-green">✅</span> TPM hardware binding</td>
+        </tr>
+        <tr>
+          <td><strong>ECDSA 支援</strong></td>
+          <td><span class="b b-red">❌ TBC</span> RSA 已確認；ECC 未見於文件</td>
+          <td><span class="b b-green">✅</span></td>
+        </tr>
+        <tr>
+          <td><strong>mTLS 整合</strong></td>
+          <td><span class="b b-orange">⚠️ TBC</span> 需 custom OpenSSL engine</td>
+          <td><span class="b b-green">✅</span> OpenSSL TPM2 Provider</td>
+        </tr>
+        <tr>
+          <td><strong>Certificate 儲存</strong></td>
+          <td><span class="b b-orange">⚠️ TBC</span> OTP 8KB 限制；外部 flash + AES_BK？</td>
+          <td><span class="b b-green">✅</span> OP-TEE SFS（HUK-encrypted）</td>
+        </tr>
+        <tr>
+          <td><strong>Firmware measurement / PCR</strong></td>
+          <td><span class="b b-red">❌ TBC</span> 未見於架構文件</td>
+          <td><span class="b b-green">✅</span> PCR 0–23</td>
+        </tr>
+        <tr>
+          <td><strong>Attestation quote</strong></td>
+          <td><span class="b b-red">❌ TBC</span> CRA Phase 3 阻擋條件</td>
+          <td><span class="b b-green">✅</span> TPM2_Quote</td>
+        </tr>
+        <tr>
+          <td><strong>Custom adapter 工程量</strong></td>
+          <td>高（DevID 全套需自建）</td>
+          <td>低（TSS2 / TPM2 Provider 已有）</td>
+        </tr>
+        <tr>
+          <td><strong>TX8 當前可行性</strong></td>
+          <td><span class="b b-green">高</span>（Soteria 已在 TX8）</td>
+          <td><span class="b b-orange">⚠️ TZ 待確認</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card" style="border-left:4px solid #92400e">
+      <h3>Soteria-native DevID 的優勢條件</h3>
+      <ul>
+        <li>若 TX8 SoC 不支援 TrustZone → Soteria-native 是唯一主要路線</li>
+        <li>記憶體受限的 TX8 系統 → 避免 OP-TEE 4–16 MB 開銷</li>
+        <li>Phase 1/2（DevID + mTLS）暫不需要 full TPM attestation</li>
+        <li>設計 Device Trust Abstraction Layer，未來可接入 OP-TEE fTPM 後端</li>
+      </ul>
+    </div>
+    <div class="card" style="border-left:4px solid var(--blue)">
+      <h3>OP-TEE fTPM 的優勢條件</h3>
+      <ul>
+        <li>若 TX8 SoC 確認支援 TrustZone → 更完整的 TPM 功能集</li>
+        <li>Phase 3（Remote Attestation）: TPM2_Quote 直接支援</li>
+        <li>TSS2 / OpenSSL TPM2 Provider 即插即用，整合工程量低</li>
+        <li>跨平台可移植性（TSS2 API 跨 x86/ARM）</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="notice notice-info" style="margin-top:14px">
+    完整的 27 項能力調查表、架構圖、20 個確認問題清單請見：
+    <a href="./soteria-native-device-identity-provisioning-survey.html"><strong>Soteria-native Device Identity &amp; Provisioning Survey →</strong></a>
   </div>
 </section>
 

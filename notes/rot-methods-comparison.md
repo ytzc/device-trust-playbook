@@ -167,6 +167,47 @@ TX8 目前 primary known path 是 Soteria hRoT API，但需進一步評估：
 
 ---
 
+## Soteria-native Device Identity Path（研究更新 2026-06-12）
+
+John 2026-06-12 更新研究方向：評估 Soteria 能否直接支援 DevID / mTLS / provisioning，避免 OP-TEE fTPM 的記憶體開銷和整合成本。
+
+### 研究核心問題
+
+> 在 TX8 上，可以不用 OP-TEE fTPM，直接用 Soteria hRoT 完成 device identity、設備初始化、DevID provisioning、mTLS 認證嗎？
+
+### Soteria-native vs OP-TEE fTPM 快速比較
+
+| 比較維度 | Soteria-native | OP-TEE fTPM |
+|---------|---------------|-------------|
+| TX8 平台前提 | 僅需 AHB driver（已就緒） | TrustZone + TF-A + OP-TEE（待確認） |
+| 記憶體佔用 | 低（HW IP） | 高（4–16 MB） |
+| DevID 加密基礎 | RSA/HMAC/AES/TRNG 已確認 | 完整 TPM 2.0 |
+| Non-exportable key | ⚠️ TBC（Black Key 機制存在） | ✅ TPM hardware binding |
+| ECDSA | ❌ TBC | ✅ |
+| mTLS 整合 | ⚠️ TBC（需 custom adapter） | ✅ OpenSSL TPM2 Provider |
+| Firmware measurement | ❌ TBC | ✅ PCR 0–23 |
+| Attestation quote | ❌ TBC（Phase 3 阻擋） | ✅ TPM2_Quote |
+| TX8 當前可行性 | 高（Soteria 已在 TX8） | ⚠️ TZ 待確認 |
+
+### 建議架構：Device Trust Abstraction Layer
+
+設計 backend-agnostic 抽象層，讓 TTPS DI 不直接依賴底層 RoT API：
+
+```
+應用層 / TTPS DI
+    │
+Device Trust Abstraction Layer
+    │ dt_generate_key / dt_sign / dt_generate_csr / dt_store_cert
+    ├── Soteria Backend (AHB MSG API)
+    ├── TPM/fTPM Backend (TSS2)
+    └── OP-TEE Backend (TEE Client API)
+```
+
+詳細分析：[docs/soteria-native-device-identity-provisioning-survey.html](../docs/soteria-native-device-identity-provisioning-survey.html)  
+Markdown 版：[notes/soteria-native-device-identity-provisioning-survey.md](./soteria-native-device-identity-provisioning-survey.md)
+
+---
+
 ## RoT 在 CRA Support 中的角色
 
 RoT 是 CRA compliance support 的技術基礎，不等於完整 CRA compliance。

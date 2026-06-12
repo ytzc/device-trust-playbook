@@ -8,12 +8,14 @@
 
 本 repo 是 FiduciaEdge 的長期技術知識庫，涵蓋：
 
-- **Device Identity** — IDevID / LDevID，hardware-bound，non-exportable private key
+- **Device Identity** — IDevID / LDevID，hardware-bound，non-exportable private key，mTLS-ready device identity
 - **Root of Trust** — TPM 2.0 / fTPM / hTPM / Soteria hRoT / External SE / PUF
+- **Soteria-native Device Identity** — TX8 Soteria hRoT 直接支援 DevID / provisioning / mTLS 能力調查；與 OP-TEE fTPM 路線比較
 - **Secure Provisioning & Onboarding** — TTPS DI、FDO（FIDO Device Onboard）、zero-touch provisioning
 - **Firmware Integrity** — Secure Boot、Measured Boot、SBOM
 - **Remote Attestation** — Measured Boot evidence、signed report、NMS policy engine
 - **CRA Readiness** — EU CRA 2024/2847 Annex I 技術控制對應、evidence preparation、conformity assessment support
+- **Backend-agnostic Device Trust Abstraction Layer** — 統一支援 Soteria / TPM / fTPM / OP-TEE 等不同 RoT 後端的抽象設計
 
 > **CRA 全面強制執行日：2027-12-11**
 
@@ -24,12 +26,23 @@
 ```
 device-trust-playbook/
 ├── docs/
-│   ├── index.html                           # GitHub Pages 首頁（由 CI 部署）
-│   └── current-device-trust-cra-summary.html  # Device Trust & CRA 整理報告
+│   ├── index.html                                          # GitHub Pages 首頁
+│   ├── current-device-trust-cra-summary.html              # Device Trust & CRA 整理
+│   ├── platform-solution-decision-map.html                # 平台決策圖
+│   ├── rot-methods-comparison.html                        # RoT 方法比較
+│   ├── cra-annex-mapping.html                             # CRA Annex I 對應
+│   ├── planet-analysis.html                               # PLANET 分析
+│   ├── meeting-prep-2026-06-12-rot-discussion.html        # 6/12 會議準備
+│   ├── techmation-tx8-soteria-optee-ftpm-analysis.html    # TX8 AHB 架構分析
+│   └── soteria-native-device-identity-provisioning-survey.html  # NEW: Soteria DevID 調查
 ├── notes/
-│   └── current-device-trust-cra-summary.md    # 知識筆記（Markdown 版）
+│   ├── current-device-trust-cra-summary.md
+│   ├── platform-solution-decision-map.md
+│   ├── rot-methods-comparison.md
+│   ├── techmation-tx8-soteria-optee-ftpm-analysis.md
+│   └── soteria-native-device-identity-provisioning-survey.md    # NEW: Soteria DevID 調查
 ├── references/
-│   └── cra/                                 # CRA 參考資料
+│   └── cra/                                               # CRA 參考資料
 └── README.md
 ```
 
@@ -57,6 +70,24 @@ device-trust-playbook/
 | Source Files Reviewed | 來源文件索引 |
 | Gary's PLANET NMS CRA Enforcement Matrix | NMS gap analysis：現有基線 vs 提案強化 vs 商業效益（4 scenarios） |
 | PLANET 三階段技術提案時程（GG2 EF1） | Phase 1 (10w) / Phase 2 (9w) / Phase 3 (25w) 工程任務、pre-req、out of scope |
+
+### [`docs/soteria-native-device-identity-provisioning-survey.html`](docs/soteria-native-device-identity-provisioning-survey.html)
+
+**Soteria-native Device Identity & Provisioning Survey** — TX8 研究方向更新（John 2026-06-12）。包含：
+
+| 章節 | 內容 |
+|------|------|
+| John 方向更新 | 研究軸心：Soteria-native DevID vs OP-TEE fTPM |
+| Executive Summary | 能力評估結果（7 已確認 / 13 TBC / 7 可能不支援） |
+| Soteria-native 架構 | 製造→部署→運行 DevID 生命週期；Mermaid 架構圖 |
+| API 能力調查表 | 27 項 DevID 所需能力 vs Soteria 已知 AHB API（詳細狀態標記） |
+| OP-TEE fTPM 分析 | 記憶體佔用、TX8 前提條件、DevID 能力對照 |
+| 直接比較表 | Soteria-native vs OP-TEE fTPM 10 維度比較 |
+| Device Trust Abstraction Layer | Backend-agnostic 設計；dt_generate_key / dt_sign / dt_store_cert |
+| 建議方向 | 短中長期（Q3 2026 → 2027+）工程路線 |
+| 問題清單 | 20 個給 John / Techmation / Soteria 的確認問題（A-F 分組） |
+| CRA-ready 解讀 | 兩路線的 CRA Annex I 支援程度；定位聲明規則 |
+| Action Items | P0/P1/P2/P3 優先級的下一步行動 |
 
 ### [`notes/current-device-trust-cra-summary.md`](notes/current-device-trust-cra-summary.md)
 
