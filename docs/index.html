@@ -3,109 +3,342 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Device Trust Playbook</title>
+  <title>Device Trust & Platform Security Playbook — FiduciaEdge</title>
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f6f8fb;
-      color: #1f2937;
+    :root {
+      --ink: #111827;
+      --ink-2: #374151;
+      --ink-3: #6b7280;
+      --bg: #f6f8fb;
+      --bg-2: #ffffff;
+      --border: #e5e7eb;
+      --blue: #1d4ed8;
+      --blue-l: #eff6ff;
+      --blue-m: #bfdbfe;
+      --green: #15803d;
+      --green-l: #f0fdf4;
+      --orange: #b45309;
+      --orange-l: #fffbeb;
+      --red: #b91c1c;
+      --red-l: #fef2f2;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(17,24,39,.08);
+      --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
     }
-    header {
-      padding: 64px 24px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+    a { color: var(--blue); }
+
+    /* ── HERO ────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(140deg, #0f172a 0%, #1e3a5f 55%, #0f2d4a 100%);
+      color: #fff;
+      padding: 72px 24px 56px;
       text-align: center;
-      color: white;
-      background: linear-gradient(135deg, #111827, #374151);
+      position: relative;
+      overflow: hidden;
     }
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 40px 24px;
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,.18) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
-    }
-    .version {
+    .hero-logo {
       display: inline-block;
-      margin-top: 16px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: #e0f2fe;
-      color: #075985;
-      font-weight: 700;
+      font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.45);
+      margin-bottom: 20px;
     }
-    .report-link {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      border: 1px solid #93c5fd;
-      border-radius: 14px;
-      padding: 20px 24px;
-      text-decoration: none;
-      color: #1e3a8a;
-      margin-bottom: 16px;
-      transition: box-shadow .15s, transform .15s;
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -.5px;
+      line-height: 1.2;
+      margin-bottom: 12px;
     }
-    .report-link:hover {
-      box-shadow: 0 8px 24px rgba(30,58,138,.15);
-      transform: translateY(-2px);
+    .hero h1 span { color: #60a5fa; }
+    .hero-sub {
+      font-size: 1rem;
+      color: rgba(255,255,255,.65);
+      max-width: 560px;
+      margin: 0 auto 28px;
     }
-    .report-link .rl-icon { font-size: 2rem; flex-shrink: 0; }
-    .report-link .rl-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
-    .report-link .rl-body p { font-size: .85rem; opacity: .75; margin: 0; }
-    .report-link .rl-badge {
-      margin-left: auto; flex-shrink: 0;
-      background: #1e3a8a; color: #fff;
-      border-radius: 999px; padding: 4px 12px; font-size: .75rem; font-weight: 700;
+    .hero-chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 13px; border-radius: 999px; font-size: .78rem; font-weight: 600;
     }
+    .chip-cra  { background: rgba(239,68,68,.18); color: #fca5a5; border: 1px solid rgba(239,68,68,.3); }
+    .chip-date { background: rgba(59,130,246,.18); color: #93c5fd; border: 1px solid rgba(59,130,246,.3); }
+    .chip-fe   { background: rgba(255,255,255,.08); color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.15); }
+    .version-badge {
+      display: inline-block;
+      padding: 6px 16px; border-radius: 999px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.7); font-size: .78rem; font-weight: 600;
+    }
+
+    /* ── LAYOUT ──────────────────────────────────────────────────── */
+    .page { max-width: 960px; margin: 0 auto; padding: 0 20px 60px; }
+    .section { margin-top: 48px; }
     .sec-label {
-      font-size: .75rem; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
-      color: #6b7280; margin-bottom: 10px;
+      font-size: .7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--ink-3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
     }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* ── STAT CARDS ──────────────────────────────────────────────── */
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: -32px; }
+    @media (max-width: 640px) { .stats { grid-template-columns: 1fr 1fr; } }
+    .stat {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 18px 20px; box-shadow: var(--shadow-sm); text-align: center;
+    }
+    .stat-num { font-size: 1.7rem; font-weight: 800; line-height: 1; }
+    .stat-num.blue { color: var(--blue); }
+    .stat-num.green { color: var(--green); }
+    .stat-num.red { color: var(--red); }
+    .stat-lbl { font-size: .78rem; color: var(--ink-3); margin-top: 4px; }
+
+    /* ── REPORT CARDS ────────────────────────────────────────────── */
+    .report-card {
+      display: flex; align-items: flex-start; gap: 18px;
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; box-shadow: var(--shadow-sm);
+      text-decoration: none; color: inherit;
+      transition: box-shadow .15s, transform .15s, border-color .15s;
+      margin-bottom: 14px;
+    }
+    .report-card:hover { box-shadow: 0 8px 32px rgba(17,24,39,.12); transform: translateY(-2px); border-color: var(--blue-m); }
+    .rc-icon {
+      width: 48px; height: 48px; flex-shrink: 0; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+    .rc-icon.blue { background: var(--blue-l); }
+    .rc-icon.green { background: var(--green-l); }
+    .rc-body { flex: 1; min-width: 0; }
+    .rc-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .rc-body p { font-size: .83rem; color: var(--ink-3); line-height: 1.5; }
+    .rc-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .tag {
+      font-size: .7rem; font-weight: 600; padding: 2px 8px; border-radius: 6px;
+    }
+    .tag-blue { background: var(--blue-l); color: var(--blue); }
+    .tag-green { background: var(--green-l); color: var(--green); }
+    .tag-orange { background: var(--orange-l); color: var(--orange); }
+    .tag-gray { background: #f3f4f6; color: var(--ink-3); }
+    .rc-arrow {
+      font-size: .9rem; color: var(--ink-3); flex-shrink: 0; align-self: center; opacity: .5;
+    }
+    .report-card:hover .rc-arrow { opacity: 1; color: var(--blue); }
+
+    /* ── TOPIC GRID ──────────────────────────────────────────────── */
+    .topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 640px) { .topic-grid { grid-template-columns: 1fr 1fr; } }
+    .topic {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 16px 18px; box-shadow: var(--shadow-sm);
+    }
+    .topic-icon { font-size: 1.3rem; margin-bottom: 6px; }
+    .topic h4 { font-size: .88rem; font-weight: 700; margin-bottom: 3px; }
+    .topic p { font-size: .78rem; color: var(--ink-3); line-height: 1.45; }
+
+    /* ── CRA TIMELINE ────────────────────────────────────────────── */
+    .timeline { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 640px) { .timeline { grid-template-columns: 1fr; } }
+    .tl-card {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px;
+      padding: 18px; box-shadow: var(--shadow-sm); border-top: 4px solid transparent;
+      position: relative;
+    }
+    .tl-card.past  { border-top-color: var(--ink-3); opacity: .7; }
+    .tl-card.near  { border-top-color: var(--orange); }
+    .tl-card.final { border-top-color: var(--red); }
+    .tl-date { font-size: .75rem; font-weight: 700; color: var(--ink-3); margin-bottom: 4px; }
+    .tl-card.near .tl-date { color: var(--orange); }
+    .tl-card.final .tl-date { color: var(--red); }
+    .tl-card h4 { font-size: .88rem; font-weight: 700; margin-bottom: 4px; }
+    .tl-card p { font-size: .78rem; color: var(--ink-3); }
+    .tl-badge {
+      position: absolute; top: 14px; right: 14px;
+      font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    }
+    .tl-badge.done { background: #f3f4f6; color: var(--ink-3); }
+    .tl-badge.soon { background: var(--orange-l); color: var(--orange); }
+    .tl-badge.enforce { background: var(--red-l); color: var(--red); }
+
+    /* ── FOOTER ──────────────────────────────────────────────────── */
+    footer {
+      background: #0f172a; color: rgba(255,255,255,.4);
+      text-align: center; padding: 28px 16px; font-size: .79rem;
+    }
+    footer strong { color: rgba(255,255,255,.75); }
+    footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+    footer a:hover { color: rgba(255,255,255,.8); }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Device Trust & Platform Security Playbook</h1>
-    <p>設備信任、Root of Trust、Provisioning、Onboarding、Attestation 知識庫</p>
-    <div class="version" id="site-version">Version: __VERSION__</div>
-  </header>
-  <script>
-    (function () {
-      var el = document.getElementById('site-version');
-      if (el && !/^v\d/.test((el.textContent.split(': ')[1] || '').trim())) {
-        el.textContent = 'Version: dev (local)';
-      }
-    })();
-  </script>
 
-  <main>
-    <section class="card">
-      <div class="sec-label">📄 最新報告 / Latest Reports</div>
-      <a href="./current-device-trust-cra-summary.html" class="report-link">
-        <div class="rl-icon">🛡</div>
-        <div class="rl-body">
-          <h3>Current Device Trust &amp; CRA Summary</h3>
-          <p>目前 Device Trust 與 CRA 整理報告 · Platform Decision · Capability Model · CRA Annex Mapping · PLANET / TX8 / i.MX93 Analysis</p>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">FiduciaEdge · TTPS Team</div>
+  <h1>Device Trust &amp; <span>Platform Security</span><br>Playbook</h1>
+  <p class="hero-sub">設備信任、Root of Trust、安全佈建、設備上線、韌體完整性、Remote Attestation，以及 CRA-ready 產品安全技術作戰手冊。</p>
+  <div class="hero-chips">
+    <span class="chip chip-cra">⚠ EU CRA 2024/2847</span>
+    <span class="chip chip-date">🗓 2027-12-11 全面強制執行</span>
+    <span class="chip chip-fe">🔐 FiduciaEdge Internal</span>
+  </div>
+  <div class="version-badge" id="site-version">Version: __VERSION__</div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById('site-version');
+    if (el && !/^v\d/.test((el.textContent.split(': ')[1] || '').trim())) {
+      el.textContent = 'Version: dev (local)';
+    }
+  })();
+</script>
+
+<div class="page">
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num blue">14</div>
+      <div class="stat-lbl">報告章節</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num green">3</div>
+      <div class="stat-lbl">RA 交付 Phases</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num red">2027</div>
+      <div class="stat-lbl">CRA 強制執行年</div>
+    </div>
+  </div>
+
+  <!-- REPORTS -->
+  <div class="section">
+    <div class="sec-label">最新報告 Latest Reports</div>
+    <a href="./current-device-trust-cra-summary.html" class="report-card">
+      <div class="rc-icon blue">🛡</div>
+      <div class="rc-body">
+        <h3>Current Device Trust &amp; CRA Readiness Summary</h3>
+        <p>目前 Device Trust 與 CRA 整理報告。涵蓋 Platform Decision（含 Mermaid 決策圖）、Capability Model、CRA Annex I 條文對應、PLANET / TX8 / i.MX93 分析、Gary CRA Enforcement Matrix、GG2 EF1 三階段技術提案時程。</p>
+        <div class="rc-tags">
+          <span class="tag tag-blue">Platform Decision</span>
+          <span class="tag tag-blue">CRA Annex Mapping</span>
+          <span class="tag tag-green">PLANET Analysis</span>
+          <span class="tag tag-green">TX8 / i.MX93</span>
+          <span class="tag tag-orange">GG2 EF1 Timeline</span>
+          <span class="tag tag-gray">14 Sections</span>
         </div>
-        <div class="rl-badge">2026-06-11</div>
-      </a>
-    </section>
+      </div>
+      <div class="rc-arrow">→</div>
+    </a>
+  </div>
 
-    <section class="card">
-      <h2>Deployment Test / 部署測試</h2>
-      <p>
-        This page is deployed to GitHub Pages only when a version tag is pushed.
-      </p>
-      <p>
-        此頁面只有在推送版本 tag，例如 v0.1.0 時，才會部署到 GitHub Pages。
-      </p>
-    </section>
-  </main>
+  <!-- PLAYBOOK TOPICS -->
+  <div class="section">
+    <div class="sec-label">Playbook 涵蓋主題</div>
+    <div class="topic-grid">
+      <div class="topic">
+        <div class="topic-icon">🪪</div>
+        <h4>Device Identity</h4>
+        <p>IDevID / LDevID，hardware-bound，non-exportable private key，TWCA 憑證</p>
+      </div>
+      <div class="topic">
+        <div class="topic-icon">⚓</div>
+        <h4>Root of Trust</h4>
+        <p>TPM 2.0 / fTPM / hTPM / Soteria hRoT / External SE / PUF</p>
+      </div>
+      <div class="topic">
+        <div class="topic-icon">🏭</div>
+        <h4>Secure Provisioning</h4>
+        <p>TTPS DI、FDO、zero-touch provisioning、製造端 toolchain</p>
+      </div>
+      <div class="topic">
+        <div class="topic-icon">🔒</div>
+        <h4>Firmware Integrity</h4>
+        <p>Secure Boot、Measured Boot、SBOM（SPDX / CycloneDX）</p>
+      </div>
+      <div class="topic">
+        <div class="topic-icon">📡</div>
+        <h4>Remote Attestation</h4>
+        <p>Measured Boot evidence、signed RA report、NMS policy engine Pass/Fail</p>
+      </div>
+      <div class="topic">
+        <div class="topic-icon">🇪🇺</div>
+        <h4>CRA Readiness</h4>
+        <p>EU CRA 2024/2847 Annex I 技術控制對應、evidence preparation、conformity assessment support</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRA TIMELINE -->
+  <div class="section">
+    <div class="sec-label">EU CRA 2024/2847 關鍵時程</div>
+    <div class="timeline">
+      <div class="tl-card past">
+        <span class="tl-badge done">已過</span>
+        <div class="tl-date">2026-06-11</div>
+        <h4>Conformity Assessment Bodies</h4>
+        <p>第三方合規評估機構指定生效日</p>
+      </div>
+      <div class="tl-card near">
+        <span class="tl-badge soon">即將</span>
+        <div class="tl-date">2026-09-11</div>
+        <h4>漏洞通報義務</h4>
+        <p>Vulnerability handling &amp; reporting 義務正式生效</p>
+      </div>
+      <div class="tl-card final">
+        <span class="tl-badge enforce">全面強制</span>
+        <div class="tl-date">2027-12-11</div>
+        <h4>CRA 全面強制執行</h4>
+        <p>Annex I 所有產品要求强制執行；違規最高 €15M 或全球營收 2.5%</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TONE RULES -->
+  <div class="section">
+    <div class="sec-label">語氣規則 Tone Rules</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:var(--red-l);border-left:4px solid var(--red);border-radius:12px;padding:16px 18px;">
+        <div style="font-size:.75rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✗ 避免說</div>
+        <div style="font-size:.83rem;color:var(--ink-2);line-height:2">
+          guarantee full CRA compliance<br>
+          fully satisfies CRA<br>
+          CRA certified<br>
+          TPM equals CRA compliance<br>
+          Remote Attestation immediately available
+        </div>
+      </div>
+      <div style="background:var(--green-l);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;">
+        <div style="font-size:.75rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✓ 應該說</div>
+        <div style="font-size:.83rem;color:var(--ink-2);line-height:2">
+          CRA-ready · CRA compliance support<br>
+          supports CRA-related evidence preparation<br>
+          platform-dependent capability<br>
+          hardware-protected key mechanism<br>
+          Remote Attestation is a roadmap
+        </div>
+      </div>
+    </div>
+    <p style="font-size:.78rem;color:var(--ink-3);margin-top:10px;padding-left:4px">Conformity assessment 與 CE marking 的法律責任在 OEM 製造商，FiduciaEdge 提供技術服務。</p>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <strong>Device Trust &amp; Platform Security Playbook</strong><br>
+  FiduciaEdge TTPS 團隊 · 內部知識整理，非法律合規聲明<br>
+  EU Cyber Resilience Act (Regulation EU 2024/2847) · 全面強制執行日：2027-12-11<br>
+  <br>
+  <a href="./current-device-trust-cra-summary.html">Current CRA Summary →</a>
+</footer>
+
 </body>
 </html>
