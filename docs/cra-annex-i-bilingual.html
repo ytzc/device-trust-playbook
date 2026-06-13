@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRA Annex I 英中對照表 — FiduciaEdge</title>
+  <style>
+    :root {
+      --ink: #111827; --ink-2: #374151; --ink-3: #6b7280;
+      --bg: #f6f8fb; --bg-2: #ffffff; --border: #e5e7eb;
+      --red: #b91c1c; --red-l: #fef2f2; --red-m: #fecaca;
+      --blue: #1d4ed8; --blue-l: #eff6ff;
+      --green: #15803d; --green-l: #f0fdf4;
+      --orange: #b45309; --orange-l: #fffbeb;
+      --purple: #7c3aed; --purple-l: #f5f3ff;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(17,24,39,.08);
+      --shadow-sm: 0 2px 8px rgba(17,24,39,.06);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.65; font-size: 15px; }
+    a { color: var(--blue); }
+
+    /* Nav */
+    nav {
+      background: #1e1b4b; border-bottom: 1px solid #312e81;
+      padding: 0 20px; height: 52px;
+      display: flex; align-items: center; gap: 16px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-home { color: rgba(255,255,255,.6); text-decoration: none; font-size: .82rem; white-space: nowrap; }
+    .nav-home:hover { color: #fff; }
+    .nav-sep { color: rgba(255,255,255,.25); font-size: .75rem; }
+    .nav-cur { color: rgba(255,255,255,.9); font-size: .82rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #site-version { margin-left: auto; padding: 0 14px; color: rgba(255,255,255,.45); font-size: .7rem; font-weight: 600; white-space: nowrap; align-self: center; }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 45%, #b91c1c 100%);
+      color: #fff; padding: 52px 24px 72px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(254,202,202,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 14px; }
+    .hero h1 { font-size: clamp(1.4rem, 3.5vw, 2.2rem); font-weight: 800; letter-spacing: -.3px; line-height: 1.25; margin-bottom: 12px; }
+    .hero h1 span { color: #fca5a5; }
+    .hero-sub { font-size: .95rem; color: rgba(255,255,255,.65); max-width: 580px; margin: 0 auto 20px; }
+    .hero-meta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 999px; font-size: .75rem; font-weight: 600; }
+    .p-law  { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); color: rgba(255,255,255,.8); }
+    .p-date { background: rgba(254,202,202,.15); border: 1px solid rgba(254,202,202,.3); color: #fca5a5; }
+    .hero-wave { position: absolute; bottom: -1px; left: 0; right: 0; height: 56px; pointer-events: none; line-height: 0; }
+    .hero-wave svg { display: block; width: 100%; height: 56px; }
+
+    /* Page wrapper */
+    .page { max-width: 1060px; margin: 0 auto; padding: 0 20px 80px; }
+
+    /* Section labels */
+    .sec-label { font-size: .68rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-3); margin-bottom: 14px; display: flex; align-items: center; gap: 8px; margin-top: 44px; }
+    .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* Notice */
+    .notice { border-radius: 10px; padding: 13px 17px; font-size: .84rem; margin-bottom: 20px; }
+    .notice-info { background: var(--blue-l); border-left: 4px solid var(--blue); color: var(--ink-2); }
+    .notice-warn { background: var(--orange-l); border-left: 4px solid var(--orange); color: var(--ink-2); }
+
+    /* Part header */
+    .part-header {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
+      border-left: 6px solid var(--red);
+    }
+    .part-header.p2 { border-left-color: var(--orange); }
+    .part-en { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--red); margin-bottom: 6px; }
+    .part-header.p2 .part-en { color: var(--orange); }
+    .part-title-en { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+    .part-title-zh { font-size: .9rem; color: var(--ink-2); line-height: 1.5; }
+
+    /* Bilingual table */
+    .bi-table { width: 100%; border-collapse: collapse; background: var(--bg-2); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 32px; }
+    .bi-table th { background: #fef2f2; color: var(--red); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; padding: 11px 18px; text-align: left; border-bottom: 2px solid var(--red-m); }
+    .bi-table th:first-child { width: 52px; text-align: center; }
+    .bi-table th.col-en { width: 48%; }
+    .bi-table th.col-zh { width: 48%; }
+    .bi-table td { padding: 14px 18px; vertical-align: top; border-bottom: 1px solid var(--border); font-size: .86rem; line-height: 1.65; }
+    .bi-table tr:last-child td { border-bottom: none; }
+    .bi-table tr:hover td { background: #fafafa; }
+    .bi-table td:first-child { text-align: center; font-weight: 800; font-size: .82rem; color: var(--red); vertical-align: middle; width: 52px; }
+    .bi-table td.en { color: var(--ink-2); }
+    .bi-table td.zh { color: var(--ink); border-left: 1px solid var(--border); }
+
+    /* Part II table colors */
+    .bi-table.p2 th { background: #fffbeb; color: var(--orange); border-bottom-color: #fcd34d; }
+    .bi-table.p2 td:first-child { color: var(--orange); }
+    .bi-table.p2 td.zh { border-left-color: #fcd34d; }
+
+    /* req number badge */
+    .req-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: .78rem; font-weight: 800; flex-shrink: 0; background: var(--red-l); color: var(--red); }
+    .req-num.orange { background: var(--orange-l); color: var(--orange); }
+
+    /* technical tag */
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .tech-tag { display: inline-block; font-size: .65rem; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+    .tt-identity { background: #eff6ff; color: #1d4ed8; }
+    .tt-crypto   { background: #f0fdf4; color: #15803d; }
+    .tt-boot     { background: #f5f3ff; color: #7c3aed; }
+    .tt-ra       { background: #fdf4ff; color: #9333ea; }
+    .tt-patch    { background: #fff7ed; color: #c2410c; }
+    .tt-sbom     { background: #fef9c3; color: #a16207; }
+    .tt-network  { background: #f0fdfa; color: #0f766e; }
+    .tt-privacy  { background: #fef2f2; color: #b91c1c; }
+
+    /* summary box */
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+    @media (max-width: 640px) { .summary-grid { grid-template-columns: 1fr; } }
+    .sum-card { background: var(--bg-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow-sm); }
+    .sum-card h4 { font-size: .82rem; font-weight: 700; margin-bottom: 8px; }
+    .sum-card ul { font-size: .78rem; color: var(--ink-2); line-height: 2; padding-left: 14px; }
+
+    /* mobile responsive */
+    @media (max-width: 700px) {
+      .bi-table, .bi-table thead, .bi-table tbody, .bi-table th, .bi-table td, .bi-table tr { display: block; }
+      .bi-table thead { display: none; }
+      .bi-table tr { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+      .bi-table td { border: none; border-bottom: 1px solid #f3f4f6; }
+      .bi-table td:first-child { background: var(--red-l); padding: 8px 16px; text-align: left; }
+      .bi-table.p2 td:first-child { background: var(--orange-l); }
+      .bi-table td.zh { border-left: none; border-top: 2px dashed var(--border); }
+      .bi-table td::before { content: attr(data-label); font-size: .65rem; font-weight: 700; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 4px; }
+    }
+
+    footer { background: #0f172a; color: rgba(255,255,255,.4); text-align: center; padding: 28px 16px; font-size: .79rem; margin-top: 60px; }
+    footer strong { color: rgba(255,255,255,.75); }
+    footer a { color: rgba(255,255,255,.5); text-decoration: none; }
+    footer a:hover { color: rgba(255,255,255,.8); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./index.html" class="nav-home">🏠 首頁</a>
+  <span class="nav-sep">›</span>
+  <span class="nav-cur">CRA Annex I 英中對照表</span>
+  <span id="site-version">__VERSION__</span>
+</nav>
+<script>
+  (function(){
+    var el=document.getElementById('site-version');
+    if(el && !/^v\d/.test((el.textContent.split(': ')[1]||el.textContent).trim()))
+      el.textContent='dev (local)';
+  })();
+</script>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-eyebrow">EU Cyber Resilience Act · Official Text</div>
+  <h1>Annex I — Essential Cybersecurity Requirements<br><span>英文原文 · 中文對照</span></h1>
+  <p class="hero-sub">EU CRA 2024/2847 Annex I 官方英文原文逐條對應中文翻譯，供技術評估與合規 evidence 準備使用。</p>
+  <div class="hero-meta">
+    <span class="hero-pill p-law">📜 Regulation (EU) 2024/2847</span>
+    <span class="hero-pill p-date">⚠ 全面強制執行：2027-12-11</span>
+    <a href="../references/cra/OJ_L_202402847_EN_TXT.pdf" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:999px;font-size:.75rem;font-weight:600;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);text-decoration:none">📄 官方原文 PDF</a>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#f6f8fb" d="M0,56 L0,32 C180,52 360,12 540,28 C720,44 900,52 1080,36 C1260,20 1350,40 1440,32 L1440,56 Z"/>
+    </svg>
+  </div>
+</div>
+
+<div class="page">
+
+  <div class="notice notice-info" style="margin-top:32px">
+    本頁為 FiduciaEdge 內部整理，中文翻譯僅供技術理解與參考，<strong>以官方英文原文為準</strong>。引用法規時請以 EUR-Lex 官方文本為準。
+  </div>
+
+  <!-- Summary -->
+  <div class="sec-label">Annex I 結構概覽</div>
+  <div class="summary-grid">
+    <div class="sum-card" style="border-top:3px solid var(--red)">
+      <h4 style="color:var(--red)">Part I — 產品安全要求</h4>
+      <ul>
+        <li>(1) 整體安全設計原則</li>
+        <li>(2)(a) 無已知漏洞</li>
+        <li>(2)(b) 預設安全組態</li>
+        <li>(2)(c) 安全更新機制</li>
+        <li>(2)(d) 存取控制與通報</li>
+        <li>(2)(e) 資料機密性保護</li>
+        <li>(2)(f) 資料完整性保護</li>
+        <li>(2)(g) 資料最小化</li>
+        <li>(2)(h) 可用性與 DoS 防護</li>
+        <li>(2)(i) 最小化影響其他設備</li>
+        <li>(2)(j) 限縮攻擊面</li>
+        <li>(2)(k) 降低事故影響</li>
+        <li>(2)(l) 安全資訊記錄與監控</li>
+        <li>(2)(m) 資料刪除與安全轉移</li>
+      </ul>
+    </div>
+    <div class="sum-card" style="border-top:3px solid var(--orange)">
+      <h4 style="color:var(--orange)">Part II — 漏洞處理要求</h4>
+      <ul>
+        <li>(1) SBOM 識別與記錄</li>
+        <li>(2) 及時修補漏洞</li>
+        <li>(3) 定期安全測試</li>
+        <li>(4) 漏洞資訊公開揭露</li>
+        <li>(5) CVD 協調漏洞揭露政策</li>
+        <li>(6) 漏洞回報機制</li>
+        <li>(7) 安全更新發布機制</li>
+        <li>(8) 免費即時安全更新</li>
+      </ul>
+    </div>
+    <div class="sum-card" style="border-top:3px solid var(--blue)">
+      <h4 style="color:var(--blue)">FiduciaEdge 技術映射</h4>
+      <ul>
+        <li>Device Identity → (2)(d)</li>
+        <li>Key Protection → (2)(e)</li>
+        <li>Secure Boot → (2)(f)</li>
+        <li>Measured Boot → (2)(f)(l)</li>
+        <li>Remote Attestation → (2)(f)(k)(l)</li>
+        <li>SBOM → Part II (1)</li>
+        <li>Secure Update → (2)(c) + Part II (7)</li>
+        <li>mTLS → (2)(d)(e)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Part I Header -->
+  <div class="part-header">
+    <div class="part-en">Annex I · Part I</div>
+    <div class="part-title-en">Cybersecurity requirements relating to the properties of products with digital elements</div>
+    <div class="part-title-zh">與數位產品特性相關的網路安全要求</div>
+  </div>
+
+  <!-- Part I Table -->
+  <div style="overflow-x:auto">
+    <table class="bi-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="col-en">英文原文 (Official EN)</th>
+          <th class="col-zh">中文對照 (ZH Translation)</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- (1) Overall design principle -->
+        <tr>
+          <td><span class="req-num">1</span></td>
+          <td class="en" data-label="英文原文">
+            Products with digital elements shall be designed, developed and produced in such a way that they ensure an appropriate level of cybersecurity based on the risks.
+            <div class="tech-tags">
+              <span class="tech-tag tt-boot">Secure Design</span>
+              <span class="tech-tag tt-ra">Risk-based</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            數位產品應以確保基於風險的適當網路安全等級為原則，進行設計、開發與製造。
+          </td>
+        </tr>
+
+        <!-- (2) intro -->
+        <tr>
+          <td><span class="req-num">2</span></td>
+          <td class="en" data-label="英文原文">
+            On the basis of the cybersecurity risk assessment referred to in Article 13(2) and where applicable, products with digital elements shall:
+          </td>
+          <td class="zh" data-label="中文對照">
+            依據第 13(2) 條所述的網路安全風險評估，並在適用情況下，數位產品應：
+          </td>
+        </tr>
+
+        <!-- (2)(a) -->
+        <tr>
+          <td><span class="req-num">a</span></td>
+          <td class="en" data-label="英文原文">
+            be made available on the market without known exploitable vulnerabilities;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Vuln Management</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            上市時不存在已知可被利用的漏洞；
+          </td>
+        </tr>
+
+        <!-- (2)(b) -->
+        <tr>
+          <td><span class="req-num">b</span></td>
+          <td class="en" data-label="英文原文">
+            be made available on the market with a secure by default configuration, unless otherwise agreed between manufacturer and business user in relation to a tailor-made product with digital elements, including the possibility to reset the product to its original state;
+            <div class="tech-tags">
+              <span class="tech-tag tt-boot">Secure Default</span>
+              <span class="tech-tag tt-identity">Factory Reset</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            以預設安全組態上市，除非製造商與企業用戶就客製化產品另有約定；包含可將產品重置為原始狀態的機制；
+          </td>
+        </tr>
+
+        <!-- (2)(c) -->
+        <tr>
+          <td><span class="req-num">c</span></td>
+          <td class="en" data-label="英文原文">
+            ensure that vulnerabilities can be addressed through security updates, including, where applicable, through automatic security updates that are installed within an appropriate timeframe enabled as a default setting, with a clear and easy-to-use opt-out mechanism, through the notification of available updates to users, and the option to temporarily postpone them;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Security Updates</span>
+              <span class="tech-tag tt-patch">Auto Update</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            確保漏洞可透過安全更新修補；在適用情況下，包含預設啟用的自動安全更新（在適當時間內安裝，並提供清晰易用的退出機制）、向使用者通知可用更新、以及暫緩更新的選項；
+          </td>
+        </tr>
+
+        <!-- (2)(d) -->
+        <tr>
+          <td><span class="req-num">d</span></td>
+          <td class="en" data-label="英文原文">
+            ensure protection from unauthorised access by appropriate control mechanisms, including but not limited to authentication, identity or access management systems, and report on possible unauthorised access;
+            <div class="tech-tags">
+              <span class="tech-tag tt-identity">Device Identity</span>
+              <span class="tech-tag tt-identity">mTLS</span>
+              <span class="tech-tag tt-identity">IAM</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            透過適當的控制機制防止未授權存取，包含但不限於認證、身份管理或存取管理系統；並回報可能的未授權存取；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe">FiduciaEdge → IDevID + mTLS + Device Authentication</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2)(e) -->
+        <tr>
+          <td><span class="req-num">e</span></td>
+          <td class="en" data-label="英文原文">
+            protect the confidentiality of stored, transmitted or otherwise processed data, personal or other, such as by encrypting relevant data at rest or in transit by state of the art mechanisms, and by using other technical means;
+            <div class="tech-tags">
+              <span class="tech-tag tt-crypto">Encryption at Rest</span>
+              <span class="tech-tag tt-crypto">Encryption in Transit</span>
+              <span class="tech-tag tt-crypto">Key Protection</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            保護儲存、傳輸或以其他方式處理的個人或其他資料的機密性，例如採用最新技術的靜態加密或傳輸加密機制，以及其他技術手段；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0">FiduciaEdge → TPM/Soteria hardware-protected key + TLS 1.3</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2)(f) -->
+        <tr>
+          <td><span class="req-num">f</span></td>
+          <td class="en" data-label="英文原文">
+            protect the integrity of stored, transmitted or otherwise processed data, personal or other, commands, programs and configuration against any manipulation or modification not authorised by the user, and report on corruptions;
+            <div class="tech-tags">
+              <span class="tech-tag tt-boot">Secure Boot</span>
+              <span class="tech-tag tt-boot">Measured Boot</span>
+              <span class="tech-tag tt-ra">Remote Attestation</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            保護儲存、傳輸或以其他方式處理的個人或其他資料、命令、程式及組態的完整性，防止任何未經使用者授權的操控或修改；並回報資料損毀情況；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#f5f3ff;color:#7c3aed;border:1px solid #ddd6fe">FiduciaEdge → Secure Boot + Measured Boot + PCR evidence + RA</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2)(g) -->
+        <tr>
+          <td><span class="req-num">g</span></td>
+          <td class="en" data-label="英文原文">
+            process only data, personal or other, that are adequate, relevant and limited to what is necessary in relation to the intended purpose of the product with digital elements (data minimisation);
+            <div class="tech-tags">
+              <span class="tech-tag tt-privacy">Data Minimisation</span>
+              <span class="tech-tag tt-privacy">Privacy by Design</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            僅處理與產品預定用途相關且必要的個人或其他資料（資料最小化原則）；
+          </td>
+        </tr>
+
+        <!-- (2)(h) -->
+        <tr>
+          <td><span class="req-num">h</span></td>
+          <td class="en" data-label="英文原文">
+            protect the availability of essential and basic functions, also after an incident, including through resilience and mitigation measures against denial-of-service attacks;
+            <div class="tech-tags">
+              <span class="tech-tag tt-network">DoS Resilience</span>
+              <span class="tech-tag tt-network">Availability</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            保護基本功能的可用性，包含事故發生後，透過韌性機制與阻斷服務攻擊緩解措施保障正常運作；
+          </td>
+        </tr>
+
+        <!-- (2)(i) -->
+        <tr>
+          <td><span class="req-num">i</span></td>
+          <td class="en" data-label="英文原文">
+            minimise the negative impact by the products themselves or connected devices on the availability of services provided by other devices or networks;
+            <div class="tech-tags">
+              <span class="tech-tag tt-network">Network Safety</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            最小化產品本身或連接設備對其他設備或網路所提供服務的可用性造成的負面影響；
+          </td>
+        </tr>
+
+        <!-- (2)(j) -->
+        <tr>
+          <td><span class="req-num">j</span></td>
+          <td class="en" data-label="英文原文">
+            be designed, developed and produced to limit attack surfaces, including external interfaces;
+            <div class="tech-tags">
+              <span class="tech-tag tt-boot">Attack Surface Reduction</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            設計、開發與製造時應限縮攻擊面，包含外部介面；
+          </td>
+        </tr>
+
+        <!-- (2)(k) -->
+        <tr>
+          <td><span class="req-num">k</span></td>
+          <td class="en" data-label="英文原文">
+            be designed, developed and produced to reduce the impact of an incident using appropriate exploitation mitigation mechanisms and techniques;
+            <div class="tech-tags">
+              <span class="tech-tag tt-ra">Exploit Mitigation</span>
+              <span class="tech-tag tt-ra">Incident Impact Reduction</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            設計、開發與製造時應採用適當的漏洞利用緩解機制與技術，以降低事故影響；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#fdf4ff;color:#9333ea;border:1px solid #e9d5ff">FiduciaEdge → attestation-based access control for incident response</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2)(l) -->
+        <tr>
+          <td><span class="req-num">l</span></td>
+          <td class="en" data-label="英文原文">
+            provide security related information by recording and monitoring relevant internal activity, including the access to or modification of data, services or functions, with an opt-out mechanism for the user;
+            <div class="tech-tags">
+              <span class="tech-tag tt-ra">Audit Logging</span>
+              <span class="tech-tag tt-ra">Monitoring</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            透過記錄與監控相關內部活動（包含資料、服務或功能的存取與修改）提供安全相關資訊；並為使用者提供退出機制；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#fdf4ff;color:#9333ea;border:1px solid #e9d5ff">FiduciaEdge → Measured Boot PCR 記錄 + attestation evidence</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2)(m) -->
+        <tr>
+          <td><span class="req-num">m</span></td>
+          <td class="en" data-label="英文原文">
+            provide the possibility for users to securely and easily remove on a permanent basis all data and settings and, where such data can be transferred to other products or systems, ensure that this is done in a secure manner.
+            <div class="tech-tags">
+              <span class="tech-tag tt-privacy">Data Deletion</span>
+              <span class="tech-tag tt-crypto">Secure Data Transfer</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            為使用者提供安全且便捷地永久刪除所有資料與設定的機制；若資料可轉移至其他產品或系統，須確保以安全方式進行。
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Part II Header -->
+  <div class="part-header p2">
+    <div class="part-en">Annex I · Part II</div>
+    <div class="part-title-en">Vulnerability handling requirements — Manufacturers of products with digital elements shall:</div>
+    <div class="part-title-zh">漏洞處理要求——數位產品製造商應：</div>
+  </div>
+
+  <!-- Part II Table -->
+  <div style="overflow-x:auto">
+    <table class="bi-table p2">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="col-en">英文原文 (Official EN)</th>
+          <th class="col-zh">中文對照 (ZH Translation)</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- (1) SBOM -->
+        <tr>
+          <td><span class="req-num orange">1</span></td>
+          <td class="en" data-label="英文原文">
+            identify and document vulnerabilities and components contained in products with digital elements, including by drawing up a software bill of materials in a commonly used and machine-readable format covering at the very least the top-level dependencies of the products
+            <div class="tech-tags">
+              <span class="tech-tag tt-sbom">SBOM</span>
+              <span class="tech-tag tt-patch">Vuln Identification</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            識別並記錄產品中包含的漏洞與元件，包含以通用且機器可讀格式製作軟體物料清單（SBOM），至少涵蓋產品的頂層依賴項目
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#fef9c3;color:#a16207;border:1px solid #fde68a">SPDX / CycloneDX 格式</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (2) Patch -->
+        <tr>
+          <td><span class="req-num orange">2</span></td>
+          <td class="en" data-label="英文原文">
+            in relation to the risks posed to products with digital elements, address and remediate vulnerabilities without delay, including by providing security updates; where technically feasible, new security updates shall be provided separately from functionality updates;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Security Updates</span>
+              <span class="tech-tag tt-patch">Separate Updates</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            針對數位產品的風險，及時處理並修補漏洞，包含提供安全更新；在技術可行情況下，安全更新應與功能更新分開發布；
+          </td>
+        </tr>
+
+        <!-- (3) Testing -->
+        <tr>
+          <td><span class="req-num orange">3</span></td>
+          <td class="en" data-label="英文原文">
+            apply effective and regular tests and reviews of the security of the product with digital elements;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Security Testing</span>
+              <span class="tech-tag tt-patch">Regular Review</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            定期對產品安全性進行有效的測試與審查；
+          </td>
+        </tr>
+
+        <!-- (4) Disclosure -->
+        <tr>
+          <td><span class="req-num orange">4</span></td>
+          <td class="en" data-label="英文原文">
+            once a security update has been made available, share and publicly disclose information about fixed vulnerabilities, including a description of the vulnerabilities, information allowing users to identify the product with digital elements affected, the impacts of the vulnerabilities, their severity and clear and accessible information helping users to remediate the vulnerabilities; in duly justified cases, where manufacturers consider the security risks of publication to outweigh the security benefits, they may delay making public information regarding a fixed vulnerability until after users have been given the possibility to apply the relevant patch;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">CVE Disclosure</span>
+              <span class="tech-tag tt-patch">Severity Rating</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            安全更新發布後，公開揭露已修復漏洞的資訊，包含：漏洞描述、受影響產品識別資訊、漏洞影響、嚴重性等級，以及協助使用者修復的清晰指引；在充分正當的情況下，若製造商評估公開發布的安全風險大於效益，可在使用者獲得修補機會後，延後公開已修復漏洞的資訊；
+          </td>
+        </tr>
+
+        <!-- (5) CVD -->
+        <tr>
+          <td><span class="req-num orange">5</span></td>
+          <td class="en" data-label="英文原文">
+            put in place and enforce a policy on coordinated vulnerability disclosure;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">CVD Policy</span>
+              <span class="tech-tag tt-patch">PSIRT</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            建立並執行協調漏洞揭露（CVD）政策；
+          </td>
+        </tr>
+
+        <!-- (6) Contact -->
+        <tr>
+          <td><span class="req-num orange">6</span></td>
+          <td class="en" data-label="英文原文">
+            take measures to facilitate the sharing of information about potential vulnerabilities in their product with digital elements as well as in third-party components contained in that product, including by providing a contact address for the reporting of the vulnerabilities discovered in the product with digital elements;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Vulnerability Reporting</span>
+              <span class="tech-tag tt-patch">Contact Channel</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            採取措施促進產品中潛在漏洞（包含第三方元件的漏洞）資訊的共享，包含提供漏洞回報的聯絡管道；
+          </td>
+        </tr>
+
+        <!-- (7) Update mechanism -->
+        <tr>
+          <td><span class="req-num orange">7</span></td>
+          <td class="en" data-label="英文原文">
+            provide for mechanisms to securely distribute updates for products with digital elements to ensure that vulnerabilities are fixed or mitigated in a timely manner and, where applicable for security updates, in an automatic manner;
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Secure OTA</span>
+              <span class="tech-tag tt-boot">Secure Boot (update)</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            提供安全的更新發布機制，確保漏洞能及時修補或緩解；在適用情況下，安全更新應支援自動發布方式；
+            <div class="tech-tags" style="margin-top:8px">
+              <span class="tech-tag" style="background:#fff7ed;color:#c2410c;border:1px solid #fed7aa">Secure Boot + Anti-rollback + Signed OTA</span>
+            </div>
+          </td>
+        </tr>
+
+        <!-- (8) Free updates -->
+        <tr>
+          <td><span class="req-num orange">8</span></td>
+          <td class="en" data-label="英文原文">
+            ensure that, where security updates are available to address identified security issues, they are disseminated without delay and, unless otherwise agreed between a manufacturer and a business user in relation to a tailor-made product with digital elements, free of charge, accompanied by advisory messages providing users with the relevant information, including on potential action to be taken.
+            <div class="tech-tags">
+              <span class="tech-tag tt-patch">Free Security Updates</span>
+              <span class="tech-tag tt-patch">User Advisory</span>
+            </div>
+          </td>
+          <td class="zh" data-label="中文對照">
+            確保安全更新能在可用時立即免費發布（除非製造商與企業用戶就客製化產品另有約定），並附帶向使用者提供相關資訊的公告訊息，包含建議採取的措施。
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mapping summary -->
+  <div class="sec-label">FiduciaEdge 技術控制映射摘要</div>
+  <div style="background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm)">
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.84rem">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border)">
+            <th style="padding:8px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)">CRA 條文</th>
+            <th style="padding:8px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)">核心要求</th>
+            <th style="padding:8px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)">FiduciaEdge 技術</th>
+            <th style="padding:8px 14px;text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ink-3)">Platform Phase</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--red)">2(d)</td>
+            <td style="padding:10px 14px">未授權存取防護</td>
+            <td style="padding:10px 14px">IDevID/LDevID + mTLS + hardware-bound key</td>
+            <td style="padding:10px 14px"><span style="background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 1</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--red)">2(e)</td>
+            <td style="padding:10px 14px">資料機密性（加密）</td>
+            <td style="padding:10px 14px">TPM / Soteria key protection + TLS 1.3</td>
+            <td style="padding:10px 14px"><span style="background:var(--blue-l);color:var(--blue);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 1</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--red)">2(f)</td>
+            <td style="padding:10px 14px">資料完整性（韌體）</td>
+            <td style="padding:10px 14px">Secure Boot + Measured Boot + PCR evidence</td>
+            <td style="padding:10px 14px"><span style="background:var(--orange-l);color:var(--orange);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 2</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--red)">2(f)(k)(l)</td>
+            <td style="padding:10px 14px">完整性驗證 + 事故緩解 + 監控</td>
+            <td style="padding:10px 14px">Remote Attestation + TPM2_Quote + NMS</td>
+            <td style="padding:10px 14px"><span style="background:var(--red-l);color:var(--red);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 3</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--orange)">II (1)</td>
+            <td style="padding:10px 14px">SBOM</td>
+            <td style="padding:10px 14px">SPDX / CycloneDX 格式</td>
+            <td style="padding:10px 14px"><span style="background:var(--orange-l);color:var(--orange);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 2</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border)">
+            <td style="padding:10px 14px;font-weight:700;color:var(--orange)">II (7)</td>
+            <td style="padding:10px 14px">安全 OTA 更新</td>
+            <td style="padding:10px 14px">Signed OTA + Anti-rollback (Soteria 0x17)</td>
+            <td style="padding:10px 14px"><span style="background:var(--orange-l);color:var(--orange);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">Phase 2</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;font-weight:700;color:var(--orange)">II (2)(4)(5)(6)(8)</td>
+            <td style="padding:10px 14px">漏洞處理流程</td>
+            <td style="padding:10px 14px">OEM 責任（PSIRT + CVD + advisory）</td>
+            <td style="padding:10px 14px"><span style="background:#f3f4f6;color:var(--ink-3);padding:2px 8px;border-radius:5px;font-size:.72rem;font-weight:700">OEM 責任</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.77rem;color:var(--ink-3);margin-top:12px">⚠ Conformity assessment（Article 32–36）及 CE marking 的法律責任在 OEM 製造商。FiduciaEdge 提供技術服務與 evidence 準備，不承擔 OEM 的合規法律責任。</p>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <strong>CRA Annex I 英中對照表</strong> — FiduciaEdge TTPS 團隊<br>
+  內部學習用途，非法律合規聲明 · 以官方 EUR-Lex 英文原文為準<br>
+  <a href="./index.html">← 返回首頁</a> · <a href="./cra-annex-mapping.html">CRA Annex Mapping →</a>
+</footer>
+
+</body>
+</html>
