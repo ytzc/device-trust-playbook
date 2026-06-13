@@ -388,6 +388,7 @@
   <a href="#s1">1 心智</a>
   <a href="#s2">2 名詞</a>
   <a href="#s3">3 TPM表</a>
+  <a href="#s3b">3+ 金鑰階層</a>
   <a href="#s4">4 決策圖</a>
   <a href="#s5">5 Soteria</a>
   <a href="#s6">6 OP-TEE</a>
@@ -754,6 +755,42 @@
       <div class="fc-how">💬 「讓上層不需要知道底層是什麼 RoT，未來換後端不用重寫」</div>
     </div>
 
+    <!-- 28 EK -->
+    <div class="fc">
+      <div class="fc-term">28 · EK</div>
+      <div class="fc-en">Endorsement Key</div>
+      <div class="fc-def">TPM 出廠時內建的非對稱金鑰對。EKpub 用於向外界證明「這是一顆真實 TPM」；私鑰永不離開 TPM。EK certificate 由 TPM 製造商 CA 簽發。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「TPM 的身份證，製造商擔保它存在」</div>
+    </div>
+
+    <!-- 29 SRK -->
+    <div class="fc">
+      <div class="fc-term">29 · SRK</div>
+      <div class="fc-en">Storage Root Key</div>
+      <div class="fc-def">TPM 儲存階層（Storage Hierarchy）的根金鑰，由 Owner 建立（<code>tpm2_createprimary -C o</code>）。SRK 是大多數應用金鑰的父金鑰，負責包裝（wrap）子金鑰使其可跨電源週期持久化。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「Owner 的金鑰保險箱的鑰匙」</div>
+    </div>
+
+    <!-- 30 IAK -->
+    <div class="fc">
+      <div class="fc-term">30 · IAK</div>
+      <div class="fc-en">Initial Attestation Key</div>
+      <div class="fc-def">出廠時建立的認證金鑰（TCG DevID Spec），用於簽發 TPM2_Quote。由製造商 CA 透過 EK proof-of-possession 簽發 IAK certificate。非可導出，TPM 2.0 中取代舊版 AIK。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「工廠建立的終身認證金鑰，用來說『我開機了，狀態是乾淨的』」</div>
+    </div>
+
+    <!-- 31 LAK -->
+    <div class="fc">
+      <div class="fc-term">31 · LAK</div>
+      <div class="fc-en">Local Attestation Key</div>
+      <div class="fc-def">由現場 CA（Local CA）簽發的認證金鑰，用 IAK proof-of-possession 作為信任錨。LAK 可更換 / 可撤銷，對應 LDevID 在 attestation 端的角色。適合短期、可輪換的 attestation 場景。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「現場發的認證金鑰，LDevID 的 attestation 版本」</div>
+    </div>
+
   </div><!-- /fc-grid -->
 </div>
 
@@ -859,6 +896,171 @@
   </div>
 </div>
 
+
+<!-- ===== SECTION 3.5: TPM Key Hierarchy ===== -->
+<div class="sec" id="s3b">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#0c4a6e;font-size:.85rem">3+</div>
+    <div>
+      <div class="sec-title">TPM 金鑰階層與繼承關係</div>
+      <div class="sec-sub">EK → IAK/IDevID → LAK/LDevID + SRK 完整記憶圖</div>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>TCG 規範：</strong>「TPM 2.0 Keys for Device Identity and Attestation」定義了 EK / IAK / LAK / IDevID / LDevID 的關係；<strong>IEEE 802.1AR</strong> 定義 IDevID / LDevID；兩者共同構成標準化設備身份體系。
+  </div>
+
+  <!-- Visual Hierarchy Tree -->
+  <h3 style="font-size:.93rem;font-weight:700;margin:18px 0 12px">完整金鑰繼承樹</h3>
+  <div style="background:#f8f7ff;border:1px solid #ddd6fe;border-radius:12px;padding:20px 22px;font-size:.84rem;line-height:2.2;overflow-x:auto">
+    <div style="font-weight:700;color:#1e1b4b;margin-bottom:4px">TPM（出廠時 — 製造商負責）</div>
+    <div style="padding-left:20px;border-left:2px solid #a78bfa">
+      <div style="color:#6d28d9;font-weight:700">🔑 EK (Endorsement Key)</div>
+      <div style="padding-left:20px;color:#4b5563;font-size:.8rem;margin-bottom:6px">└ TPM 唯一身份；製造商 CA 簽發 EK Cert；私鑰永不離 TPM</div>
+      <div style="padding-left:20px;border-left:2px solid #60a5fa">
+        <div style="color:#1d4ed8;font-weight:700">🪪 IDevID Key (Initial Device Identity)</div>
+        <div style="padding-left:20px;color:#4b5563;font-size:.8rem;margin-bottom:4px">└ IEEE 802.1AR · 製造商 CA 用 EK proof-of-possession 簽發 IDevID Cert</div>
+        <div style="padding-left:20px;border-left:2px dashed #93c5fd">
+          <div style="color:#0369a1;font-weight:600">🪪 LDevID Key (Locally Significant Device Identity)</div>
+          <div style="padding-left:20px;color:#4b5563;font-size:.8rem">└ 現場 CA 用 IDevID proof-of-possession 簽發 LDevID Cert · 可輪換</div>
+        </div>
+      </div>
+      <div style="padding-left:20px;margin-top:8px;border-left:2px solid #34d399">
+        <div style="color:#047857;font-weight:700">📡 IAK (Initial Attestation Key)</div>
+        <div style="padding-left:20px;color:#4b5563;font-size:.8rem;margin-bottom:4px">└ TCG DevID Spec · 製造商 CA 用 EK proof-of-possession 簽發 IAK Cert · 用於 TPM2_Quote</div>
+        <div style="padding-left:20px;border-left:2px dashed #6ee7b7">
+          <div style="color:#065f46;font-weight:600">📡 LAK (Local Attestation Key)</div>
+          <div style="padding-left:20px;color:#4b5563;font-size:.8rem">└ 現場 CA 用 IAK proof-of-possession 簽發 LAK Cert · 可輪換 · 用於 TPM2_Quote</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-weight:700;color:#1e1b4b;margin-top:16px;margin-bottom:4px">TPM（Owner 管理 — 運行時）</div>
+    <div style="padding-left:20px;border-left:2px solid #f9a8d4">
+      <div style="color:#be185d;font-weight:700">🗝 SRK (Storage Root Key)</div>
+      <div style="padding-left:20px;color:#4b5563;font-size:.8rem;margin-bottom:4px">└ Owner 建立（<code>tpm2_createprimary -C o</code>）；Storage Hierarchy 根金鑰</div>
+      <div style="padding-left:20px;border-left:2px dashed #fbcfe8">
+        <div style="color:#9d174d;font-weight:600">🔐 Application Keys（TLS key, signing key, etc.）</div>
+        <div style="padding-left:20px;color:#4b5563;font-size:.8rem">└ SRK 包裝子金鑰使其可持久化（TPM context save/load）</div>
+        <div style="color:#9d174d;font-weight:600;margin-top:4px">🪪 LDevID Key（可被 SRK 保護）</div>
+        <div style="padding-left:20px;color:#4b5563;font-size:.8rem">└ LDevID key 可放在 Owner hierarchy 下，由 SRK wrap 儲存</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key-by-key comparison table -->
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">六大金鑰速查表</h3>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>金鑰</th>
+          <th>建立時機</th>
+          <th>Hierarchy</th>
+          <th>誰簽發 Cert</th>
+          <th>主要用途</th>
+          <th>可輪換？</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color:#6d28d9">EK</strong></td>
+          <td>TPM 出廠</td>
+          <td>Endorsement</td>
+          <td>TPM 製造商 CA</td>
+          <td>証明 TPM 身份；作為 IDevID/IAK proof-of-possession 的錨</td>
+          <td>❌ 終身</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#be185d">SRK</strong></td>
+          <td>Owner 設定時</td>
+          <td>Storage (Owner)</td>
+          <td>—（無 cert）</td>
+          <td>包裝子金鑰，使子金鑰可持久化</td>
+          <td>⚠️ Owner 可 clear/recreate</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#1d4ed8">IDevID</strong></td>
+          <td>製造端</td>
+          <td>Endorsement / Platform</td>
+          <td>製造商 CA（用 EK PoP）</td>
+          <td>設備終身身份；mTLS client cert；BRSKI</td>
+          <td>❌ 終身不可換（IEEE 802.1AR）</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#0369a1">LDevID</strong></td>
+          <td>現場部署時</td>
+          <td>Owner / Platform</td>
+          <td>Local/Enterprise CA（用 IDevID PoP）</td>
+          <td>組織/運營身份；mTLS；可取代 IDevID 用於日常連線</td>
+          <td>✅ 可輪換可撤銷</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#047857">IAK</strong></td>
+          <td>製造端</td>
+          <td>Endorsement / Platform</td>
+          <td>製造商 CA（用 EK PoP）</td>
+          <td>Remote Attestation（TPM2_Quote）；終身 attestation 根</td>
+          <td>❌ 終身不可換</td>
+        </tr>
+        <tr>
+          <td><strong style="color:#065f46">LAK</strong></td>
+          <td>現場部署時</td>
+          <td>Owner / Platform</td>
+          <td>Local CA（用 IAK PoP）</td>
+          <td>日常 Remote Attestation；可輪換的 attestation 金鑰</td>
+          <td>✅ 可輪換可撤銷</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- IDevID vs IAK: side-by-side -->
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">IDevID vs IAK — 對稱設計</h3>
+  <div class="grid-2">
+    <div class="card" style="border-top:4px solid #1d4ed8">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1d4ed8;margin-bottom:10px">🪪 身份（Identity）軸</div>
+      <div style="font-size:.84rem;line-height:2">
+        <strong>IDevID</strong>（出廠）→ 製造商 CA 簽發<br>
+        <strong>LDevID</strong>（現場）→ Local CA 用 IDevID PoP 簽發<br>
+        <br>
+        用途：mTLS client auth、BRSKI、設備識別<br>
+        規範：<strong>IEEE 802.1AR</strong>
+      </div>
+    </div>
+    <div class="card" style="border-top:4px solid #047857">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#047857;margin-bottom:10px">📡 認證（Attestation）軸</div>
+      <div style="font-size:.84rem;line-height:2">
+        <strong>IAK</strong>（出廠）→ 製造商 CA 簽發<br>
+        <strong>LAK</strong>（現場）→ Local CA 用 IAK PoP 簽發<br>
+        <br>
+        用途：TPM2_Quote、Measured Boot evidence<br>
+        規範：<strong>TCG DevID Spec</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Proof of Possession flow -->
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">Proof of Possession (PoP) 流程</h3>
+  <div class="flow">
+    <div class="flow-step"><span class="flow-num">1</span><div class="flow-txt"><strong>EK PoP：</strong>CA 要求 TPM 用 EK 解密一段 credential（makecredential/activatecredential），成功代表 TPM 確實持有 EK 私鑰。</div></div>
+    <div class="flow-step"><span class="flow-num">2</span><div class="flow-txt"><strong>製造商 CA 簽 IDevID/IAK：</strong>確認 EK PoP 成功後，製造商 CA 為 IDevID/IAK 的公鑰簽發 X.509 cert，存入設備。</div></div>
+    <div class="flow-step"><span class="flow-num">3</span><div class="flow-txt"><strong>IDevID PoP → LDevID：</strong>設備用 IDevID 簽署 CSR，Local CA 驗證後簽發 LDevID cert（BRSKI / EST / CMP）。</div></div>
+    <div class="flow-step"><span class="flow-num">4</span><div class="flow-txt"><strong>IAK PoP → LAK：</strong>設備用 IAK 簽署 LAK CSR，Local CA 簽發 LAK cert，之後的 TPM2_Quote 用 LAK 簽名。</div></div>
+  </div>
+
+  <!-- AIK vs IAK note -->
+  <div class="info-box" style="margin-top:12px">
+    <strong>歷史名詞：AIK vs IAK</strong><br>
+    <span style="font-size:.84rem">TPM 1.2 時代叫 <strong>AIK（Attestation Identity Key）</strong>；TPM 2.0 改名為 <strong>IAK（Initial Attestation Key）</strong>，功能相同但 API 改變。文件中看到 AIK 通常等同 IAK，但嚴格來說 AIK 是 TPM 1.2 術語。</span>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 記憶口訣</div>
+    <strong>EK 是 TPM 的身份證（製造商出具）→ IDevID/IAK 是設備的出生證（製造商以 EK 為證）→ LDevID/LAK 是工作證（現場 CA 核發，可輪換）→ SRK 是保險箱（Owner 管的金鑰存放處）。</strong>
+  </div>
+</div>
 
 <!-- ===== SECTION 4: Platform Decision Map ===== -->
 <div class="sec" id="s4">
@@ -1530,6 +1732,103 @@
     「x86 找 hTPM，ARM 看 OP-TEE，TX8 先看 Soteria，MIPS 先 feasibility，VM 才用 vTPM。」<br>
     「Secure Boot 擋，Measured Boot 記，Remote Attestation 報。」<br>
     「CRA-ready 是技術基礎，full compliance 是 OEM 的責任。」
+  </div>
+</div>
+
+<!-- ── 延伸參考資源 ──────────────────────────────────────────────── -->
+<div class="sec" id="refs">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#374151;font-size:.8rem">📚</div>
+    <div>
+      <div class="sec-title">延伸閱讀 &amp; 參考資源</div>
+      <div class="sec-sub">深入學習 TPM / DevID / Attestation 的推薦來源</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:16px">
+
+    <!-- tpm2-software.github.io -->
+    <div class="card" style="border-top:4px solid #1d4ed8">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:1.2rem">🔐</span>
+        <div>
+          <div style="font-weight:700;font-size:.92rem">tpm2-software.github.io</div>
+          <div style="font-size:.72rem;color:var(--ink-3)">TPM2 Tools 官方技術部落格</div>
+        </div>
+        <a href="https://tpm2-software.github.io/" target="_blank" rel="noopener" style="margin-left:auto;display:inline-flex;align-items:center;gap:4px;padding:5px 12px;background:var(--blue-l);border:1px solid var(--blue-m);border-radius:8px;color:var(--blue);font-size:.75rem;font-weight:700;text-decoration:none;white-space:nowrap">↗ 開啟</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://tpm2-software.github.io/2021/02/17/Protecting_Secrets_at_TPM_Interface.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2021-02-17</span>
+          <span>Protecting Secrets at TPM Interface</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#eff6ff;color:#1d4ed8">EK/PoP</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2020/10/19/TPM2-Device-Emulation-With-QEMU.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2020-10-19</span>
+          <span>TPM2 Device Emulation With QEMU</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f0fdf4;color:#15803d">swtpm/vTPM</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2020/07/22/FAPI_Crypto_Profiles.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2020-07-22</span>
+          <span>FAPI Crypto Profiles</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f5f3ff;color:#7c3aed">FAPI/TSS2</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2020/06/12/Remote-Attestation-With-tpm2-tools.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2020-06-12</span>
+          <span>Remote Attestation With tpm2-tools</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fdf4ff;color:#9333ea">RA/Quote</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2020/04/13/Disk-Encryption.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2020-04-13</span>
+          <span>Disk Encryption</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#f0fdf4;color:#15803d">SRK/PCR</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2019/12/18/Remote-Attestation.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2019-12-18</span>
+          <span>Remote Attestation</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fdf4ff;color:#9333ea">RA 入門</span>
+        </a>
+        <a href="https://tpm2-software.github.io/2019/02/05/TPM2-Device-Attestation.html" target="_blank" rel="noopener" style="display:flex;align-items:baseline;gap:8px;text-decoration:none;color:var(--ink-2);font-size:.83rem;padding:5px 8px;border-radius:7px;transition:background .1s" onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'">
+          <span style="font-size:.65rem;color:var(--ink-3);flex-shrink:0">2019-02-05</span>
+          <span>TPM2 Device Attestation</span>
+          <span style="margin-left:auto;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:4px;background:#fdf4ff;color:#9333ea">AIK/IAK</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Standards & Specs -->
+    <div class="card" style="border-top:4px solid #0f766e">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:1.2rem">📜</span>
+        <div>
+          <div style="font-weight:700;font-size:.92rem">規範 &amp; 標準文件</div>
+          <div style="font-size:.72rem;color:var(--ink-3)">EK / IAK / IDevID 的法源依據</div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:.8rem;padding:8px 10px;background:#f0fdfa;border-radius:8px;border-left:3px solid #0f766e">
+          <div style="font-weight:700;color:#0f766e;margin-bottom:2px">TCG — TPM 2.0 Keys for Device Identity &amp; Attestation</div>
+          <div style="color:var(--ink-3);font-size:.75rem">定義 IAK / LAK / IDevID / LDevID 在 TPM 中的建立、認證與使用規範</div>
+        </div>
+        <div style="font-size:.8rem;padding:8px 10px;background:#eff6ff;border-radius:8px;border-left:3px solid #1d4ed8">
+          <div style="font-weight:700;color:#1d4ed8;margin-bottom:2px">IEEE 802.1AR — Secure Device Identity</div>
+          <div style="color:var(--ink-3);font-size:.75rem">IDevID / LDevID 規範；non-exportable key 要求；X.509 cert 格式</div>
+        </div>
+        <div style="font-size:.8rem;padding:8px 10px;background:#f5f3ff;border-radius:8px;border-left:3px solid #7c3aed">
+          <div style="font-weight:700;color:#7c3aed;margin-bottom:2px">TCG — TPM 2.0 Library Specification (Part 1–4)</div>
+          <div style="color:var(--ink-3);font-size:.75rem">EK / SRK / Primary Key 架構；makecredential / activatecredential API</div>
+        </div>
+        <div style="font-size:.8rem;padding:8px 10px;background:#fef9c3;border-radius:8px;border-left:3px solid #a16207">
+          <div style="font-weight:700;color:#a16207;margin-bottom:2px">IETF RFC 8995 — BRSKI</div>
+          <div style="color:var(--ink-3);font-size:.75rem">IDevID 用於零觸碰自動上線；LDevID 由 Registrar 核發</div>
+        </div>
+        <div style="font-size:.8rem;padding:8px 10px;background:#fdf4ff;border-radius:8px;border-left:3px solid #9333ea">
+          <div style="font-weight:700;color:#9333ea;margin-bottom:2px">IETF RATS — Remote ATtestation procedureS</div>
+          <div style="color:var(--ink-3);font-size:.75rem">IAK / LAK 作為 Attester 角色；EAT / CoRIM evidence format</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
