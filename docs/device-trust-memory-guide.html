@@ -395,6 +395,7 @@
   <a href="#s7">7 比較</a>
   <a href="#s8">8 開機</a>
   <a href="#s9">9 生命週期</a>
+  <a href="#s9b">9+ FDO/上線</a>
   <a href="#s10">10 CRA</a>
   <a href="#s11">11 案例</a>
   <a href="#s12">12 問答</a>
@@ -1444,6 +1445,221 @@
     <div class="flow-step"><span class="flow-num">合規</span><div class="flow-txt"><strong>CRA Evidence</strong> — 彙整 device identity、firmware integrity、key protection、attestation 記錄，作為合規評估的技術 evidence。<em>把所有安全記錄整理好，幫 OEM 做 CRA 準備。</em></div></div>
   </div>
 </div>
+
+<!-- ── S9b: Provisioning & Onboarding 關係圖 ───────────────────────── -->
+<div class="sec" id="s9b">
+  <div class="sec-hd" style="background:#0c4a6e">
+    <div class="sec-num">9+</div>
+    <div>
+      <div class="sec-title">Provisioning &amp; Onboarding 關係圖</div>
+      <div class="sec-sub">FDO / BRSKI / IDevID / LDevID / IAK — 完整流程與繼承</div>
+    </div>
+  </div>
+
+  <!-- 1. 完整生命週期大圖 -->
+  <h3 style="margin:1.4rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">1．完整生命週期大圖</h3>
+  <div class="flow">
+
+    <div class="flow-step">
+      <div class="flow-num">製造</div>
+      <div class="flow-txt">
+        <strong>TPM 製造商：</strong>EK 永久安裝（私鑰不離 TPM）<br>
+        <strong>設備製造商：</strong>IDevID Key + IAK Key 安裝；製造商 CA 用 EK proof-of-possession 簽發 IDevID Cert + IAK Cert<br>
+        <strong>FDO DI（Device Initialization）：</strong>安裝 Device Credential（DC）+ GUID + 初始 Key Pair；建立 Ownership Voucher（OV）<br>
+        <strong>出廠設備持有：</strong>{ EK, IDevID Key, IAK Key, IDevID Cert, IAK Cert, FDO DC, GUID, OV }
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">供應鏈</div>
+      <div class="flow-txt">
+        <strong>FDO：</strong>OV 轉移鏈（Manufacturer → Distributor → End Owner），每個環節簽名驗證<br>
+        <strong>BRSKI：</strong>IDevID Trust Anchor 保留在 Vendor / Manufacturer CA
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">上線</div>
+      <div class="flow-txt">
+        <strong>Path A — BRSKI：</strong>Device 用 IDevID → Bootstrap Router → MASA 驗證 → 簽發 Voucher → LDevID Cert（Domain Certificate）<br>
+        <strong>Path B — FDO：</strong>Device 用 DC + GUID → Rendezvous Server（TO1）→ Owner Server（TO2）→ Service Info → LDevID Cert + config
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">運行</div>
+      <div class="flow-txt">
+        Device 有 LDevID cert（在 TPM 保護）→ <strong>mTLS client auth</strong><br>
+        Device 有 LAK cert → TPM2_Quote → <strong>Remote Attestation</strong> → NMS Pass / Fail<br>
+        Secure Boot + Measured Boot → PCR evidence
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">合規</div>
+      <div class="flow-txt">
+        IDevID / LDevID → <span class="tbc">CRA Art. 2(d)</span><br>
+        Key protection in TPM → <span class="tbc">CRA Art. 2(e)</span><br>
+        Secure Boot + Measured Boot → <span class="tbc">CRA Art. 2(f)</span><br>
+        RA → <span class="tbc">CRA Art. 2(f)(k)(l)</span>
+      </div>
+    </div>
+
+  </div><!-- /flow lifecycle -->
+
+  <!-- 2. FDO Protocol 四階段 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">2．FDO Protocol 四階段（DI / TO0 / TO1 / TO2）</h3>
+  <div class="flow">
+
+    <div class="flow-step">
+      <div class="flow-num">DI</div>
+      <div class="flow-txt">
+        <strong>Device Initialization（製造端）：</strong>安裝 Device Credential（DC）+ GUID，建立 Ownership Voucher（OV）。此步驟在工廠完成，設備出廠前確立初始身份。
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">TO0</div>
+      <div class="flow-txt">
+        <strong>Transfer Ownership 0：</strong>Owner 向 Rendezvous Server 登記自己的地址（IP / URL），告知「這個 GUID 的設備找我」。
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">TO1</div>
+      <div class="flow-txt">
+        <strong>Transfer Ownership 1：</strong>設備開機後向 RV Server 查詢「我的 Owner 在哪裡？」RV 扮演媒合服務，回傳 Owner 地址。
+      </div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">TO2</div>
+      <div class="flow-txt">
+        <strong>Transfer Ownership 2：</strong>Device ↔ Owner Server 互相認證（OV 鏈驗證）。Owner 傳送 <em>Service Info</em>（config、TLS cert、LDevID 等），Onboarding 完成。
+      </div>
+    </div>
+
+  </div><!-- /flow FDO -->
+
+  <h4 style="margin:1.2rem 0 0.5rem;color:#1e3a5f;">FDO 關鍵術語</h4>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>術語</th><th>說明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GUID</td><td>設備全域唯一 ID，DI 時指定</td></tr>
+        <tr><td>Device Credential (DC)</td><td>設備的初始金鑰對 + rendezvous info</td></tr>
+        <tr><td>Ownership Voucher (OV)</td><td>所有權轉移憑證，每個環節加簽</td></tr>
+        <tr><td>Rendezvous Server (RV)</td><td>設備與 Owner 的媒合服務（TO1）</td></tr>
+        <tr><td>Service Info</td><td>TO2 時 Owner 傳給設備的配置（cert, key, config）</td></tr>
+        <tr><td>Owner Server</td><td>接受設備連線、完成 TO2 的後端</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. BRSKI Protocol 流程 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">3．BRSKI Protocol 流程（緊湊版）</h3>
+  <div class="flow">
+
+    <div class="flow-step">
+      <div class="flow-num">①</div>
+      <div class="flow-txt">Device 開機，用 <strong>IDevID</strong> 向 Bootstrap Router 認證</div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">②</div>
+      <div class="flow-txt">Bootstrap Router 向 <strong>MASA</strong>（Manufacturer Authorized Signing Authority）請求 Voucher（附上 IDevID Cert）</div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">③</div>
+      <div class="flow-txt">MASA 驗證 IDevID，簽發 <strong>Voucher</strong></div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">④</div>
+      <div class="flow-txt">Device 收到 Voucher，驗證後取得 <strong>Domain Certificate（= LDevID）</strong></div>
+    </div>
+
+    <div class="flow-step">
+      <div class="flow-num">⑤</div>
+      <div class="flow-txt">Device 完成 onboarding，加入 network domain</div>
+    </div>
+
+  </div><!-- /flow BRSKI -->
+
+  <!-- 4. FDO vs BRSKI 比較表 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">4．FDO vs BRSKI 比較表</h3>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>維度</th><th>FDO（FIDO Device Onboard）</th><th>BRSKI（RFC 8995）</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>規範</td><td>FIDO Alliance FDO Spec</td><td>IETF RFC 8995</td></tr>
+        <tr><td>設計焦點</td><td>IoT / 製造到 Owner 轉移 / 工業設備</td><td>網路設備 / 自動 join domain</td></tr>
+        <tr><td>身份錨</td><td>Device Credential (DC) + OV</td><td>IDevID（IEEE 802.1AR）</td></tr>
+        <tr><td>所有權轉移</td><td>OV 鏈（可離線轉移）</td><td>依賴 MASA 在線驗證</td></tr>
+        <tr><td>Rendezvous</td><td>RV Server（TO1）</td><td>Bootstrap Router</td></tr>
+        <tr><td>協議</td><td>TO0 / TO1 / TO2</td><td>EST + BRSKI</td></tr>
+        <tr><td>Onboarding 結果</td><td>Service Info（config + cert）</td><td>Domain Certificate（LDevID）</td></tr>
+        <tr><td>與 TPM 整合</td><td>DC 可以是 TPM key</td><td>IDevID 在 TPM 裡</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. 金鑰角色映射表 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">5．金鑰角色映射表</h3>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr><th>金鑰</th><th>FDO 角色</th><th>BRSKI 角色</th><th>Operational 角色</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>EK</td><td>—</td><td>—</td><td>TPM identity proof</td></tr>
+        <tr><td>SRK</td><td>儲存 Service Info 取得的 key</td><td>儲存 LDevID key</td><td>包裝所有 app keys</td></tr>
+        <tr><td>IDevID</td><td>DC 可基於 IDevID</td><td>身份錨，向 Bootstrap Router 認證</td><td>mTLS（若 LDevID 不可用）</td></tr>
+        <tr><td>LDevID</td><td>TO2 Service Info 中取得</td><td>Voucher → Domain Certificate</td><td>mTLS 日常身份</td></tr>
+        <tr><td>IAK</td><td>DC 可包含 attestation key</td><td>—</td><td>Attestation 根（製造商保證）</td></tr>
+        <tr><td>LAK</td><td>TO2 Service Info 中取得</td><td>—</td><td>TPM2_Quote 日常認證</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. 口訣 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">6．口訣</h3>
+  <div class="mnemo">
+    <div class="mnemo-label">記憶錨</div>
+    「FDO 是 IoT 世界的搬家公司，OV 是房產所有權契約；BRSKI 是網路設備的入學流程，IDevID 是學籍證。最後結果都是：設備有了可用的 LDevID，可以做 mTLS，可以向 NMS 說『我是誰』。」
+  </div>
+
+  <!-- 7. 參考連結 -->
+  <h3 style="margin:1.8rem 0 0.6rem;color:#0c4a6e;font-size:1.05rem;">7．參考連結</h3>
+  <div class="grid-3">
+    <div class="card">
+      <strong>FIDO Alliance FDO Spec</strong><br>
+      <a href="https://fidoalliance.org/specs/FDO/" target="_blank" rel="noopener">fidoalliance.org/specs/FDO/</a>
+    </div>
+    <div class="card">
+      <strong>FDO 官方文件列表</strong><br>
+      <a href="https://fidoalliance.org/specs/FDO/FIDO-Device-Onboard-RD-v1.1-20211214/" target="_blank" rel="noopener">FDO RD v1.1 (2021-12-14)</a>
+    </div>
+    <div class="card">
+      <strong>FDO GitHub Org</strong><br>
+      <a href="https://github.com/fido-device-onboard" target="_blank" rel="noopener">github.com/fido-device-onboard</a>
+    </div>
+    <div class="card">
+      <strong>RFC 8995 — BRSKI</strong><br>
+      <a href="https://datatracker.ietf.org/doc/rfc8995/" target="_blank" rel="noopener">datatracker.ietf.org/doc/rfc8995/</a>
+    </div>
+    <div class="card">
+      <strong>Linux Foundation / FDO 參考實作</strong><br>
+      <a href="https://github.com/fido-device-onboard/pri-fidoiot" target="_blank" rel="noopener">pri-fidoiot (Java RI)</a>
+    </div>
+  </div>
+
+</div><!-- /s9b -->
 
 <!-- ── S10: CRA-ready vs Full Compliance ──────────────────────────── -->
 <div class="sec" id="s10">

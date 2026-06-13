@@ -471,16 +471,107 @@
     </div>
   </div>
 
-  <!-- ─── PLAYBOOK TOPICS ──────────────────────────────────────────── -->
+  <!-- ─── TECH OVERVIEW ──────────────────────────────────────────────── -->
   <div class="section">
-    <div class="sec-label">Playbook 涵蓋主題</div>
+    <div class="sec-label">設備信任技術全貌 What This Playbook Covers</div>
+
+    <!-- End-to-end relationship flow -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px;overflow-x:auto">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-3);margin-bottom:16px">從製造到合規的完整技術鏈</div>
+
+      <!-- Stage row -->
+      <div style="display:flex;gap:0;align-items:stretch;min-width:700px">
+
+        <!-- Manufacturing -->
+        <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px 0 0 10px;padding:14px 14px;border-right:none">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d;margin-bottom:8px">🏭 製造 Manufacturing</div>
+          <div style="font-size:.78rem;color:#1a3a24;line-height:1.9">
+            <div>EK 永久安裝</div>
+            <div><strong>IDevID Key</strong> + <strong>IAK Key</strong></div>
+            <div>製造商 CA 簽發 Cert</div>
+            <div>FDO: <strong>DC + GUID + OV</strong> 建立</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;background:#f0fdf4;border-top:1px solid #bbf7d0;border-bottom:1px solid #bbf7d0"><span style="color:#15803d;font-size:1.1rem">→</span></div>
+
+        <!-- Onboarding -->
+        <div style="flex:1.2;background:#eff6ff;border:1px solid #bfdbfe;padding:14px;border-right:none;border-left:none">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1d4ed8;margin-bottom:8px">🔌 首次上線 Onboarding</div>
+          <div style="font-size:.78rem;color:#1e3a5f;line-height:1.9">
+            <div><strong>BRSKI</strong>: IDevID → MASA → LDevID</div>
+            <div><strong>FDO</strong>: DC → RV → Owner → Service Info</div>
+            <div>結果: 取得 <strong>LDevID Cert + LAK Cert</strong></div>
+            <div>IAK PoP → LAK Cert 核發</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;background:#eff6ff;border-top:1px solid #bfdbfe;border-bottom:1px solid #bfdbfe"><span style="color:#1d4ed8;font-size:1.1rem">→</span></div>
+
+        <!-- Operational -->
+        <div style="flex:1.2;background:#f5f3ff;border:1px solid #ddd6fe;padding:14px;border-right:none;border-left:none">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;margin-bottom:8px">⚡ 運行 Operational</div>
+          <div style="font-size:.78rem;color:#2e1065;line-height:1.9">
+            <div><strong>mTLS</strong>: LDevID 私鑰 (TPM) → client auth</div>
+            <div><strong>Secure Boot</strong> → 驗簽，阻擋壞 image</div>
+            <div><strong>Measured Boot</strong> → 量測 → PCR 記錄</div>
+            <div><strong>RA</strong>: LAK → TPM2_Quote → NMS</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;padding:0 4px;background:#f5f3ff;border-top:1px solid #ddd6fe;border-bottom:1px solid #ddd6fe"><span style="color:#7c3aed;font-size:1.1rem">→</span></div>
+
+        <!-- CRA Evidence -->
+        <div style="flex:1;background:#fef2f2;border:1px solid #fecaca;border-radius:0 10px 10px 0;padding:14px;border-left:none">
+          <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b91c1c;margin-bottom:8px">🇪🇺 合規 CRA Evidence</div>
+          <div style="font-size:.78rem;color:#450a0a;line-height:1.9">
+            <div>Art. 2(d) ← IDevID/LDevID</div>
+            <div>Art. 2(e) ← Key protection</div>
+            <div>Art. 2(f) ← Firmware integrity</div>
+            <div>Art. 2(f)(k)(l) ← RA evidence</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RoT row below -->
+      <div style="margin-top:14px;padding:12px 16px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;font-size:.8rem;color:#451a03">
+        <span style="font-weight:700;color:#92400e">⚓ Root of Trust（信任鏈底層，貫穿全程）：</span>
+        &nbsp;x86 → <strong>hTPM</strong> &nbsp;·&nbsp; ARM+TrustZone → <strong>OP-TEE fTPM</strong> &nbsp;·&nbsp; TX8 → <strong>Soteria hRoT</strong> &nbsp;·&nbsp; Legacy MIPS → feasibility study &nbsp;·&nbsp; VM/QEMU → <strong>vTPM</strong>（僅測試）
+      </div>
+    </div>
+
+    <!-- 6-topic grid with rich descriptions -->
     <div class="topic-grid">
-      <div class="topic"><div class="topic-icon">🪪</div><h4>Device Identity</h4><p>IDevID / LDevID，hardware-bound，non-exportable private key，TWCA 憑證</p></div>
-      <div class="topic"><div class="topic-icon">⚓</div><h4>Root of Trust</h4><p>hTPM / fTPM / vTPM / Soteria hRoT / External SE / PUF — 依平台選擇</p></div>
-      <div class="topic"><div class="topic-icon">🏭</div><h4>Secure Provisioning</h4><p>TTPS DI、FDO、zero-touch provisioning、製造端 toolchain</p></div>
-      <div class="topic"><div class="topic-icon">🔒</div><h4>Firmware Integrity</h4><p>Secure Boot、Measured Boot、SBOM（SPDX / CycloneDX）</p></div>
-      <div class="topic"><div class="topic-icon">📡</div><h4>Remote Attestation</h4><p>Measured Boot evidence、signed RA report、NMS policy engine Pass/Fail</p></div>
-      <div class="topic"><div class="topic-icon">🇪🇺</div><h4>CRA Readiness</h4><p>EU CRA 2024/2847 Annex I 技術控制對應、evidence preparation、conformity assessment support</p></div>
+      <div class="topic" style="border-top:3px solid #1d4ed8">
+        <div class="topic-icon">🪪</div>
+        <h4>Device Identity</h4>
+        <p><strong>IDevID</strong>（出廠終身）和 <strong>LDevID</strong>（現場可換）遵循 IEEE 802.1AR，私鑰保護在 TPM/hRoT（non-exportable）。<strong>EK → IDevID → LDevID</strong> 的 proof-of-possession 繼承鏈。</p>
+      </div>
+      <div class="topic" style="border-top:3px solid #92400e">
+        <div class="topic-icon">⚓</div>
+        <h4>Root of Trust</h4>
+        <p>信任鏈起點。<strong>hTPM</strong>（x86）· <strong>fTPM</strong>（ARM TrustZone TA）· <strong>Soteria hRoT</strong>（TX8 AHB，非標準 TPM API）· <strong>SE</strong>（Legacy 補強）· <strong>PUF</strong>（Key derivation 基礎）。vTPM 僅 CI/測試。</p>
+      </div>
+      <div class="topic" style="border-top:3px solid #15803d">
+        <div class="topic-icon">🏭</div>
+        <h4>Secure Provisioning &amp; Onboarding</h4>
+        <p><strong>FDO</strong>（FIDO Device Onboard）：DI→OV→TO1→TO2，IoT 零觸碰，OV 轉移所有權。<strong>BRSKI</strong>（RFC 8995）：IDevID→MASA→LDevID，網路設備自動上線。TTPS DI 提供整合平台。</p>
+      </div>
+      <div class="topic" style="border-top:3px solid #6d28d9">
+        <div class="topic-icon">🔒</div>
+        <h4>Firmware Integrity</h4>
+        <p><strong>Secure Boot</strong>（守門員，驗簽，失敗不開機）→ <strong>Measured Boot</strong>（記錄員，hash 存 PCR）→ 提供 evidence 給 Remote Attestation。SBOM（SPDX/CycloneDX）滿足 CRA Part II(1)。</p>
+      </div>
+      <div class="topic" style="border-top:3px solid #9333ea">
+        <div class="topic-icon">📡</div>
+        <h4>Remote Attestation</h4>
+        <p><strong>IAK</strong>（出廠）→ <strong>LAK</strong>（現場）→ <strong>TPM2_Quote</strong> 簽名 PCR 快照 → NMS Verifier Pass/Fail。IETF RATS（EAT/CoRIM）標準 evidence 格式。TX8 Soteria 的 RA 能力 ❌TBC。</p>
+      </div>
+      <div class="topic" style="border-top:3px solid #b91c1c">
+        <div class="topic-icon">🇪🇺</div>
+        <h4>CRA Readiness</h4>
+        <p>EU CRA 2024/2847 全面強制執行 <strong>2027-12-11</strong>。FiduciaEdge 提供 <strong>CRA-ready technical foundation</strong> + evidence 準備，法律 conformity assessment 責任在 OEM。Annex I 21 條文英中對照頁可查閱。</p>
+      </div>
     </div>
   </div>
 
