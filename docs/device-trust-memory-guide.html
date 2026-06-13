@@ -1,0 +1,1545 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Trust Memory Guide — FiduciaEdge TTPS</title>
+  <meta name="description" content="設備信任技術記憶指南：手機複習、默背與口頭說明用">
+  <style>
+    :root {
+      --ink:#1e1b4b; --ink-2:#374151; --ink-3:#6b7280;
+      --bg:#f8f7ff; --bg-2:#ffffff; --border:#e5e7eb;
+      --purple:#7c3aed; --purple-l:#f5f3ff; --purple-d:#4c1d95;
+      --indigo:#4338ca; --teal:#0f766e; --teal-l:#f0fdfa;
+      --green:#15803d; --green-l:#f0fdf4;
+      --amber:#92400e; --amber-l:#fffbeb;
+      --orange:#c2410c; --orange-l:#fff7ed;
+      --red:#b91c1c; --red-l:#fef2f2;
+      --cyan:#0e7490; --cyan-l:#ecfeff;
+      --radius:14px; --shadow-sm:0 2px 8px rgba(0,0,0,.06); --shadow:0 4px 20px rgba(0,0,0,.10);
+    }
+
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+
+    body {
+      font-family: -apple-system,"Segoe UI","Helvetica Neue",Arial,"Noto Sans TC",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.65;
+      font-size:16px;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(140deg, #2d1b69 0%, #4c1d95 55%, #6d28d9 100%);
+      padding:60px 20px 80px;
+      text-align:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::before {
+      content:'';
+      position:absolute;
+      inset:0;
+      background: radial-gradient(ellipse at 60% 20%, rgba(124,58,237,.35) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(67,56,202,.3) 0%, transparent 55%);
+      pointer-events:none;
+    }
+    .hero-logo {
+      font-size:.82rem;
+      font-weight:600;
+      color:rgba(255,255,255,.55);
+      letter-spacing:.6px;
+      margin-bottom:18px;
+      position:relative;
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem,5vw,2.8rem);
+      font-weight:800;
+      color:#fff;
+      line-height:1.2;
+      margin-bottom:16px;
+      position:relative;
+    }
+    .hero h1 span {
+      color:#c4b5fd;
+    }
+    .hero-sub {
+      color:rgba(255,255,255,.7);
+      max-width:560px;
+      margin:0 auto 20px;
+      font-size:.97rem;
+      position:relative;
+    }
+    .hero-badge {
+      display:inline-block;
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:999px;
+      padding:5px 16px;
+      font-size:.78rem;
+      font-weight:600;
+      color:rgba(255,255,255,.85);
+      position:relative;
+    }
+
+    /* WAVE */
+    .hero-wave {
+      display:block;
+      margin-top:-2px;
+    }
+
+    /* STICKY NAV */
+    .sticky-nav {
+      background:#1e1b4b;
+      position:sticky;
+      top:0;
+      z-index:200;
+      display:flex;
+      overflow-x:auto;
+      border-bottom:1px solid #312e81;
+      -webkit-overflow-scrolling:touch;
+    }
+    .sticky-nav::-webkit-scrollbar { height:0; }
+    .sticky-nav a {
+      color:rgba(255,255,255,.65);
+      text-decoration:none;
+      padding:11px 14px;
+      font-size:.78rem;
+      white-space:nowrap;
+      transition:all .15s;
+      flex-shrink:0;
+    }
+    .sticky-nav a:hover {
+      background:rgba(255,255,255,.1);
+      color:#fff;
+    }
+
+    /* PAGE */
+    .page {
+      max-width:860px;
+      margin:0 auto;
+      padding:0 16px 60px;
+    }
+
+    /* SECTIONS */
+    .sec { margin-top:52px; }
+    .sec-hd { display:flex; align-items:center; gap:12px; margin-bottom:20px; }
+    .sec-num {
+      width:40px;
+      height:40px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:1rem;
+      font-weight:800;
+      color:#fff;
+      flex-shrink:0;
+    }
+    .sec-title { font-size:1.25rem; font-weight:800; }
+    .sec-sub { font-size:.82rem; color:var(--ink-3); margin-top:2px; }
+
+    /* CARDS */
+    .card {
+      background:var(--bg-2);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:var(--shadow-sm);
+    }
+    .card + .card { margin-top:12px; }
+    .card-title {
+      font-weight:800;
+      font-size:1rem;
+      color:var(--ink);
+      margin-bottom:8px;
+    }
+    .card-body {
+      font-size:.88rem;
+      color:var(--ink-2);
+      line-height:1.65;
+    }
+
+    /* GRIDS */
+    .grid-2 {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    @media(max-width:600px){.grid-2{grid-template-columns:1fr;}}
+
+    .grid-3 {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+    @media(max-width:700px){.grid-3{grid-template-columns:1fr 1fr;}}
+    @media(max-width:460px){.grid-3{grid-template-columns:1fr;}}
+
+    /* TABLE */
+    .tbl-wrap {
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      border-radius:10px;
+      border:1px solid var(--border);
+      margin:12px 0;
+    }
+    .tbl {
+      width:100%;
+      border-collapse:collapse;
+      font-size:.85rem;
+      min-width:540px;
+    }
+    .tbl th {
+      background:#f3f0ff;
+      color:var(--purple-d);
+      font-weight:700;
+      padding:10px 14px;
+      text-align:left;
+      border-bottom:2px solid var(--purple-l);
+      white-space:nowrap;
+    }
+    .tbl td {
+      padding:9px 14px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+    .tbl tr:last-child td { border-bottom:none; }
+    .tbl tr:hover td { background:#faf9ff; }
+
+    /* STATUS BADGES */
+    .ok  { color:#15803d; font-weight:700; }
+    .tbc { color:#b45309; font-weight:700; }
+    .no  { color:#b91c1c; font-weight:700; }
+    .sw  { color:#0e7490; font-weight:700; }
+
+    /* MNEMONIC BOX */
+    .mnemo {
+      background:var(--amber-l);
+      border-left:4px solid var(--amber);
+      border-radius:10px;
+      padding:14px 18px;
+      font-size:.9rem;
+      margin:14px 0;
+    }
+    .mnemo-label {
+      font-size:.7rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+      color:var(--amber);
+      margin-bottom:6px;
+    }
+
+    /* WARN BOX */
+    .warn-box {
+      background:var(--red-l);
+      border-left:4px solid var(--red);
+      border-radius:10px;
+      padding:12px 16px;
+      font-size:.85rem;
+      margin:10px 0;
+    }
+
+    /* GOOD BOX */
+    .good-box {
+      background:var(--green-l);
+      border-left:4px solid var(--green);
+      border-radius:10px;
+      padding:12px 16px;
+      font-size:.85rem;
+      margin:10px 0;
+    }
+
+    /* INFO BOX */
+    .info-box {
+      background:var(--purple-l);
+      border-left:4px solid var(--purple);
+      border-radius:10px;
+      padding:12px 16px;
+      font-size:.85rem;
+      margin:10px 0;
+    }
+
+    /* FLASHCARDS */
+    .fc-grid {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    @media(max-width:640px){.fc-grid{grid-template-columns:1fr;}}
+
+    .fc {
+      background:var(--bg-2);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow:var(--shadow-sm);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      border-top:3px solid var(--purple);
+    }
+    .fc-term { font-size:1.05rem; font-weight:800; color:var(--purple-d); }
+    .fc-en { font-size:.75rem; color:var(--ink-3); margin-top:-4px; }
+    .fc-def { font-size:.86rem; color:var(--ink-2); line-height:1.55; }
+    .fc-hr { height:1px; background:var(--border); margin:4px 0; }
+    .fc-how { font-size:.82rem; color:var(--teal); line-height:1.5; }
+    .fc-warn { font-size:.78rem; color:var(--red); }
+
+    /* FLOW */
+    .flow { display:flex; flex-direction:column; gap:0; }
+    .flow-step {
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+      padding:12px 0;
+      border-left:2px solid var(--purple-l);
+      padding-left:16px;
+      position:relative;
+    }
+    .flow-step::before {
+      content:'';
+      position:absolute;
+      left:-6px;
+      top:18px;
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--purple);
+    }
+    .flow-num {
+      background:var(--purple);
+      color:#fff;
+      border-radius:8px;
+      padding:2px 8px;
+      font-size:.75rem;
+      font-weight:800;
+      flex-shrink:0;
+      margin-top:2px;
+    }
+    .flow-txt { font-size:.88rem; color:var(--ink-2); }
+
+    /* PLATFORM DECISION */
+    .plat-grid { display:grid; grid-template-columns:1fr; gap:8px; }
+    .plat-row {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:var(--bg-2);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px 16px;
+      flex-wrap:wrap;
+    }
+    .plat-if { font-size:.82rem; font-weight:700; color:var(--ink-3); min-width:120px; }
+    .plat-arrow { color:var(--purple); font-size:1rem; flex-shrink:0; }
+    .plat-then { font-size:.88rem; font-weight:700; color:var(--ink); }
+    .plat-note { font-size:.78rem; color:var(--ink-3); margin-left:auto; }
+
+    /* TAGS */
+    .tag { display:inline-block; font-size:.68rem; font-weight:700; padding:2px 7px; border-radius:6px; margin:2px; }
+    .tag-p { background:var(--purple-l); color:var(--purple-d); }
+    .tag-g { background:var(--green-l); color:var(--green); }
+    .tag-a { background:var(--amber-l); color:var(--amber); }
+    .tag-r { background:var(--red-l); color:var(--red); }
+    .tag-t { background:var(--teal-l); color:var(--teal); }
+    .tag-gray { background:#f3f4f6; color:var(--ink-3); }
+
+    /* FOOTER */
+    footer {
+      background:#1e1b4b;
+      color:rgba(255,255,255,.4);
+      text-align:center;
+      padding:24px 16px;
+      font-size:.79rem;
+    }
+
+    /* UTILITY */
+    strong { font-weight:700; }
+    code {
+      font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+      font-size:.82em;
+      background:#f3f0ff;
+      color:var(--purple-d);
+      padding:1px 5px;
+      border-radius:4px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">FiduciaEdge · TTPS Team</div>
+  <h1>Device Trust<br><span>Memory Guide</span></h1>
+  <p class="hero-sub">設備信任技術記憶指南：手機複習、默背與口頭說明用</p>
+  <div class="hero-badge">13 個章節 · 27 個名詞卡 · 30 題問答練習</div>
+</div>
+
+<!-- WAVE -->
+<svg class="hero-wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 48" preserveAspectRatio="none" style="display:block;width:100%;height:48px;margin-top:-1px;">
+  <path d="M0,32 C360,48 1080,0 1440,24 L1440,48 L0,48 Z" fill="#f8f7ff"/>
+</svg>
+
+<!-- STICKY NAV -->
+<nav class="sticky-nav">
+  <a href="#s1">1 心智</a>
+  <a href="#s2">2 名詞</a>
+  <a href="#s3">3 TPM表</a>
+  <a href="#s4">4 決策圖</a>
+  <a href="#s5">5 Soteria</a>
+  <a href="#s6">6 OP-TEE</a>
+  <a href="#s7">7 比較</a>
+  <a href="#s8">8 開機</a>
+  <a href="#s9">9 生命週期</a>
+  <a href="#s10">10 CRA</a>
+  <a href="#s11">11 案例</a>
+  <a href="#s12">12 問答</a>
+  <a href="#s13">13 速記</a>
+  <span id="site-version" style="margin-left:auto;padding:0 14px;color:rgba(255,255,255,.55);font-size:.72rem;font-weight:600;white-space:nowrap;align-self:center">__VERSION__</span>
+</nav>
+<script>
+(function(){
+  var el = document.getElementById('site-version');
+  if (el && !/^v\d/.test((el.textContent.split(': ')[1]||el.textContent).trim())) el.textContent='dev (local)';
+})();
+</script>
+
+<div class="page">
+
+<!-- ===== SECTION 1: One-Minute Mental Model ===== -->
+<div class="sec" id="s1">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#4338ca">1</div>
+    <div>
+      <div class="sec-title">一分鐘總心智模型</div>
+      <div class="sec-sub">One-Minute Mental Model — 7 句話記住核心</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">1 · Device Trust 核心</div>
+    <div class="card-body">
+      設備有可信身份（DevID）、私鑰不外洩（non-exportable）、開機可驗證（Secure/Measured Boot）、連線可被認證（mTLS）、未來可遠端 attestation。
+      這是一個端到端的安全堆疊，而不只是一個協議或一個晶片。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">2 · Root of Trust 是什麼</div>
+    <div class="card-body">
+      信任鏈的起點硬體模組，負責 key 保護、crypto 加速、secure boot 驗證。
+      不等於 CRA compliance，但是 CRA-ready 的技術基礎。沒有 RoT，上層的一切安全保證都是空中樓閣。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3 · TPM / fTPM / hRoT 家族</div>
+    <div class="card-body">
+      hTPM 是標準晶片（x86 平台）、fTPM 是 TrustZone 裡的 firmware TPM（ARM 平台）、vTPM 是 VM 用的（非生產，僅測試）、Soteria hRoT 是 vendor-specific 硬體 IP（TX8 專屬，非 TPM 標準但功能類似）。
+      選哪個看平台，不是看偏好。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">4 · Soteria-native path（TX8 研究方向）</div>
+    <div class="card-body">
+      TX8 已有 Soteria hRoT，先研究能否直接用 Soteria AHB API 支援 DevID / mTLS / provisioning，不需要先導入完整 OP-TEE fTPM stack。
+      記憶體佔用更低、整合更簡單；缺點是 API 非 TPM 標準，Phase 3 attestation 需要額外設計。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">5 · OP-TEE fTPM path</div>
+    <div class="card-body">
+      需要 TPM 2.0 API / PCR / Quote / 標準 attestation 時選這條路。
+      前提是 SoC 支援 ARM TrustZone，且有 BSP 支援（估計 +2–4 週工程量）；記憶體佔用較高（4–16 MB）。
+      對 PLANET MTK 平台是主要路徑，對 TX8 則是 Path B 候選。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">6 · CRA-ready 定位</div>
+    <div class="card-body">
+      我們提供 CRA-ready 技術基礎與 evidence 準備，不等於保證 full CRA compliance（法律責任在 OEM）。
+      永遠不說「guarantee compliance」，也不說「TPM equals CRA」。
+      正確說法：「我們的平台提供 CRA-ready 技術基礎，協助 OEM 準備 evidence。」
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">7 · 設計原則：Device Trust Abstraction Layer</div>
+    <div class="card-body">
+      Backend-agnostic 介面設計：上層 TTPS DI 不直接依賴 Soteria / TPM / fTPM，透過 <code>dt_generate_key</code> / <code>dt_sign</code> / <code>dt_store_cert</code> 等 API 操作。
+      未來可換後端（Soteria → fTPM），未來接 Remote Attestation，架構不需要大改。
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== SECTION 2: Vocabulary Flashcards ===== -->
+<div class="sec" id="s2">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#6d28d9">2</div>
+    <div>
+      <div class="sec-title">名詞卡片庫</div>
+      <div class="sec-sub">Vocabulary Flashcards — 27 個核心名詞，手機複習用</div>
+    </div>
+  </div>
+
+  <div class="fc-grid">
+
+    <!-- 01 Device Trust -->
+    <div class="fc">
+      <div class="fc-term">01 · Device Trust</div>
+      <div class="fc-en">設備信任</div>
+      <div class="fc-def">確保設備身份真實、金鑰安全、韌體完整、通訊可信的整體安全架構。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「Device Trust 是讓設備從出廠到運行都有可驗證的信任鏈」</div>
+      <div class="fc-warn">⚠️ 不只是 TLS，是完整安全堆疊</div>
+    </div>
+
+    <!-- 02 Device Identity -->
+    <div class="fc">
+      <div class="fc-term">02 · Device Identity</div>
+      <div class="fc-en">設備身份</div>
+      <div class="fc-def">設備在網路中的可驗證唯一身份，通常以 X.509 憑證表示。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「就是設備的數位身份證，憑證 + 私鑰組合」</div>
+      <div class="fc-warn">⚠️ 不等於 IP/MAC，要有硬體保護的私鑰</div>
+    </div>
+
+    <!-- 03 DevID -->
+    <div class="fc">
+      <div class="fc-term">03 · Device ID / DevID</div>
+      <div class="fc-en">IEEE 802.1AR 設備身份規範</div>
+      <div class="fc-def">IEEE 802.1AR 定義的設備身份規範，分 IDevID 和 LDevID。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「DevID 是 IEEE 標準化的設備身份，有嚴格的 non-exportable key 要求」</div>
+      <div class="fc-warn">⚠️ DevID ≠ 一般的 Device ID（後者是泛稱）</div>
+    </div>
+
+    <!-- 04 IDevID -->
+    <div class="fc">
+      <div class="fc-term">04 · IDevID</div>
+      <div class="fc-en">Initial Device Identifier</div>
+      <div class="fc-def">出廠時由製造商安裝的不可更換初始身份，與設備終身綁定。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「就像設備的出生證明，出廠燒錄，終身不換」</div>
+      <div class="fc-warn">⚠️ 一旦安裝不可更改，OTP 儲存</div>
+    </div>
+
+    <!-- 05 LDevID -->
+    <div class="fc">
+      <div class="fc-term">05 · LDevID</div>
+      <div class="fc-en">Locally Significant Device Identifier</div>
+      <div class="fc-def">現場部署後由組織發放的可更換操作身份。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「就像工作證，可以更換、可以撤銷」</div>
+      <div class="fc-warn">⚠️ 比 IDevID 靈活，可以 renew，但需要 IDevID 才能初始建立信任</div>
+    </div>
+
+    <!-- 06 Device Initialization -->
+    <div class="fc">
+      <div class="fc-term">06 · Device Initialization</div>
+      <div class="fc-en">設備初始化</div>
+      <div class="fc-def">出廠時燒錄 RoT keys / OTP / IDevID，設定 secure boot 的過程。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「出廠前的設定作業：燒 key、鎖 OTP、設定 secure boot」</div>
+    </div>
+
+    <!-- 07 Device Registration -->
+    <div class="fc">
+      <div class="fc-term">07 · Device Registration</div>
+      <div class="fc-en">設備註冊</div>
+      <div class="fc-def">設備第一次向後端系統登記身份，讓後端知道「這台設備存在且合法」。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「設備出廠後，第一次向雲端說我是誰、我的憑證是什麼」</div>
+    </div>
+
+    <!-- 08 Device Onboarding -->
+    <div class="fc">
+      <div class="fc-term">08 · Device Onboarding</div>
+      <div class="fc-en">設備上線</div>
+      <div class="fc-def">設備完成認證後，取得網路存取權限、配置、服務授權的完整流程。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「從設備插電到可以正常工作的完整流程，包含認證、配置、授權」</div>
+      <div class="fc-warn">⚠️ Onboarding 比 Registration 範圍大，包含 provisioning</div>
+    </div>
+
+    <!-- 09 Secure Provisioning -->
+    <div class="fc">
+      <div class="fc-term">09 · Secure Provisioning</div>
+      <div class="fc-en">安全佈建</div>
+      <div class="fc-def">安全地為設備安裝 credentials、配置、軟體的過程。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「在安全環境下把設備需要的 key、cert、config 裝進去」</div>
+      <div class="fc-warn">⚠️ 不只是安裝軟體，安全性是核心要求</div>
+    </div>
+
+    <!-- 10 Root of Trust -->
+    <div class="fc">
+      <div class="fc-term">10 · Root of Trust (RoT)</div>
+      <div class="fc-en">信任根</div>
+      <div class="fc-def">整個信任鏈的起點硬體模組，提供 key 保護、crypto、secure boot。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「RoT 就是最底層的安全基礎，一切信任從這裡開始」</div>
+      <div class="fc-warn">⚠️ RoT ≠ CRA compliance，只是技術基礎</div>
+    </div>
+
+    <!-- 11 hTPM -->
+    <div class="fc">
+      <div class="fc-term">11 · hTPM</div>
+      <div class="fc-en">Hardware TPM</div>
+      <div class="fc-def">實體 TPM 2.0 晶片，x86 平台標準方案，最好溝通。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「主機板上的 TPM 晶片，x86 伺服器/PC 的標配 RoT」</div>
+    </div>
+
+    <!-- 12 fTPM -->
+    <div class="fc">
+      <div class="fc-term">12 · fTPM</div>
+      <div class="fc-en">Firmware TPM</div>
+      <div class="fc-def">在 TrustZone Secure World 執行的 TPM firmware，提供與 hTPM 相同 API。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「跑在 ARM TrustZone 裡的 TPM 軟體，從外面看起來和 hTPM 一樣」</div>
+      <div class="fc-warn">⚠️ fTPM ≠ vTPM（fTPM 是實體設備，vTPM 是 VM）</div>
+    </div>
+
+    <!-- 13 vTPM -->
+    <div class="fc">
+      <div class="fc-term">13 · vTPM</div>
+      <div class="fc-en">Virtual TPM</div>
+      <div class="fc-def">VM/KVM/QEMU 環境中的虛擬化 TPM，信任基礎是 hypervisor。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「VM 用的軟體 TPM，只適合開發測試」</div>
+      <div class="fc-warn">⚠️ 絕對不能用於生產 IoT/embedded 設備</div>
+    </div>
+
+    <!-- 14 hRoT -->
+    <div class="fc">
+      <div class="fc-term">14 · hRoT</div>
+      <div class="fc-en">Hardware Root of Trust</div>
+      <div class="fc-def">專用硬體安全模組，non-TPM，vendor-specific API。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「和 TPM 功能類似，但 API 不標準，Soteria 就是 hRoT 的例子」</div>
+    </div>
+
+    <!-- 15 Soteria hRoT -->
+    <div class="fc">
+      <div class="fc-term">15 · Soteria hRoT</div>
+      <div class="fc-en">TX8 Hardware Security IP</div>
+      <div class="fc-def">TX8 上的 hardware security IP，RISC-V ibex + 8KB OTP + AES/HMAC/RSA/TRNG，透過 AHB MSG 命令操作。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「TX8 內建的硬體安全模組，透過 AHB bus 存取，非 TPM 標準」</div>
+      <div class="fc-warn">⚠️ OP-TEE 不跑在 Soteria 上</div>
+    </div>
+
+    <!-- 16 OP-TEE -->
+    <div class="fc">
+      <div class="fc-term">16 · OP-TEE</div>
+      <div class="fc-en">Open Portable Trusted Execution Environment</div>
+      <div class="fc-def">ARM TrustZone Secure World 的開源 Secure OS。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「ARM 平台的安全 OS，跑在主 SoC 的 Secure World 裡，fTPM TA 就住在裡面」</div>
+      <div class="fc-warn">⚠️ OP-TEE 跑在主 SoC，不是跑在 Soteria</div>
+    </div>
+
+    <!-- 17 fTPM TA -->
+    <div class="fc">
+      <div class="fc-term">17 · fTPM TA</div>
+      <div class="fc-en">fTPM Trusted Application</div>
+      <div class="fc-def">跑在 OP-TEE 裡的 TPM-like 應用，通常基於 MS TPM 2.0 Ref Impl。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「OP-TEE 裡的 TPM 應用程式，對外提供標準 TPM 2.0 命令」</div>
+    </div>
+
+    <!-- 18 Secure Element -->
+    <div class="fc">
+      <div class="fc-term">18 · Secure Element (SE)</div>
+      <div class="fc-en">安全元件</div>
+      <div class="fc-def">外接安全晶片，I2C/SPI/USB 介面，PKCS#11 API。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「可加到現有板子的外接安全晶片，適合 Legacy 平台補強」</div>
+      <div class="fc-warn">⚠️ 通常不支援 PCR/Measured Boot/attestation</div>
+    </div>
+
+    <!-- 19 PUF -->
+    <div class="fc">
+      <div class="fc-term">19 · PUF</div>
+      <div class="fc-en">Physical Unclonable Function</div>
+      <div class="fc-def">利用晶片製造差異產生唯一 fingerprint，作為 key derivation 基礎。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「晶片的指紋，每顆都不一樣，用來衍生設備唯一 key」</div>
+      <div class="fc-warn">⚠️ PUF 本身不是 TPM，需搭配 key management</div>
+    </div>
+
+    <!-- 20 Secure Boot -->
+    <div class="fc">
+      <div class="fc-term">20 · Secure Boot</div>
+      <div class="fc-en">安全開機</div>
+      <div class="fc-def">開機守門員：驗證韌體/OS 簽名，拒絕未授權的 image 開機。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「不讓壞的軟體開機，簽章驗不過就停下來」</div>
+      <div class="fc-warn">⚠️ Secure Boot 不記錄，只阻擋</div>
+    </div>
+
+    <!-- 21 Measured Boot -->
+    <div class="fc">
+      <div class="fc-term">21 · Measured Boot</div>
+      <div class="fc-en">量測開機</div>
+      <div class="fc-def">開機記錄員：量測每個開機 component 的 hash，存入 PCR。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「把開機過程都量測記錄下來，不阻擋但留下可驗證的記錄」</div>
+      <div class="fc-warn">⚠️ Measured Boot 不阻擋，需配合 Remote Attestation 才有意義</div>
+    </div>
+
+    <!-- 22 Remote Attestation -->
+    <div class="fc">
+      <div class="fc-term">22 · Remote Attestation (RA)</div>
+      <div class="fc-en">遠端認證</div>
+      <div class="fc-def">把 Measured Boot 的 PCR 量測結果，用 TPM AIK 簽名，傳給遠端 Verifier 驗證。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「讓遠端可以確認：這台設備開機狀態是乾淨的」</div>
+      <div class="fc-warn">⚠️ 需要 Measured Boot + TPM Quote 能力，Phase 3 才有</div>
+    </div>
+
+    <!-- 23 mTLS -->
+    <div class="fc">
+      <div class="fc-term">23 · mTLS</div>
+      <div class="fc-en">Mutual TLS</div>
+      <div class="fc-def">雙向 TLS 憑證認證，設備和後端互相驗證身份。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「設備用 DevID cert 認證自己，後端也用 cert 認證自己，雙向都驗」</div>
+      <div class="fc-warn">⚠️ 私鑰必須在硬體邊界內（non-exportable），否則 mTLS 保護力很弱</div>
+    </div>
+
+    <!-- 24 CRA-ready -->
+    <div class="fc">
+      <div class="fc-term">24 · CRA-ready</div>
+      <div class="fc-en">CRA 就緒技術基礎</div>
+      <div class="fc-def">技術控制到位、evidence 可準備，能支援 OEM 進行合規評估。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「我們的平台有 CRA 需要的技術基礎，能幫 OEM 準備 evidence」</div>
+      <div class="fc-warn">⚠️ 不等於通過合規評估</div>
+    </div>
+
+    <!-- 25 CRA compliance support -->
+    <div class="fc">
+      <div class="fc-term">25 · CRA compliance support</div>
+      <div class="fc-en">合規支援服務</div>
+      <div class="fc-def">FiduciaEdge 提供技術實作和 evidence 準備，但法律合規責任在 OEM。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「我們支援 OEM 做合規，但合規的法律責任是 OEM 的」</div>
+    </div>
+
+    <!-- 26 Full CRA compliance -->
+    <div class="fc">
+      <div class="fc-term">26 · Full CRA compliance</div>
+      <div class="fc-en">完整 CRA 合規</div>
+      <div class="fc-def">通過 conformity assessment、取得 CE marking，法律責任完全在 OEM 製造商。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「這是 OEM 的責任，不是 FiduciaEdge 能保證的」</div>
+      <div class="fc-warn">⚠️ FiduciaEdge 永遠不說「我們保證完整 CRA 合規」</div>
+    </div>
+
+    <!-- 27 Device Trust Abstraction Layer -->
+    <div class="fc">
+      <div class="fc-term">27 · Device Trust Abstraction Layer</div>
+      <div class="fc-en">設備信任抽象層</div>
+      <div class="fc-def">Backend-agnostic 介面層，<code>dt_generate_key</code> / <code>dt_sign</code> / <code>dt_store_cert</code> 等 API，支援 Soteria / TPM / fTPM 後端。</div>
+      <div class="fc-hr"></div>
+      <div class="fc-how">💬 「讓上層不需要知道底層是什麼 RoT，未來換後端不用重寫」</div>
+    </div>
+
+  </div><!-- /fc-grid -->
+</div>
+
+
+<!-- ===== SECTION 3: TPM Types Table ===== -->
+<div class="sec" id="s3">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#0f766e">3</div>
+    <div>
+      <div class="sec-title">TPM 類型對照表</div>
+      <div class="sec-sub">TPM Type Comparison — 7 種 RoT 一次看清楚</div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>Term</th>
+          <th>跑在哪裡</th>
+          <th>信任基礎</th>
+          <th>主要 API</th>
+          <th>最適合</th>
+          <th>不適合</th>
+          <th>記憶口訣</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>hTPM</strong></td>
+          <td>x86 主機板硬體晶片</td>
+          <td>TCG certified silicon</td>
+          <td>TSS2 / TPM2 Provider</td>
+          <td>x86 PC/Server，標準化最高</td>
+          <td>嵌入式 IoT</td>
+          <td><em>x86 的標配，最好溝通</em></td>
+        </tr>
+        <tr>
+          <td><strong>fTPM</strong></td>
+          <td>ARM TrustZone Secure World</td>
+          <td>TrustZone TZASC 硬體隔離</td>
+          <td>TSS2 / TPM2 Provider（同 hTPM）</td>
+          <td>ARM embedded，API 與 hTPM 相同</td>
+          <td>無 TrustZone 的平台</td>
+          <td><em>ARM 平台的 TPM，跑在 Secure World</em></td>
+        </tr>
+        <tr>
+          <td><strong>vTPM</strong></td>
+          <td>VM / KVM / QEMU 虛擬環境</td>
+          <td>Hypervisor 軟體</td>
+          <td>TPM2 Provider（相同 API）</td>
+          <td>開發 / CI 測試</td>
+          <td><span class="no">生產 IoT 設備！</span></td>
+          <td><em>VM 裡的假 TPM，只給測試用</em></td>
+        </tr>
+        <tr>
+          <td><strong>OP-TEE fTPM</strong></td>
+          <td>OP-TEE OS 裡的 Trusted App</td>
+          <td>TrustZone + MS TPM 2.0 Ref Impl</td>
+          <td>TSS2 / OpenSSL TPM2 Provider</td>
+          <td>ARM + OP-TEE 平台，PLANET MTK</td>
+          <td>無 BSP 支援的平台</td>
+          <td><em>fTPM 的具體實作，基於 MS Ref Impl</em></td>
+        </tr>
+        <tr>
+          <td><strong>Soteria hRoT</strong></td>
+          <td>AHB-connected HW IP（RISC-V ibex）</td>
+          <td>AHB bus isolation，8KB OTP</td>
+          <td>Vendor AHB MSG API（非 TPM）</td>
+          <td>TX8，DevID/mTLS/provisioning</td>
+          <td>需要 TPM 2.0 API 時</td>
+          <td><em>TX8 的自有 RoT，AHB 命令操作</em></td>
+        </tr>
+        <tr>
+          <td><strong>Secure Element</strong></td>
+          <td>外接晶片（I2C/SPI/USB）</td>
+          <td>專用安全晶片 silicon</td>
+          <td>PKCS#11</td>
+          <td>Legacy 平台補強</td>
+          <td>Phase 3 Attestation</td>
+          <td><em>外掛的保險箱，PKCS#11 介面</em></td>
+        </tr>
+        <tr>
+          <td><strong>PUF</strong></td>
+          <td>SoC 製造差異（物理特性）</td>
+          <td>物理不可複製性</td>
+          <td>Key derivation（無直接 API）</td>
+          <td>Key 衍生基礎</td>
+          <td>單獨使用（需搭配 KM）</td>
+          <td><em>晶片的指紋，衍生唯一 key</em></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 記憶口訣</div>
+    <strong>「x86 找 hTPM，ARM 看 OP-TEE，TX8 先用 Soteria，老平台加 SE，VM 才用 vTPM，MIPS 先 feasibility。」</strong>
+  </div>
+
+  <div class="warn-box">
+    ⚠️ <strong>fTPM ≠ vTPM</strong> 是最常被搞混的一對！fTPM = 實體設備 TrustZone 裡跑的韌體 TPM；vTPM = VM 環境中的模擬 TPM。前者是生產級 RoT，後者只能用於開發測試。
+  </div>
+</div>
+
+
+<!-- ===== SECTION 4: Platform Decision Map ===== -->
+<div class="sec" id="s4">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#c2410c">4</div>
+    <div>
+      <div class="sec-title">平台決策圖</div>
+      <div class="sec-sub">Platform Decision Map — 看到什麼平台選什麼 RoT</div>
+    </div>
+  </div>
+
+  <div class="plat-grid">
+
+    <div class="plat-row">
+      <div class="plat-if">x86 / PC / Server</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">hTPM</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">TSS2</div>
+      <div class="plat-note"><span class="ok">✅ Phase 1/2/3 全支援</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">ARM + TrustZone + OP-TEE ready</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">OP-TEE fTPM</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">TSS2</div>
+      <div class="plat-note"><span class="ok">✅ Phase 1/2/3 全支援</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">ARM + TrustZone 存在但未啟用</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">先啟用 OP-TEE</div>
+      <div class="plat-note"><span class="tbc">評估 +2–4w BSP 工程量</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">Techmation TX8（有 Soteria）</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">Soteria-native DevID 先研究（記憶體佔用低）</div>
+      <div class="plat-note"><span class="tbc">OP-TEE fTPM 為 Path B 候選</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">ARM + 不確定是否有 TrustZone</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">先確認 SoC 型號 + TrustZone 支援</div>
+      <div class="plat-note"><span class="tbc">需 BSP 資訊才能決策</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">Legacy MIPS（無 RoT）</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">feasibility study</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">評估加 external SE/hRoT</div>
+      <div class="plat-note"><span class="tbc">有限 Phase 支援</span></div>
+    </div>
+
+    <div class="plat-row">
+      <div class="plat-if">VM / KVM / QEMU</div>
+      <div class="plat-arrow">→</div>
+      <div class="plat-then">vTPM / swtpm</div>
+      <div class="plat-note"><span class="no">⚠️ 只用於開發測試，不可生產</span></div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px;">
+    <div class="tbl-wrap">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>平台</th>
+            <th>建議 RoT</th>
+            <th>API</th>
+            <th>Phase 1</th>
+            <th>Phase 2</th>
+            <th>Phase 3</th>
+            <th>CRA 強度</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>x86</strong></td>
+            <td>hTPM</td>
+            <td>TSS2/TPM2 Provider</td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">強</span></td>
+          </tr>
+          <tr>
+            <td><strong>ARM + OP-TEE</strong></td>
+            <td>fTPM TA</td>
+            <td>TSS2/TPM2 Provider</td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">強</span></td>
+          </tr>
+          <tr>
+            <td><strong>TX8 (Path A)</strong></td>
+            <td>Soteria hRoT</td>
+            <td>Vendor AHB API</td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="ok">✅</span></td>
+            <td><span class="tbc">⚠️ TBC</span></td>
+            <td><span class="tbc">中（TBC）</span></td>
+          </tr>
+          <tr>
+            <td><strong>TX8 (Path B)</strong></td>
+            <td>OP-TEE fTPM</td>
+            <td>TSS2/TPM2 Provider</td>
+            <td><span class="tbc">⚠️ TZ 待確認</span></td>
+            <td><span class="tbc">⚠️</span></td>
+            <td><span class="tbc">⚠️</span></td>
+            <td><span class="tbc">強（若就緒）</span></td>
+          </tr>
+          <tr>
+            <td><strong>Legacy MIPS</strong></td>
+            <td>External SE</td>
+            <td>PKCS#11</td>
+            <td><span class="tbc">⚠️ 可行</span></td>
+            <td><span class="tbc">⚠️</span></td>
+            <td><span class="no">❌</span></td>
+            <td><span class="no">有限</span></td>
+          </tr>
+          <tr>
+            <td><strong>VM/QEMU</strong></td>
+            <td>vTPM/swtpm</td>
+            <td>TPM2 Provider</td>
+            <td><span class="sw">僅測試</span></td>
+            <td><span class="sw">僅測試</span></td>
+            <td><span class="sw">僅測試</span></td>
+            <td><span class="no">不可生產</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 口訣</div>
+    <strong>「x86 找 TPM，ARM 看 OP-TEE，TX8 先看 Soteria，MIPS 先做 feasibility，VM 才談 vTPM。」</strong>
+  </div>
+
+</div>
+
+
+<!-- ── S5: Soteria-native Path ──────────────────────────────────── -->
+<div class="sec" id="s5">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#92400e">5</div>
+    <div>
+      <div class="sec-title">Soteria-native Path 記憶模型</div>
+      <div class="sec-sub">直接用 Soteria AHB API 做 DevID / mTLS / Provisioning</div>
+    </div>
+  </div>
+
+  <div class="info-box"><strong>一句話：</strong>Soteria-native path 的目標是不用先導入完整 OP-TEE fTPM，直接用 Soteria hRoT 支援設備身份、金鑰保護、設備註冊與 mTLS。</div>
+
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">5.1 製造 → 部署 → 運行流程</h3>
+  <div class="flow">
+    <div class="flow-step"><span class="flow-num">1</span><div class="flow-txt"><strong>Factory：</strong>安裝 ROK（INSTALL_ROK 0x11），燒 OTP，鎖 debug port。出廠前的安全設定。</div></div>
+    <div class="flow-step"><span class="flow-num">2</span><div class="flow-txt"><strong>Key Gen：</strong>Soteria TRNG → Black Key 保護私鑰在硬體邊界內（non-exportable <span class="tbc">⚠️TBC</span>）。公鑰可導出（<span class="tbc">⚠️TBC</span>）。</div></div>
+    <div class="flow-step"><span class="flow-num">3</span><div class="flow-txt"><strong>CSR：</strong>SW 層做 ASN.1 encoding + Soteria RSA 簽名（MSG0=0x3）→ 送 CA 簽發 IDevID Certificate。</div></div>
+    <div class="flow-step"><span class="flow-num">4</span><div class="flow-txt"><strong>Cert 儲存：</strong>IDevID key material → OTP（8KB）；X.509 cert → 外部 flash + Black Key 保護（<span class="tbc">⚠️TBC</span>）。</div></div>
+    <div class="flow-step"><span class="flow-num">5</span><div class="flow-txt"><strong>mTLS：</strong>Soteria RSA 簽名做 TLS client auth，私鑰不離 Soteria（<span class="tbc">⚠️TBC workflow</span>）。</div></div>
+    <div class="flow-step"><span class="flow-num">6</span><div class="flow-txt"><strong>Future：</strong>Soteria firmware measurement + attestation quote（<span class="no">❌TBC</span>）→ CRA Phase 3 需求。</div></div>
+  </div>
+
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">5.2 能力 Checklist</h3>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>#</th><th>能力</th><th>DevID需</th><th>mTLS需</th><th>RA需</th><th>狀態</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>TRNG 真亂數</td><td>✅</td><td>✅</td><td>✅</td><td><span class="ok">✅確認</span></td></tr>
+        <tr><td>2</td><td>Non-exportable private key</td><td>✅核心</td><td>✅</td><td>✅</td><td><span class="tbc">⚠️TBC</span></td></tr>
+        <tr><td>3</td><td>RSA 2048 簽名</td><td>✅</td><td>✅</td><td>—</td><td><span class="ok">✅確認</span></td></tr>
+        <tr><td>4</td><td>ECDSA / ECC P-256</td><td>✅較佳</td><td>✅</td><td>—</td><td><span class="no">❌TBC</span></td></tr>
+        <tr><td>5</td><td>公鑰導出</td><td>✅核心</td><td>—</td><td>—</td><td><span class="tbc">⚠️TBC</span></td></tr>
+        <tr><td>6</td><td>CSR 生成</td><td>✅</td><td>—</td><td>—</td><td><span class="sw">📋SW層</span></td></tr>
+        <tr><td>7</td><td>X.509 Cert 儲存</td><td>✅</td><td>✅</td><td>—</td><td><span class="tbc">⚠️TBC（OTP 8KB 限制）</span></td></tr>
+        <tr><td>8</td><td>OTP / HUK / ROK</td><td>✅</td><td>—</td><td>—</td><td><span class="ok">✅確認</span></td></tr>
+        <tr><td>9</td><td>Black Key (secure key wrapping)</td><td>✅</td><td>✅</td><td>—</td><td><span class="tbc">⚠️TBC</span></td></tr>
+        <tr><td>10</td><td>AES / HMAC</td><td>✅</td><td>—</td><td>—</td><td><span class="ok">✅確認</span></td></tr>
+        <tr><td>11</td><td>Secure Boot anchor</td><td>✅</td><td>—</td><td>—</td><td><span class="ok">✅確認（0x15/0x16）</span></td></tr>
+        <tr><td>12</td><td>Anti-rollback</td><td>—</td><td>—</td><td>✅</td><td><span class="ok">✅確認（0x17）</span></td></tr>
+        <tr><td>13</td><td>Debug lock / lifecycle</td><td>✅</td><td>—</td><td>—</td><td><span class="tbc">⚠️TBC</span></td></tr>
+        <tr><td>14</td><td>Firmware measurement (PCR-like)</td><td>—</td><td>—</td><td>✅核心</td><td><span class="no">❌TBC</span></td></tr>
+        <tr><td>15</td><td>Attestation quote / signed report</td><td>—</td><td>—</td><td>✅核心</td><td><span class="no">❌TBC</span></td></tr>
+        <tr><td>16</td><td>Monotonic counter (freshness)</td><td>—</td><td>—</td><td>✅</td><td><span class="no">❌TBC</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2" style="margin-top:12px">
+    <div class="good-box"><strong>✅ 已確認 7 項：</strong>TRNG、RSA 簽名、HMAC、AES、OTP、Secure Boot anchor、Anti-rollback</div>
+    <div class="warn-box"><strong>❌ Phase 3 阻擋：</strong>Firmware measurement、Attestation quote、Monotonic counter — Soteria-native path 目前無法支援 Remote Attestation</div>
+  </div>
+
+  <h3 style="font-size:.93rem;font-weight:700;margin:20px 0 10px">5.3 Soteria AHB 命令速記</h3>
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>MSG0</th><th>命令</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>0x1</code></td><td>AES</td><td>對稱加密 128/192/256-bit — cert/key 儲存保護</td></tr>
+        <tr><td><code>0x2</code></td><td>HMAC</td><td>SHA-256/384/512 — 完整性驗證</td></tr>
+        <tr><td><code>0x3</code></td><td>RSA</td><td>✅ 非對稱簽名 2048-bit — DevID 簽名 / mTLS</td></tr>
+        <tr><td><code>0x4</code></td><td>TRNG</td><td>✅ 真亂數 — Key 生成基礎</td></tr>
+        <tr><td><code>0x11</code></td><td>INSTALL_ROK</td><td>✅ Root of Key 安裝 — 製造端 provisioning 入口</td></tr>
+        <tr><td><code>0x12</code></td><td>CREATE_BK</td><td>⚠️ Black Key 生成（TRNG + ROK 加密）</td></tr>
+        <tr><td><code>0x14</code></td><td>AES_BK</td><td>⚠️ Black Key 透明 AES — raw key 不離 Soteria</td></tr>
+        <tr><td><code>0x15</code></td><td>KEY_HASH_CHK</td><td>✅ Secure Boot：image hash vs OTP pubkey</td></tr>
+        <tr><td><code>0x16</code></td><td>RSA_OTP</td><td>✅ Secure Boot：RSA 驗簽（OTP pubkey）</td></tr>
+        <tr><td><code>0x17</code></td><td>BOOT_IMG_ID</td><td>✅ Anti-rollback / active boot image 查詢</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 Black Key 記憶</div>
+    TRNG → 生隨機 key → ROK 加密 → 輸出 <strong>ENZMK + ENBK + MAC</strong>。OP-TEE 只存加密版本，<strong>raw HUK 永不離開 Soteria</strong>。
+  </div>
+</div>
+
+<!-- ── S6: OP-TEE fTPM Model ───────────────────────────────────────── -->
+<div class="sec" id="s6">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#0e7490">6</div>
+    <div>
+      <div class="sec-title">OP-TEE fTPM 記憶模型</div>
+      <div class="sec-sub">什麼時候需要它、怎麼運作、成本與風險</div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>問題</th><th>答案</th></tr></thead>
+      <tbody>
+        <tr><td><strong>OP-TEE 跑在 Soteria 上嗎？</strong></td><td>❌ 不。OP-TEE 跑在主 ARM SoC 的 <strong>TrustZone Secure World</strong>。Soteria 是獨立 AHB 硬體 IP，被 OP-TEE driver 透過 AHB 存取。</td></tr>
+        <tr><td><strong>fTPM TA 是什麼？</strong></td><td>跑在 OP-TEE 裡的 Trusted Application，通常基於 <strong>Microsoft TPM 2.0 Reference Implementation</strong>，對外提供標準 TPM 2.0 命令介面。</td></tr>
+        <tr><td><strong>對外看起來是？</strong></td><td>和 hTPM 一模一樣：<code>/dev/tpmX</code> → tpm2-abrmd → TSS2 → OpenSSL TPM2 Provider。上層感覺不到差別。</td></tr>
+        <tr><td><strong>什麼時候需要它？</strong></td><td>需要 <strong>TPM 2.0 API 相容性、PCR/Measured Boot、TPM2_Quote、ECDSA</strong>，或客戶要求標準 TPM evidence 時。</td></tr>
+        <tr><td><strong>TX8 前提？</strong></td><td>TX8 主 SoC 支援 TrustZone + BSP 有 TF-A（BL31）+ OP-TEE OS（BL32）+ fTPM TA。<strong>目前全部未確認 ⚠️</strong></td></tr>
+        <tr><td><strong>John 擔心什麼？</strong></td><td>Memory footprint（4–16 MB）、BSP 四層整合成本（TF-A + OP-TEE OS + fTPM TA + Secure Storage）、若只需 DevID/mTLS 不值得。</td></tr>
+        <tr><td><strong>能不能不用？</strong></td><td>若 Soteria-native path 足以支援 DevID/mTLS，短期可以不用。Phase 3 Remote Attestation 仍需確認 Soteria 或改用 fTPM。</td></tr>
+        <tr><td><strong>Soteria 能幫 fTPM 做什麼？</strong></td><td>Path C (Hybrid)：Soteria 作為 OP-TEE fTPM 底層 hardware-backed secure storage，Black Key 保護 fTPM persistent keys。整合複雜度最高。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="font-size:.93rem;font-weight:700;margin:16px 0 10px">技術堆疊（自上而下）</h3>
+  <div class="flow">
+    <div class="flow-step"><span class="flow-num">App</span><div class="flow-txt">TTPS DI → TSS2 → OpenSSL TPM2 Provider</div></div>
+    <div class="flow-step"><span class="flow-num">OS</span><div class="flow-txt">Linux: <code>/dev/tpmX</code> → tpm2-abrmd（TPM Resource Manager daemon）</div></div>
+    <div class="flow-step"><span class="flow-num">TEE</span><div class="flow-txt">TEE Client API → OP-TEE OS（TrustZone Secure World）</div></div>
+    <div class="flow-step"><span class="flow-num">TA</span><div class="flow-txt">fTPM TA（based on MS TPM 2.0 Reference Implementation）</div></div>
+    <div class="flow-step"><span class="flow-num">SFS</span><div class="flow-txt">OP-TEE Secure Storage（flash 加密）← 可選 Soteria Black Key 加固</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-top:12px">
+    <div class="good-box"><strong>✅ fTPM 優勢</strong><br>完整 TPM 2.0 API · ECDSA · PCR · TPM2_Quote · OpenSSL 直接整合 · TTPS DI 已驗證路線</div>
+    <div class="warn-box"><strong>⚠️ fTPM 風險 / 成本</strong><br>TX8 TrustZone 未確認 · 四層 BSP 工程量 · 4–16 MB 記憶體 · 若 TX8 不支援 TZ 則此路線不可行</div>
+  </div>
+</div>
+
+<!-- ── S7: Soteria vs OP-TEE fTPM ──────────────────────────────────── -->
+<div class="sec" id="s7">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#6d28d9">7</div>
+    <div>
+      <div class="sec-title">Soteria-native vs OP-TEE fTPM 比較</div>
+      <div class="sec-sub">直接對照 — 背起來能口頭說明</div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr>
+        <th>維度</th>
+        <th style="color:#92400e">🟡 Soteria-native</th>
+        <th style="color:#0e7490">🔵 OP-TEE fTPM</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><strong>TX8 平台前提</strong></td><td>Soteria AHB driver ✅已就緒</td><td>TrustZone + TF-A + OP-TEE ⚠️未確認</td></tr>
+        <tr><td><strong>記憶體佔用</strong></td><td>低（HW IP）</td><td>高（4–16 MB Secure World）</td></tr>
+        <tr><td><strong>ECDSA</strong></td><td><span class="no">❌TBC</span></td><td><span class="ok">✅</span></td></tr>
+        <tr><td><strong>Non-exportable key</strong></td><td>Black Key ⚠️TBC</td><td>TPM hardware binding ✅</td></tr>
+        <tr><td><strong>mTLS 整合</strong></td><td>⚠️TBC（需 custom adapter）</td><td>✅ OpenSSL TPM2 Provider</td></tr>
+        <tr><td><strong>Cert 儲存</strong></td><td>⚠️TBC（OTP 8KB 限制）</td><td>✅ OP-TEE SFS</td></tr>
+        <tr><td><strong>TSS2 相容</strong></td><td>❌（非 TPM）</td><td>✅</td></tr>
+        <tr><td><strong>Firmware Measurement</strong></td><td><span class="no">❌TBC</span></td><td>✅ PCR 0–23</td></tr>
+        <tr><td><strong>Attestation Quote</strong></td><td><span class="no">❌TBC（Phase 3 阻擋）</span></td><td>✅ TPM2_Quote</td></tr>
+        <tr><td><strong>TTPS DI 移植工程</strong></td><td>高（custom adapter 全套）</td><td>低（直接 TSS2 path）</td></tr>
+        <tr><td><strong>跨平台可移植</strong></td><td>低（Soteria 專屬）</td><td>高（TSS2 跨平台）</td></tr>
+        <tr><td><strong>Speed to PoC</strong></td><td>較快（若 API 足夠）</td><td>較慢（BSP 前置工作）</td></tr>
+        <tr><td><strong>CRA Phase 1/2</strong></td><td>⚠️TBC</td><td>✅（若平台就緒）</td></tr>
+        <tr><td><strong>CRA Phase 3</strong></td><td><span class="no">❌TBC</span></td><td>✅</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemo" style="margin-top:14px">
+    <div class="mnemo-label">💬 我該怎麼說</div>
+    「<strong>短期先研究 Soteria-native identity path</strong>，TX8 已有 Soteria 且 TrustZone 未確認；<strong>客戶需要標準 TPM evidence 或 Phase 3 attestation 時再評估 OP-TEE fTPM</strong>；<strong>長期設計保持 backend-agnostic</strong>（Device Trust Abstraction Layer），讓上層不依賴底層 RoT。」
+  </div>
+</div>
+
+<!-- ── S8: Boot Integrity Ladder ───────────────────────────────────── -->
+<div class="sec" id="s8">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#c2410c">8</div>
+    <div>
+      <div class="sec-title">開機完整性階梯</div>
+      <div class="sec-sub">Secure Boot → Measured Boot → Remote Attestation</div>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card" style="border-top:4px solid #15803d;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">🛡</div>
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d;margin-bottom:4px">Secure Boot</div>
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">守門員</div>
+      <div style="font-size:.84rem;color:var(--ink-2);text-align:left">驗韌體 / OS 簽章，失敗就<strong>不讓開機</strong>。<br><br>Evidence：簽章驗證（布林）<br>Soteria：KEY_HASH_CHK / RSA_OTP ✅</div>
+    </div>
+    <div class="card" style="border-top:4px solid #b45309;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">📝</div>
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b45309;margin-bottom:4px">Measured Boot</div>
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">記錄員</div>
+      <div style="font-size:.84rem;color:var(--ink-2);text-align:left">量測每個 component hash，存入 PCR。<strong>允許開機但留記錄</strong>。<br><br>Evidence：PCR 0–23 hash<br>Soteria：<span class="no">❌TBC</span></div>
+    </div>
+    <div class="card" style="border-top:4px solid #7c3aed;text-align:center">
+      <div style="font-size:2rem;margin-bottom:8px">📡</div>
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;margin-bottom:4px">Remote Attestation</div>
+      <div style="font-weight:800;font-size:1rem;margin-bottom:8px">報告員</div>
+      <div style="font-size:.84rem;color:var(--ink-2);text-align:left">用 TPM AIK 簽名 PCR 快照，傳給遠端 Verifier。<strong>讓外部確認設備是乾淨的。</strong><br><br>Evidence：TPM2_Quote<br>Soteria：<span class="no">❌TBC</span></div>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:14px">
+    <table class="tbl">
+      <thead><tr><th>概念</th><th>做什麼</th><th>是否阻擋開機</th><th>Evidence</th><th>記憶</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Secure Boot</strong></td><td>驗簽，拒絕未授權 image</td><td>✅ 會阻擋</td><td>簽章結果（Pass/Fail）</td><td>守門員，說「不」</td></tr>
+        <tr><td><strong>Measured Boot</strong></td><td>量測 hash → PCR</td><td>❌ 不阻擋</td><td>PCR 0–23 hash values</td><td>記錄員，留存記錄</td></tr>
+        <tr><td><strong>Remote Attestation</strong></td><td>簽名 PCR 傳 Verifier</td><td>❌ 不阻擋</td><td>TPM2_Quote（AIK 簽名）</td><td>報告員，向外匯報</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 口訣</div>
+    Secure Boot <strong>擋</strong>壞的 → Measured Boot <strong>記</strong>過程 → Remote Attestation <strong>報</strong>給外面看。三個層次，Phase 1→2→3 逐步到位。
+  </div>
+  <div class="warn-box" style="margin-top:10px">⚠️ <strong>TX8 現況：</strong>Secure Boot ✅確認，Measured Boot 和 Remote Attestation 均 <span class="no">❌TBC</span>，是 Soteria-native path Phase 3 的阻擋條件。</div>
+</div>
+
+<!-- ── S9: Device Lifecycle ─────────────────────────────────────────── -->
+<div class="sec" id="s9">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#15803d">9</div>
+    <div>
+      <div class="sec-title">設備生命週期記憶流程</div>
+      <div class="sec-sub">從出廠到 CRA Evidence — 每步一句話</div>
+    </div>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step"><span class="flow-num">製造</span><div class="flow-txt"><strong>Device Initialization</strong> — 燒 RoT keys / OTP / IDevID root material，設定 Secure Boot，鎖 debug。<em>出廠前的安全設定，這步做不好後面全垮。</em></div></div>
+    <div class="flow-step"><span class="flow-num">佈建</span><div class="flow-txt"><strong>Secure Provisioning</strong> — 安全地安裝 credentials（cert、key）、配置、軟體。<em>把設備需要的身份材料安全地「塞進去」。</em></div></div>
+    <div class="flow-step"><span class="flow-num">首次</span><div class="flow-txt"><strong>Device Registration</strong> — 第一次向後端登記身份，後端建立設備記錄。<em>設備向後台說「我來報到了，這是我的 DevID cert」。</em></div></div>
+    <div class="flow-step"><span class="flow-num">上線</span><div class="flow-txt"><strong>Device Onboarding</strong> — 完成認證後取得網路存取、配置、服務授權（BRSKI / FDO 流程）。<em>從插電到可以工作的完整流程。</em></div></div>
+    <div class="flow-step"><span class="flow-num">通訊</span><div class="flow-txt"><strong>mTLS Secure Communication</strong> — 設備用 IDevID/LDevID 私鑰做 TLS client auth，雙向認證。<em>每次連線都帶著身份，後端認識你。</em></div></div>
+    <div class="flow-step"><span class="flow-num">更新</span><div class="flow-txt"><strong>Firmware Update</strong> — 安全更新韌體，anti-rollback 防 downgrade，Secure Boot 驗簽。<em>更新要有簽名保護，不允許降級攻擊。</em></div></div>
+    <div class="flow-step"><span class="flow-num">量測</span><div class="flow-txt"><strong>Measured Boot</strong> — 每次開機量測所有 component，PCR 留下可驗證記錄。<em>開機記錄員，Phase 2–3 的基礎。</em></div></div>
+    <div class="flow-step"><span class="flow-num">驗證</span><div class="flow-txt"><strong>Remote Attestation</strong> — NMS 定期要求設備提供 attestation quote，Pass/Fail 決定是否允許連線。<em>定期向遠端報到，不乾淨就被切斷。</em></div></div>
+    <div class="flow-step"><span class="flow-num">合規</span><div class="flow-txt"><strong>CRA Evidence</strong> — 彙整 device identity、firmware integrity、key protection、attestation 記錄，作為合規評估的技術 evidence。<em>把所有安全記錄整理好，幫 OEM 做 CRA 準備。</em></div></div>
+  </div>
+</div>
+
+<!-- ── S10: CRA-ready vs Full Compliance ──────────────────────────── -->
+<div class="sec" id="s10">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#b91c1c">10</div>
+    <div>
+      <div class="sec-title">CRA-ready vs Full CRA Compliance</div>
+      <div class="sec-sub">最容易講錯的邊界 — 背起來</div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="good-box" style="padding:16px 18px">
+      <strong style="display:block;margin-bottom:10px">✅ 應該說 / DO SAY</strong>
+      <ul style="font-size:.85rem;line-height:2.2;padding-left:16px">
+        <li>CRA-ready technical foundation</li>
+        <li>CRA compliance support</li>
+        <li>evidence preparation &amp; support</li>
+        <li>platform security hardening</li>
+        <li>hardware-protected key mechanism</li>
+        <li>supports device identity evidence</li>
+        <li>supports firmware integrity evidence</li>
+        <li>Remote Attestation is a roadmap</li>
+        <li>platform-dependent RoT selection</li>
+      </ul>
+    </div>
+    <div class="warn-box" style="padding:16px 18px">
+      <strong style="display:block;margin-bottom:10px">❌ 不能說 / DON'T SAY</strong>
+      <ul style="font-size:.85rem;line-height:2.2;padding-left:16px">
+        <li>We <strong>guarantee</strong> full CRA compliance</li>
+        <li>TPM <strong>equals</strong> CRA compliance</li>
+        <li>Soteria <strong>automatically satisfies</strong> CRA</li>
+        <li>OP-TEE fTPM makes product <strong>CRA certified</strong></li>
+        <li>Remote Attestation <strong>immediately available</strong></li>
+        <li>fTPM = vTPM（混用術語）</li>
+        <li>Soteria = TPM（非標準 API）</li>
+        <li>OP-TEE <strong>runs on</strong> Soteria（架構錯誤）</li>
+        <li>Soteria 已確認支援所有 DevID 能力</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tbl-wrap" style="margin-top:14px">
+    <table class="tbl">
+      <thead><tr><th>CRA 要求</th><th>RoT 技術基礎</th><th>Annex I</th><th>FiduciaEdge 角色</th></tr></thead>
+      <tbody>
+        <tr><td>Device Identity</td><td>Hardware-bound IDevID/LDevID（non-exportable key）</td><td>Art. 2(d)</td><td>技術實作 + evidence 準備</td></tr>
+        <tr><td>Key Protection</td><td>TPM / Black Key / TrustZone-protected key</td><td>Art. 2(e)</td><td>技術實作</td></tr>
+        <tr><td>Firmware Integrity</td><td>Secure Boot + Measured Boot + PCR evidence</td><td>Art. 2(f)</td><td>技術實作 + evidence</td></tr>
+        <tr><td>Attestation</td><td>Signed attestation quote（TPM2_Quote）</td><td>Art. 2(f)(k)(l)</td><td>Phase 3 roadmap</td></tr>
+        <tr><td>Vulnerability Handling</td><td>❌ 不在 RoT 範圍</td><td>Art. 13–14</td><td>OEM 責任（PSIRT）</td></tr>
+        <tr><td>Conformity Assessment</td><td>❌ 不在 FiduciaEdge 範圍</td><td>Art. 32–36</td><td>OEM 責任，FiduciaEdge 提供 evidence</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mnemo">
+    <div class="mnemo-label">📌 法律責任邊界</div>
+    Conformity assessment 與 CE marking 的<strong>法律責任在 OEM 製造商</strong>。FiduciaEdge 提供<strong>技術服務與 evidence 準備</strong>，不承擔 OEM 的合規法律責任。CRA 全面強制執行：<strong>2027-12-11</strong>。
+  </div>
+</div>
+
+<!-- ── S11: Customer Cases ──────────────────────────────────────────── -->
+<div class="sec" id="s11">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#374151">11</div>
+    <div>
+      <div class="sec-title">客戶案例記憶卡</div>
+      <div class="sec-sub">PLANET / TX8 / x86 / ARM / Legacy MIPS</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div class="card" style="border-left:4px solid #15803d">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d;margin-bottom:8px">🌏 PLANET Technology</div>
+      <div class="grid-2">
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>Gateway / Bridge / Switch 產品線</li>
+          <li><strong>高階 ARM gateway</strong> → OP-TEE fTPM → Zero Trust → RA roadmap</li>
+          <li>三階段提案：DevID → Provisioning → RA</li>
+        </ul>
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>Legacy <strong>MIPS</strong> → 先 feasibility study</li>
+          <li>無 RoT 時不亂承諾 hardware identity</li>
+          <li>可評估 external SE / hRoT 補強</li>
+        </ul>
+      </div>
+      <div class="mnemo" style="margin-top:8px;padding:8px 14px;font-size:.84rem">口訣：高階 ARM 談 fTPM，MIPS 先問能不能加 SE。</div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #92400e">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#92400e;margin-bottom:8px">🔐 Techmation TX8</div>
+      <div class="grid-2">
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>已有 Soteria hRoT（AHB-connected）</li>
+          <li><strong>主研究：Soteria-native DevID path</strong></li>
+          <li>OP-TEE fTPM 是 candidate（TrustZone 待確認）</li>
+        </ul>
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>P0：ECDSA / non-exportable key / TrustZone</li>
+          <li>John 擔心 OP-TEE memory footprint</li>
+          <li>設計 backend-agnostic（未來接 RA）</li>
+        </ul>
+      </div>
+      <div class="mnemo" style="margin-top:8px;padding:8px 14px;font-size:.84rem">口訣：TX8 先用 Soteria，TrustZone 確認了再談 fTPM。</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card" style="border-left:4px solid #1d4ed8">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1d4ed8;margin-bottom:8px">🖥 x86 / Server</div>
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>Default：<strong>hTPM</strong></li>
+          <li>最標準、最好溝通</li>
+          <li>Phase 1/2/3 全支援</li>
+          <li>TTPS DI 已驗證</li>
+        </ul>
+        <div class="mnemo" style="margin-top:8px;padding:8px 14px;font-size:.84rem">x86 用 hTPM，說最清楚。</div>
+      </div>
+      <div class="card" style="border-left:4px solid #7c3aed">
+        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;margin-bottom:8px">📱 ARM Embedded</div>
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>有 TrustZone → OP-TEE fTPM candidate</li>
+          <li>未啟用 → 評估 BSP 工程量（+2–4w）</li>
+          <li>確認：SoC / TF-A / OP-TEE / fTPM TA</li>
+        </ul>
+        <div class="mnemo" style="margin-top:8px;padding:8px 14px;font-size:.84rem">ARM 先問 TrustZone 有沒有。</div>
+      </div>
+    </div>
+
+    <div class="card" style="border-left:4px solid #b91c1c">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b91c1c;margin-bottom:8px">⚠️ Legacy MIPS（無 hardware RoT）</div>
+      <div class="grid-2">
+        <ul style="font-size:.84rem;line-height:2;padding-left:16px">
+          <li>先做 <strong>feasibility study</strong></li>
+          <li>評估能否加 external hRoT / SE</li>
+          <li>若無法：Gap Analysis + compensating controls</li>
+        </ul>
+        <div class="warn-box" style="margin:0">❌ 不可承諾：<br>hardware-bound identity<br>non-exportable key<br>Remote Attestation<br>Phase 3 能力</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── S12: Q&A Oral Practice ──────────────────────────────────────── -->
+<div class="sec" id="s12">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#4338ca">12</div>
+    <div>
+      <div class="sec-title">口頭問答練習 30 題</div>
+      <div class="sec-sub">默背用 — 蓋住答案先回答再看</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q1. fTPM 和 vTPM 差在哪？</div><div style="font-size:.85rem;color:var(--ink-2)">fTPM 跑在<strong>實體設備 TrustZone Secure World</strong>，保護真實硬體金鑰；vTPM 是 VM/QEMU 軟體模擬，信任基礎是 hypervisor。<strong>生產設備用 fTPM，開發測試才用 vTPM。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q2. Soteria hRoT 為什麼不是 TPM？</div><div style="font-size:.85rem;color:var(--ink-2)">Soteria 是 vendor-specific HW IP，透過 AHB MSG 命令操作，沒有 TSS2 API，不符合 TCG TPM 2.0 規範。功能類似（硬體信任根），但 API 和 evidence model 完全不同。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q3. OP-TEE 跑在哪？跑在 Soteria 上嗎？</div><div style="font-size:.85rem;color:var(--ink-2)">OP-TEE 跑在<strong>主 ARM SoC 的 TrustZone Secure World</strong>，不是跑在 Soteria。Soteria 是獨立 AHB HW IP，被 OP-TEE Secure World driver 透過 AHB 存取。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q4. IDevID 和 LDevID 差在哪？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>IDevID</strong>：出廠燒錄，與設備終身綁定，不可更換（OTP）。<strong>LDevID</strong>：現場發放，可更換 / 可撤銷（類似工作證）。兩者都要求 non-exportable private key（IEEE 802.1AR）。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q5. mTLS 怎麼用 Device Identity？</div><div style="font-size:.85rem;color:var(--ink-2)">設備用 IDevID/LDevID 私鑰做 TLS client auth，後端驗設備 cert；設備也驗後端 server cert。<strong>私鑰保護在 TPM/hRoT 邊界內（non-exportable），簽名在硬體內完成，私鑰不外洩。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q6. Secure Boot 和 Measured Boot 差在哪？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>Secure Boot</strong> = 守門員，驗簽，失敗就不開機。<strong>Measured Boot</strong> = 記錄員，量測 hash 存 PCR，允許開機但留記錄。一個擋，一個記，要一起用才完整。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q7. Measured Boot 和 Remote Attestation 差在哪？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>Measured Boot</strong>：本地記錄，存在 PCR。<strong>Remote Attestation</strong>：用 TPM AIK 簽名 PCR 快照，傳給遠端 Verifier，讓外部驗證「設備開機狀態是乾淨的」。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q8. CRA-ready 和 full CRA compliance 差在哪？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>CRA-ready</strong>：技術控制到位、可準備 evidence、能支援合規評估。<strong>Full compliance</strong>：通過 conformity assessment、取得 CE marking，<strong>法律責任在 OEM</strong>。FiduciaEdge 提供技術服務，不承擔 OEM 合規責任。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q9. 什麼時候需要 OP-TEE fTPM？</div><div style="font-size:.85rem;color:var(--ink-2)">需要 <strong>TPM 2.0 API 相容（TSS2）、PCR/Measured Boot、TPM2_Quote attestation、ECDSA</strong>，或客戶要求標準 TPM evidence 時。前提：SoC 支援 ARM TrustZone。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q10. 為什麼 TX8 先研究 Soteria-native path？</div><div style="font-size:.85rem;color:var(--ink-2)">TX8 已有 Soteria 且 AHB driver 就緒；TX8 TrustZone 支援尚未確認；記憶體佔用低；若只需 DevID/mTLS 不需要完整 fTPM。Soteria-native 是更快的 PoC 路線（前提：確認 Soteria API 能力）。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q11. Device Trust Abstraction Layer 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">Backend-agnostic 介面層（<code>dt_generate_key / dt_sign / dt_generate_csr / dt_store_cert / dt_get_attestation_evidence</code>），讓 TTPS DI 不直接依賴底層 RoT API。<strong>不同平台接不同後端，未來換後端不需重寫上層邏輯。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q12. Black Key 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">Soteria 的 HW key wrapping 機制：TRNG 生隨機 key → ROK 加密 → 輸出 <strong>ENZMK + ENBK + MAC</strong>（Black Key）。OP-TEE 只持有加密後版本，<strong>raw HUK 永不離開 Soteria</strong>。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q13. Non-exportable private key 是什麼，為什麼重要？</div><div style="font-size:.85rem;color:var(--ink-2)">IEEE 802.1AR 要求 DevID 私鑰<strong>只能在硬體邊界內使用，不能被導出</strong>。沒有這個保護，攻擊者可複製私鑰，設備身份安全失效。TPM 用 FIXED_PARENT 實現，Soteria 靠 Black Key（待確認）。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q14. CSR 如何在 Soteria-native path 生成？</div><div style="font-size:.85rem;color:var(--ink-2)">ASN.1 encoding 在 <strong>SW 層</strong>完成（組裝設備資訊和公鑰），<strong>簽名由 Soteria RSA（MSG0=0x3）執行</strong>。Soteria 不提供完整 CSR API，需上層 SW 配合。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q15. PLANET 的切入重點？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>高階 ARM：</strong>談 OP-TEE fTPM → mTLS → RA roadmap，三階段提案。<strong>Legacy MIPS：</strong>先做 feasibility，確認能否加 external SE/hRoT；不亂承諾 hardware RoT / non-exportable key / Remote Attestation。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q16. TX8 的切入說法？</div><div style="font-size:.85rem;color:var(--ink-2)">「TX8 的 primary RoT 是 Soteria hRoT。我們研究 Soteria-native DevID path（不用 OP-TEE fTPM）是否可行，因為 TX8 TrustZone 尚未確認。OP-TEE fTPM 是 candidate。設計保持 backend-agnostic，未來可接 attestation。」</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q17. MIPS 可以做 Remote Attestation 嗎？</div><div style="font-size:.85rem;color:var(--ink-2)">❌ 不能承諾。無 hardware RoT 就沒有 PCR/Quote 基礎。只能做 feasibility study，評估能否外加 hRoT/SE。<strong>在未確認的情況下，不對 Legacy MIPS 承諾 Remote Attestation 能力。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q18. Phase 1/2/3 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>Phase 1：</strong>Device Identity + mTLS。<strong>Phase 2：</strong>Secure Provisioning + Onboarding。<strong>Phase 3：</strong>Measured Boot + Remote Attestation（需 PCR/Quote，Soteria TBC）。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q19. 為什麼要 backend-agnostic 設計？</div><div style="font-size:.85rem;color:var(--ink-2)">不同客戶有不同 RoT（x86 hTPM / ARM fTPM / TX8 Soteria）；架構要保留未來切換後端的能力；避免 TTPS DI 上層邏輯重寫。一套服務能服務所有平台，靠 Device Trust Abstraction Layer 隔離差異。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q20. Secure Element 適合什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">外接安全晶片（I2C/SPI/USB），適合 <strong>Legacy 平台補強</strong>（加裝不改主板）。PKCS#11 API，Phase 1/2 可行。通常不支援 PCR / attestation quote，Phase 3 需另確認。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q21. PUF 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">Physical Unclonable Function，利用晶片製造差異產生設備唯一 fingerprint，作為 key derivation 基礎（如 NXP ELE 內建 PUF）。PUF 本身不直接提供 TPM 功能，需搭配 key management。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q22. IEEE 802.1AR 定義了什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">DevID 的 IEEE 標準：<strong>non-exportable private key 要求、IDevID（出廠不可換）/ LDevID（現場可換）規範、X.509 cert 格式、lifecycle 管理</strong>。是 DevID 設計的法規依據。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q23. BRSKI 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">Bootstrap RFC 8995，零觸碰自動上線協議。設備開機後用 <strong>IDevID 向 Registrar 認證</strong>，取得組織的 Domain Certificate（即 LDevID）。是自動化 onboarding 的標準化方法。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q24. CRA 全面強制執行是哪天？違規多少？</div><div style="font-size:.85rem;color:var(--ink-2)"><strong>2027-12-11</strong>。違規最高 <strong>€15M 或全球年營收 2.5%</strong>（取較高）。2026-09-11 漏洞通報義務先生效。這是對客戶說明緊迫性的關鍵數字。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q25. 如何向沒聽過的人解釋 Soteria hRoT？</div><div style="font-size:.85rem;color:var(--ink-2)">「TX8 有一個內建硬體安全模組叫 Soteria，類似 TPM 的角色，負責保護 key、做加密運算和驗證開機。它透過 AHB 匯流排存取，有自己的 RISC-V 處理器和安全 OTP。我們在研究讓它直接支援設備身份認證。」</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q26. HUK 是什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">Hardware Unique Key，設備唯一根密鑰。Soteria 用 TRNG 生成並存在 OTP，是 Black Key 機制的根和 OP-TEE Secure Storage 的加密基礎。<strong>HUK 永不離開 Soteria。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q27. 為什麼 John 擔心 OP-TEE 記憶體？</div><div style="font-size:.85rem;color:var(--ink-2)">OP-TEE Secure World 需要 4–16 MB（TF-A + OP-TEE OS + fTPM TA），在資源緊張的嵌入式設備上是顯著負擔。如果只需要 DevID/mTLS，Soteria-native 的記憶體佔用明顯更低。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q28. Soteria INSTALL_ROK 做什麼？</div><div style="font-size:.85rem;color:var(--ink-2)">安裝 Root of Key（ROK）到 Soteria OTP，<strong>通常在製造端執行</strong>，需要 ROK password 認證。ROK 是 Black Key 機制的根，安裝後不可更改（MSG0=0x11）。</div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q29. swtpm 是什麼，FiduciaEdge 怎麼用？</div><div style="font-size:.85rem;color:var(--ink-2)">開源 vTPM 模擬器（KVM/QEMU），FiduciaEdge 用於 <strong>CI/CD pipeline 測試</strong>，讓開發者不需要真實 TPM 就能跑測試。<strong>絕對不能用於生產 IoT 設備。</strong></div></div>
+
+    <div class="card"><div style="font-weight:700;color:var(--purple-d);margin-bottom:5px">Q30. FiduciaEdge TTPS 的三條鐵律？</div><div style="font-size:.85rem;color:var(--ink-2)">① 不說「guarantee full CRA compliance」，說「CRA-ready foundation」。② fTPM ≠ vTPM，永遠不混用。③ OP-TEE 不跑在 Soteria 上，OP-TEE 跑在主 SoC TrustZone，Soteria 是被 OP-TEE 存取的 AHB HW 模組。</div></div>
+  </div>
+</div>
+
+<!-- ── S13: Memory Cheat Sheet ─────────────────────────────────────── -->
+<div class="sec" id="s13">
+  <div class="sec-hd">
+    <div class="sec-num" style="background:#1e1b4b">13</div>
+    <div>
+      <div class="sec-title">一頁速記表</div>
+      <div class="sec-sub">5×5 — 截圖存手機，假日複習</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:14px">
+    <div class="card" style="border-top:4px solid #4338ca">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4338ca;margin-bottom:10px">🧠 5 個核心觀念</div>
+      <ol style="font-size:.86rem;line-height:2.2;padding-left:18px">
+        <li>Device Trust = 身份可信 + 私鑰不外洩 + 開機可驗 + 連線可認</li>
+        <li>RoT 是信任鏈起點，不等於 CRA compliance</li>
+        <li>fTPM ≠ vTPM（實體 TEE vs VM 模擬）</li>
+        <li>OP-TEE 跑在主 SoC，不跑在 Soteria</li>
+        <li>Secure Boot 擋 → Measured Boot 記 → RA 報</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid #15803d">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d;margin-bottom:10px">🗺 5 個重要決策</div>
+      <ol style="font-size:.86rem;line-height:2.2;padding-left:18px">
+        <li>x86 → hTPM（最標準，最好溝通）</li>
+        <li>ARM + TrustZone → OP-TEE fTPM（Phase 1/2/3 全支援）</li>
+        <li>TX8 → 先研究 Soteria-native DevID，再評估 fTPM</li>
+        <li>Legacy MIPS → feasibility study first，不亂承諾</li>
+        <li>設計用 Device Trust Abstraction Layer，保持 backend-agnostic</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid #b91c1c">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b91c1c;margin-bottom:10px">🚫 5 個不要講錯</div>
+      <ol style="font-size:.86rem;line-height:2.2;padding-left:18px">
+        <li>不說「guarantee full CRA compliance」</li>
+        <li>不說「fTPM = vTPM」</li>
+        <li>不說「OP-TEE 跑在 Soteria 上」</li>
+        <li>不說「Soteria = TPM」</li>
+        <li>不說 Soteria 已確認支援所有 DevID 能力</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid #92400e">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#92400e;margin-bottom:10px">❓ 5 個要問客戶的問題</div>
+      <ol style="font-size:.86rem;line-height:2.2;padding-left:18px">
+        <li>SoC 型號是什麼？有沒有 ARM TrustZone？</li>
+        <li>BSP 有沒有 TF-A + OP-TEE？已啟用？</li>
+        <li>需不需要 TPM 2.0 API 相容性（TSS2）？</li>
+        <li>Remote Attestation 是近期還是 Phase 3？</li>
+        <li>CRA 合規時程：2027-12-11 前有多少時間？</li>
+      </ol>
+    </div>
+    <div class="card" style="border-top:4px solid #7c3aed;grid-column:span 2">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;margin-bottom:10px">🚀 5 個未來 Roadmap 能力</div>
+      <div class="grid-2">
+        <ol style="font-size:.86rem;line-height:2.2;padding-left:18px">
+          <li>Soteria attestation quote（<span class="no">❌TBC</span> — Phase 3 關鍵）</li>
+          <li>Device Trust Abstraction Layer 實作（2026 Q3–Q4）</li>
+          <li>ECDSA 支援（Soteria <span class="no">❌TBC</span>，fTPM ✅）</li>
+        </ol>
+        <ol start="4" style="font-size:.86rem;line-height:2.2;padding-left:18px">
+          <li>OP-TEE fTPM on TX8（若 TrustZone 確認）</li>
+          <li>CRA Annex I evidence 彙整 pipeline（2027 前）</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <div class="mnemo" style="margin-top:20px">
+    <div class="mnemo-label">🔑 最終三口訣</div>
+    「x86 找 hTPM，ARM 看 OP-TEE，TX8 先看 Soteria，MIPS 先 feasibility，VM 才用 vTPM。」<br>
+    「Secure Boot 擋，Measured Boot 記，Remote Attestation 報。」<br>
+    「CRA-ready 是技術基礎，full compliance 是 OEM 的責任。」
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<footer>
+  <strong>Device Trust Memory Guide</strong> — FiduciaEdge TTPS 團隊<br>
+  內部學習用途，非法律合規聲明 · EU CRA 2024/2847 全面強制執行：2027-12-11<br>
+  <a href="./index.html">← 返回首頁</a> · <a href="./soteria-native-device-identity-provisioning-survey.html">Soteria DevID Survey →</a>
+</footer>
+
+</body>
+</html>
