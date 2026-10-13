@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TTPS 產品總覽 — FiduciaEdge</title>
-  <meta name="description" content="TTPS（Trusted Things Provisioning Service）設備身分與存取管理平台：產品定位、運作原理、架構、驗證證據、成熟度、導入方式與 Roadmap。中文為主、英文輔助。">
+  <meta name="description" content="TTPS：給每台設備一把拿不走的鑰匙。金鑰在 TPM 2.0 內、不可匯出，可用於 VPN 連線、mTLS、設備登錄與撤銷等多種應用。圖解為主、文字精簡。">
   <style>
     :root {
       --ink:#111827; --ink-2:#374151; --ink-3:#6b7280;
@@ -224,24 +224,60 @@
     footer strong{color:rgba(255,255,255,.8)} footer a{color:rgba(255,255,255,.6);text-decoration:none} footer a:hover{color:#fff}
     .src{max-width:980px;margin:0 auto;padding:0 20px 30px;font-size:.78rem;color:var(--ink-3)}
     .src ul{margin:6px 0 0 18px}
+    /* ── diagrams ── */
+    .dia{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px 6px;box-shadow:var(--shadow-sm);overflow-x:auto}
+    .dia svg{display:block;width:100%;height:auto;min-width:560px}
+    .dia-cap{font-size:.8rem;color:var(--ink-3);text-align:center;padding:6px 8px 8px}
+    .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media(max-width:700px){.big3{grid-template-columns:1fr}}
+    .pic{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);text-align:center}
+    .pic .row{display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.6rem;margin:6px 0}
+    .pic .row small{font-size:.74rem;color:var(--ink-3);line-height:1.3;max-width:90px}
+    .pic h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+    .pic .bad,.pic .good{display:block;font-size:.84rem;padding:7px 10px;border-radius:8px;margin-top:6px;font-weight:600}
+    .pic .bad{background:var(--red-l);color:var(--red)} .pic .good{background:var(--green-l);color:var(--green)}
+    .cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media(max-width:760px){.cap-grid{grid-template-columns:1fr 1fr}}
+    .cap{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;box-shadow:var(--shadow-sm);border-top:4px solid var(--blue)}
+    .cap .ic{font-size:2rem;line-height:1;margin-bottom:8px}
+    .cap h4{font-size:.95rem;font-weight:800;margin-bottom:3px}
+    .cap p{font-size:.8rem;color:var(--ink-2)}
+    .cap .en{display:block;margin-bottom:4px}
+    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    @media(max-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:460px){.steps{grid-template-columns:1fr}}
+    .step{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm);position:relative}
+    .step .ic{font-size:1.7rem;line-height:1;margin-bottom:6px}
+    .step .n{position:absolute;top:8px;left:10px;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .step h5{font-size:.88rem;font-weight:800;margin-bottom:2px}
+    .step p{font-size:.76rem;color:var(--ink-3);line-height:1.4}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:640px){.two{grid-template-columns:1fr}}
+    .idcard{background:var(--bg-2);border:2px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm)}
+    .idcard.hw{border-color:var(--green-m)} .idcard.sw{border-color:var(--orange-m)}
+    .idcard .hd{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;margin-bottom:10px}
+    .idcard .hd .ic{font-size:1.6rem}
+    .idcard ul{list-style:none}
+    .idcard li{font-size:.85rem;color:var(--ink-2);padding:6px 0;border-top:1px dashed var(--border);display:flex;gap:8px}
+    .idcard li b{min-width:64px;color:var(--ink)}
+
   </style>
 </head>
 <body>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-topbar">
     <a class="hero-brand" href="./index.html">FiduciaEdge · Product Overview</a>
     <span class="version-badge" id="site-version">Version: __VERSION__</span>
   </div>
   <div class="hero-kicker">Trusted Things Provisioning Service</div>
-  <h1>TTPS <span>設備身分與存取管理平台</span></h1>
-  <div class="hero-en">Device Identity &amp; Trusted Access Platform</div>
-  <p class="hero-sub">讓設備身分可信，讓管理更有依據。每台設備都有可驗證、不可複製的硬體身分：私鑰留在 TPM 2.0 內，憑證、驗證證據與撤銷紀錄集中在同一個平台管理。</p>
+  <h1>TTPS <span>給每台設備一把拿不走的鑰匙</span></h1>
+  <div class="hero-en">One non-exportable key per device, many uses</div>
+  <p class="hero-sub">鑰匙在設備的 TPM 2.0 晶片裡產生、永不離開。有了它，設備就能被認出來、被驗證、被撤銷，並用在 VPN 連線等多種應用。</p>
   <div class="hero-chips">
-    <span class="chip hl">🔐 TPM 2.0 硬體根信任</span>
-    <span class="chip">🪪 Device Identity</span>
-    <span class="chip">🚪 Trusted Access</span>
+    <span class="chip hl">🔑 1 台設備 1 把鑰匙</span>
+    <span class="chip">🔒 私鑰不可匯出</span>
+    <span class="chip">🚪 VPN 等多種應用</span>
     <span class="chip">📅 資料基準 2026-10-13</span>
   </div>
   <div class="hero-wave"><svg viewBox="0 0 1440 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="#f6f8fb" d="M0,56 L0,30 C200,54 400,10 640,28 C880,46 1100,50 1440,30 L1440,56 Z"/></svg></div>
@@ -250,16 +286,16 @@
 <nav class="sticky-nav">
   <a href="#s1">1 是什麼</a>
   <a href="#s2">2 解決問題</a>
-  <a href="#s3">3 怎麼運作</a>
-  <a href="#s4">4 兩種身分</a>
-  <a href="#s5">5 架構</a>
-  <a href="#s6">6 驗證證據</a>
-  <a href="#s7">7 成熟度</a>
-  <a href="#s8">8 支援範圍</a>
-  <a href="#s9">9 導入</a>
-  <a href="#s10">10 Roadmap</a>
-  <a href="#s11">11 FAQ</a>
-  <a href="#s12">12 定位</a>
+  <a href="#s3">3 核心能力</a>
+  <a href="#s4">4 怎麼運作</a>
+  <a href="#s5">5 VPN 應用</a>
+  <a href="#s6">6 架構</a>
+  <a href="#s7">7 兩種身分</a>
+  <a href="#s8">8 成熟度</a>
+  <a href="#s9">9 支援範圍</a>
+  <a href="#s10">10 導入</a>
+  <a href="#s11">11 Roadmap</a>
+  <a href="#s12">12 FAQ</a>
   <span class="ver" id="nav-version">__VERSION__</span>
 </nav>
 <script>
@@ -272,347 +308,367 @@
 
 <div class="page">
 
-  <!-- STATS -->
   <div class="stats">
-    <div class="stat"><div class="stat-ic">🔐</div><div class="stat-num">TPM 2.0</div><div class="stat-lbl">私鑰不可匯出 <span class="en">non-exportable</span></div></div>
-    <div class="stat"><div class="stat-ic">🧪</div><div class="stat-num">3 項</div><div class="stat-lbl">獨立驗證 <span class="en">independent checks</span></div></div>
-    <div class="stat"><div class="stat-ic">🚫</div><div class="stat-num">逐台</div><div class="stat-lbl">撤銷即拒絕 <span class="en">per-device revocation</span></div></div>
-    <div class="stat"><div class="stat-ic">🏠</div><div class="stat-num">自架</div><div class="stat-lbl">資料不出客戶網路 <span class="en">self-hosted</span></div></div>
+    <div class="stat"><div class="stat-ic">🔑</div><div class="stat-num">1 台 1 把</div><div class="stat-lbl">每台設備專屬鑰匙</div></div>
+    <div class="stat"><div class="stat-ic">🔒</div><div class="stat-num">拿不走</div><div class="stat-lbl">私鑰不可匯出 <span class="en">non-exportable</span></div></div>
+    <div class="stat"><div class="stat-ic">🚪</div><div class="stat-num">多種應用</div><div class="stat-lbl">VPN · mTLS · 登錄 · 撤銷</div></div>
+    <div class="stat"><div class="stat-ic">🏠</div><div class="stat-num">自架</div><div class="stat-lbl">資料不出客戶網路</div></div>
   </div>
 
-  <!-- ===== 1 ===== -->
+  <!-- 1 -->
   <div class="sec" id="s1">
-    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">一句話看懂 TTPS</div><div class="sec-sub">What TTPS is — 先知道設備是誰，再決定它能做什麼</div></div></div>
-    <p class="lead">TTPS 是<strong>設備的身分與信任管理平台</strong>。它把「設備登記 → 憑證建立與驗證 → 以憑證狀態作為存取依據」整合成一條可追蹤的管理流程。設備可以被逐台註冊、驗證、撤銷，並延伸到後續的 Remote Attestation 與 Trusted OTA。</p>
-    <div class="grid-3">
-      <div class="tile green"><div class="tile-step">01</div><div class="tile-icon">📋</div><h4>登記設備</h4><span class="en">Device Inventory</span><p>管理設備識別與所採用的身分方式。先建立設備紀錄，不需要立即連接 TPM。</p></div>
-      <div class="tile"><div class="tile-step">02</div><div class="tile-icon">🪪</div><h4>建立與驗證身分</h4><span class="en">Device Identity</span><p>在設備 TPM 內產生金鑰、申請憑證，並留下可查驗的驗證結果。</p></div>
-      <div class="tile purple"><div class="tile-step">03</div><div class="tile-icon">🚪</div><h4>提供存取依據</h4><span class="en">Trusted Access</span><p>讓服務依憑證狀態判斷是否允許連線；撤銷後的設備在下一次握手被拒。</p></div>
-    </div>
-    <div class="grid-2" style="margin-top:14px">
-      <div class="notice notice-green" style="margin-top:0"><strong>✓ TTPS 是：</strong>硬體根信任的設備身分（IAK / IDevID 在 TPM 2.0 內產生）、憑證生命週期管理、驗證證據與撤銷紀錄的統一平台。</div>
-      <div class="notice notice-red" style="margin-top:0"><strong>✗ TTPS 不是：</strong>第三方認證、自動符合法規的工具、商用 VPN 產品，也不等於 Remote Attestation（後者仍在規劃）。</div>
-    </div>
-  </div>
-
-  <!-- ===== 2 ===== -->
-  <div class="sec" id="s2">
-    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">解決什麼問題</div><div class="sec-sub">Problems it solves — 設備連上網路，不代表身分可信</div></div></div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>映像被複製</h4><p>檔案中的憑證與金鑰，可能跟著設備映像、備份或檔案搬移一起外流；複製機難以和原機區分。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">TTPS 做法 · Solution</div><h4>保護身分金鑰</h4><p>TPM 路徑讓私鑰留在 TPM 內（fixedTPM / fixedParent），複製檔案拿不到原身分金鑰。</p></div>
-    </div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>設備需要停用</h4><p>設備遺失、轉售或停止使用後，仍需要控制它後續的連線。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">TTPS 做法 · Solution</div><h4>管理身分生命週期</h4><p>以憑證狀態作為存取依據；逐台撤銷後，下一次握手即被拒絕（fail-closed）。</p></div>
-    </div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>缺少驗證依據</h4><p>只看到設備在線，回答不了「身分是如何被確認的」；歐盟客戶安全問卷要求可追溯的設備識別與撤銷證據。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">TTPS 做法 · Solution</div><h4>留下可追蹤的證據</h4><p>集中保留設備、憑證與驗證結果，一條指令可輸出驗證報告，便於查詢與稽核。</p></div>
-    </div>
-    <p class="notice notice-info">適用方向：工業閘道、連網機台、OT / 關鍵基礎設施與企業內網設備；實際支援條件需於導入前確認。</p>
-  </div>
-
-  <!-- ===== 3 ===== -->
-  <div class="sec" id="s3">
-    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">怎麼運作：五個基本步驟</div><div class="sec-sub">How it works — 從建立設備紀錄到存取控制</div></div></div>
-    <div class="flow">
-      <div class="flow-step"><div class="flow-n">1</div><h5>建立設備紀錄</h5><p>先把設備加入 Inventory，設定 ID、名稱與身分類型。不呼叫 CA、不產生金鑰。</p><span class="out">Registered</span></div>
-      <div class="flow-step"><div class="flow-n">2</div><h5>TPM 產生金鑰 / CSR</h5><p>IAK / IDevID 金鑰對在設備 TPM 2.0 內產生；私鑰留在晶片內，產出 TCG 格式 CSR。</p><span class="out">Key in TPM</span></div>
-      <div class="flow-step"><div class="flow-n">3</div><h5>CA 簽發憑證</h5><p>TWCA 為 Standard 路徑；憑證寫入 TPM NV。Local Demo CA 僅限 LAB / DEMO。</p><span class="out">Cert Issued</span></div>
-      <div class="flow-step"><div class="flow-n">4</div><h5>現場驗證</h5><p>金鑰對應、fresh-challenge 持有證明（PoP）、憑證鏈三項獨立檢查。</p><span class="out">Verified</span></div>
-      <div class="flow-step"><div class="flow-n">5</div><h5>存取控制</h5><p>憑證即存取憑證；已撤銷身分在後續連線被拒。</p><span class="out">Allow / Deny</span></div>
-    </div>
-
-    <div class="card" style="margin-top:18px">
-      <div class="card-title">🧩 為什麼複製硬碟拿不到身分？ <span class="en">Clone resistance</span></div>
-      <p class="card-body" style="margin-bottom:14px">TPM 路徑的關鍵：用來證明身分的私鑰不以一般檔案形式存放在硬碟。檔案可以搬，但檔案裡沒有 TPM 私鑰。</p>
-      <div class="clone">
-        <div class="machine a">
-          <div class="machine-hd">🖥 原設備 A</div>
-          <div class="disk">💽 磁碟映像：OS、應用程式、憑證（公開）</div>
-          <div class="tpmbox">🔐 TPM A：原身分私鑰（不可匯出）</div>
-          <div class="verdict">✔ 持有證明 PASS，憑證 ↔ 金鑰 MATCH</div>
-        </div>
-        <div class="clone-mid"><span class="big">⇢</span>複製檔案<br><span class="en">copy disk image</span></div>
-        <div class="machine b">
-          <div class="machine-hd">🖥 另一台設備 B</div>
-          <div class="disk">💽 一模一樣的磁碟映像</div>
-          <div class="tpmbox">🔐 TPM B：不同金鑰，沒有 A 的私鑰</div>
-          <div class="verdict">✘ 無法完成相同的持有證明 → 拒絕</div>
-        </div>
-      </div>
-      <p class="notice notice-warn">已驗證：vTPM（swtpm）檔案複製負向測試。實體 dTPM 防複製驗證列入後續；不涵蓋「虛擬機連同完整 vTPM 狀態一起複製」的情境。</p>
-    </div>
-  </div>
-
-  <!-- ===== 4 ===== -->
-  <div class="sec" id="s4">
-    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">兩種身分方式</div><div class="sec-sub">Two identity paths — 同一平台管理，但金鑰保護與驗證保證不同</div></div></div>
-    <div class="tabs" role="tablist">
-      <button class="tab" role="tab" aria-selected="true" data-tab="tpm">🔐 TPM DevID（硬體保護）</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="twid">📄 TWID / OpenCert（軟體憑證）</button>
-      <button class="tab" role="tab" aria-selected="false" data-tab="cmp">⚖ 並排比較</button>
-    </div>
-    <div class="tabpanel active" id="tab-tpm">
-      <div class="grid-2">
-        <div class="tile green"><div class="tile-icon">🔐</div><h4>金鑰位置</h4><p>設備 TPM 內產生與使用，採 fixedTPM / fixedParent 屬性，私鑰保持不可匯出。</p></div>
-        <div class="tile green"><div class="tile-icon">🎯</div><h4>主要用途</h4><p>硬體綁定的設備身分與持有證明（PoP）；本次 Device Identity 產品重點。</p></div>
-        <div class="tile green"><div class="tile-icon">🏛</div><h4>憑證路徑</h4><p>TWCA ID Center（正式整合進行中）；實驗室另有 Local Demo CA，僅供流程驗證。</p></div>
-        <div class="tile green"><div class="tile-icon">🧪</div><h4>驗證進度</h4><p><span class="st st-ok">✔ 實驗室已驗證</span> TPM 金鑰、簽章、三項驗證與負向竄改測試。</p></div>
-      </div>
-    </div>
-    <div class="tabpanel" id="tab-twid">
-      <div class="grid-2">
-        <div class="tile orange"><div class="tile-icon">🗄</div><h4>金鑰位置</h4><p>伺服器產生，經受控方式（憑證包）交付設備；不具備 TPM 路徑的硬體不可匯出保證。</p></div>
-        <div class="tile orange"><div class="tile-icon">🎯</div><h4>主要用途</h4><p>設備憑證簽發、查詢與撤銷；既有的軟體憑證路徑，也適用於沒有 TPM 的設備。</p></div>
-        <div class="tile orange"><div class="tile-icon">🏛</div><h4>憑證路徑</h4><p>TWCA OpenCert（測試環境已完成 E2E）。</p></div>
-        <div class="tile orange"><div class="tile-icon">🧪</div><h4>驗證進度</h4><p><span class="st st-ok">✔ 已驗證</span> 註冊 → 簽發 → 撤銷生命週期，以及 OpenVPN 存取參考整合。</p></div>
-      </div>
-    </div>
-    <div class="tabpanel" id="tab-cmp">
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>面向</th><th>TPM DevID</th><th>TWID / OpenCert</th></tr></thead>
-        <tbody>
-          <tr><td>金鑰位置</td><td>設備 TPM 2.0 內，不可匯出</td><td>伺服器產生，受控交付</td></tr>
-          <tr><td>防複製保證</td><td>硬體綁定；複製映像拿不到私鑰</td><td>無硬體綁定，憑證包可被搬移</td></tr>
-          <tr><td>設備需求</td><td>TPM 2.0（/dev/tpmrm0）</td><td>不需 TPM</td></tr>
-          <tr><td>CA</td><td>TWCA ID Center（整合中）/ Local Demo CA（LAB）</td><td>TWCA OpenCert</td></tr>
-          <tr><td>存取整合</td><td>TPM-backed VPN 需另外驗證</td><td>OpenVPN 參考整合已驗證</td></tr>
-          <tr><td>產品定位</td><td>本次 Device Identity 產品重點</td><td>既有軟體憑證路徑</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-    <p class="notice notice-warn">TPM 對外部 CA 的簽發整合仍待確認；Local Demo CA 僅供實驗室，不會自動替代正式 CA。</p>
-  </div>
-
-  <!-- ===== 5 ===== -->
-  <div class="sec" id="s5">
-    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">系統架構</div><div class="sec-sub">Architecture — 一個平台，串起設備、憑證與存取（滑過元件看說明）</div></div></div>
-    <div class="arch">
-      <div class="arch-col dev">
-        <div class="arch-hd">🖥 設備端 · Device</div>
-        <div class="node" title="常駐程式，透過 gRPC 與平台溝通；負責在 TPM 內產生金鑰與簽章"><b>tpm-agent</b><small>TPM 裝置常駐程式（gRPC）。金鑰產生、CSR、簽章都在 TPM 內完成。</small></div>
-        <div class="node" title="設備端 CLI"><b>ttpsctl</b><small>設備端 CLI：<code>status</code> · <code>di show</code> · <code>di sign</code> · <code>di enroll</code> · <code>di verify --report</code></small></div>
-        <div class="node"><b>TWID 憑證用戶端</b><small>非 TPM 裝置使用的軟體憑證路徑。</small></div>
-      </div>
-      <div class="arch-col plat">
-        <div class="arch-hd">🏢 TTPS 平台 · Platform（企業內網自架）</div>
-        <div class="node" title="網頁操作入口"><b>Credential Portal</b><small>網頁 RA / 管理入口：設備清單、註冊、憑證、撤銷、驗證結果查詢。</small></div>
-        <div class="node" title="Rust 實作，SQLite 單機"><b>credential-server</b><small>憑證流程與紀錄；REST 介面認證強制、fail-closed。</small></div>
-        <div class="node"><b>Trusted Access sidecar（選配）</b><small>OpenVPN 參考整合：以憑證狀態決定是否放行。</small></div>
-        <div class="node"><b>部署 / 備份 / 還原腳本</b><small>安裝、升級、回滾；每個 release 附 checksums、manifest 與 SBOM。</small></div>
-      </div>
-      <div class="arch-col ca">
-        <div class="arch-hd">🏛 憑證服務 · CA</div>
-        <div class="node"><b>TWCA ID Center</b><small>TPM DevID 路徑（正式簽發整合中）。</small></div>
-        <div class="node"><b>TWCA OpenCert</b><small>TWID 軟體憑證路徑（測試環境已驗證）。</small></div>
-        <div class="node" style="border-style:dashed"><b>Local Demo CA</b><small>LAB / DEMO ONLY，不進正式環境。</small></div>
-      </div>
-    </div>
-    <p class="notice notice-info">設備端負責金鑰使用與設備操作；TTPS 負責管理流程與紀錄；CA 負責核發憑證。企業內網部署不代表可以略過憑證與存取控制。</p>
-
-    <details class="more">
-      <summary>▸ 技術細節：網路埠與前置條件 <span class="en">Ports &amp; prerequisites</span></summary>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>方向</th><th>Protocol / Port</th><th>目的</th></tr></thead>
-        <tbody>
-          <tr><td>平台 → Internet</td><td>TCP 443</td><td>TWCA OpenCert（正式 / 測試）；TPM 身分路徑另需 TWCA ID Center</td></tr>
-          <tr><td>管理者 → 平台</td><td>TCP 8080</td><td>Credential Portal</td></tr>
-          <tr><td>設備 → 平台</td><td>TCP 8443 / 8444</td><td>設備註冊、憑證下載、狀態回報</td></tr>
-          <tr><td>平台 → 設備</td><td>TCP 50051</td><td>平台呼叫設備上的 tpm-agent</td></tr>
-          <tr><td>設備 → 平台（選配）</td><td>UDP 12973</td><td>Trusted Access / OpenVPN 參考整合，埠號可調</td></tr>
-        </tbody>
-      </table></div>
-      <div class="grid-2" style="margin-top:12px">
-        <div class="card"><div class="card-title">平台主機</div><div class="card-body">Ubuntu 24.04 LTS x86_64；實體機或 VM；建議 2 vCPU / 4 GB RAM / 20 GB；Docker Engine 24+ 與 Compose v2；固定 IP 或 DNS、NTP 時間同步。</div></div>
-        <div class="card"><div class="card-title">設備端</div><div class="card-body">Ubuntu 24.04 x86_64 已驗證（22.04 Expected）；TPM 2.0 需可看到 /dev/tpmrm0；先定義設備 CN 命名規則，例如 <code>&lt;客戶代碼&gt;-&lt;型號&gt;-&lt;序號&gt;</code>。</div></div>
-      </div>
-    </details>
-  </div>
-
-  <!-- ===== 6 ===== -->
-  <div class="sec" id="s6">
-    <div class="sec-hd"><div class="sec-num">6</div><div><div class="sec-title">驗證證據：每台設備都有可查驗的證據</div><div class="sec-sub">Verification evidence — 不只看到「已註冊」，還能確認憑證、金鑰與持有證明對得起來</div></div></div>
-    <div class="grid-3">
-      <div class="tile green vcard ok"><div class="big">MATCH</div><h4>憑證與金鑰相符</h4><span class="en">SPKI match</span><p>確認憑證中的公鑰，對應設備 TPM 內的金鑰。</p></div>
-      <div class="tile green vcard ok"><div class="big">PASS</div><h4>設備能證明持有金鑰</h4><span class="en">fresh-challenge PoP</span><p>以新的挑戰值簽章，驗證設備確實能使用該私鑰。</p></div>
-      <div class="tile green vcard ok"><div class="big">PASS</div><h4>憑證鏈驗證通過</h4><span class="en">chain validation</span><p>確認憑證能連到本次測試信任的簽發機構。</p></div>
-    </div>
-    <p class="notice notice-warn">以上為實驗室身分驗證結果（2026-09，Local Demo CA + vTPM）；不等於正式 CA 簽發完成，也不等於 Remote Attestation。負向測試（竄改、換鏈、另一 TPM）皆如預期 FAIL。</p>
-
-    <div class="card" style="margin-top:18px">
-      <div class="card-title">🚫 撤銷憑證，讓後續連線被拒絕 <span class="en">Revocation → Deny</span></div>
-      <p class="card-body" style="margin-bottom:12px">TWID 與 OpenVPN 的參考整合，將憑證生命週期連結到存取判斷。</p>
-      <div class="flow">
-        <div class="flow-step"><div class="flow-n" style="background:var(--green)">1</div><h5>有效憑證</h5><p>設備持有 TWID 憑證。</p></div>
-        <div class="flow-step"><div class="flow-n" style="background:var(--green)">2</div><h5>允許連線</h5><p>驗證憑證與有效狀態（tls-verify 即時回查）。</p><span class="out">ALLOW</span></div>
-        <div class="flow-step"><div class="flow-n" style="background:var(--orange)">3</div><h5>撤銷憑證</h5><p>平台更新撤銷結果。</p></div>
-        <div class="flow-step"><div class="flow-n" style="background:var(--red)">4</div><h5>拒絕再連線</h5><p>下一次握手不予放行。</p><span class="out" style="color:var(--red);background:var(--red-l)">DENY</span></div>
-      </div>
-      <p class="notice notice-warn">已驗證的是「後續握手被拒絕」，不是「立即中斷所有既有連線」。已驗證範圍為 TWID + OpenVPN（TWCA 測試環境，2026-09）；不推定 TPM-backed VPN 已完成相同整合。</p>
-    </div>
-  </div>
-
-  <!-- ===== 7 ===== -->
-  <div class="sec" id="s7">
-    <div class="sec-hd"><div class="sec-num">7</div><div><div class="sec-title">目前成熟度</div><div class="sec-sub">Maturity — 核心身分流程已驗證，持續完善產品交付</div></div></div>
-    <div class="mat">
-      <div class="mat-col ok"><h4>✔ 已驗證</h4><span class="en">Validated — 有可重跑的測試紀錄</span><ul>
-        <li>TPM 金鑰產生與三項驗證（實驗室，vTPM）</li>
-        <li>TWID 憑證生命週期：註冊 → 簽發 → 撤銷（TWCA 測試環境）</li>
-        <li>Trusted Access：撤銷後重連 DENY（OpenVPN）</li>
-        <li>vTPM 檔案複製負向測試</li>
-        <li>正式套件於乾淨 Ubuntu 24.04 VM 安裝驗證（2026-09-13）</li>
-      </ul></div>
-      <div class="mat-col wip"><h4>⟳ 整合／驗收中</h4><span class="en">In progress — 完整產品交付</span><ul>
-        <li>統一設備管理（Unified Device Management）網站整合驗收</li>
-        <li>TPM 身分經 TWCA ID Center 正式簽發（外部依賴）</li>
-        <li>乾淨環境第二輪重驗、套件與操作文件定版</li>
-        <li>SBOM 每版重生、manifest / checksums 版本對齊</li>
-        <li>實體 TPM 設備端到端證據（目前主流程以 vTPM 驗證）</li>
-      </ul></div>
-      <div class="mat-col plan"><h4>◇ 規劃中</h4><span class="en">Planned — 下一階段能力</span><ul>
-        <li>Secure OTA 安全更新</li>
-        <li>Remote Attestation 設備狀態證明</li>
-        <li>實體 dTPM 防複製驗證</li>
-        <li>LDevID / 客戶自有 PKI（NRE）</li>
-        <li>更多平台整合（fTPM / HA / Kubernetes，NRE）</li>
-      </ul></div>
-    </div>
-
-    <details class="more">
-      <summary>▸ 驗證狀態明細 <span class="en">Validation status table（2026-09-24 review）</span></summary>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>項目</th><th>狀態</th><th>日期 / 範圍</th><th>備註</th></tr></thead>
-        <tbody>
-          <tr><td>乾淨 VM 安裝</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · Ubuntu 24.04 x86_64</td><td>正式套件安裝驗證完成</td></tr>
-          <tr><td>軟體憑證生命週期</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · TWCA test</td><td>註冊、簽發、撤銷 E2E</td></tr>
-          <tr><td>Trusted Access 參考整合</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · TWCA test</td><td>撤銷設備重新連線被拒</td></tr>
-          <tr><td>TPM 金鑰 / 簽章 / 驗證</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>實驗室</td><td>IAK / IDevID、sign / verify、負向竄改測試</td></tr>
-          <tr><td>TPM 身分經 TWCA ID Center 簽發</td><td><span class="st st-wip">⟳ IN PROGRESS</span></td><td>外部依賴</td><td>簽發路徑整合中；不承諾日期</td></tr>
-          <tr><td>Ubuntu 22.04 平台伺服器</td><td><span class="st st-plan">◇ EXPECTED</span></td><td>本版未測</td><td>機制相同但未實測，不可標示 validated</td></tr>
-          <tr><td>實體 TPM 設備 E2E</td><td><span class="st st-wip">⟳ PARTIAL</span></td><td>代理程式相容性已測</td><td>需補本版端到端證據</td></tr>
-          <tr><td>第三方產品認證</td><td><span class="st st-no">✘ NOT CERTIFIED</span></td><td>—</td><td>目前沒有第三方產品認證</td></tr>
-        </tbody>
-      </table></div>
-      <div class="legend"><span class="st st-ok">✔ 已驗證</span><span class="st st-wip">⟳ 進行中 / 部分</span><span class="st st-plan">◇ 預期 / 規劃</span><span class="st st-no">✘ 未取得</span><span class="st st-nre">⚙ NRE</span></div>
-    </details>
-  </div>
-
-  <!-- ===== 8 ===== -->
-  <div class="sec" id="s8">
-    <div class="sec-hd"><div class="sec-num">8</div><div><div class="sec-title">支援範圍</div><div class="sec-sub">Supported scope — 「已驗證」有測試紀錄；「Expected」機制相同但未實測；「NRE」另行工程評估</div></div></div>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>元件</th><th>已驗證 <span class="st st-ok">✔</span></th><th>Expected / 未實測 <span class="st st-plan">◇</span></th><th>NRE / 不含標準 <span class="st st-nre">⚙</span></th></tr></thead>
-      <tbody>
-        <tr><td>平台伺服器</td><td>Ubuntu 24.04 LTS x86_64；Docker Engine + Compose v2</td><td>Ubuntu 22.04 LTS；2 vCPU / 4 GB / 20 GB</td><td>ARM64 server、Kubernetes、HA</td></tr>
-        <tr><td>設備端</td><td>Ubuntu 24.04 LTS x86_64；TPM 2.0 via /dev/tpmrm0（目前以 vTPM 驗證）</td><td>Ubuntu 22.04 LTS；實體 TPM 2.0</td><td>fTPM / TrustZone、TPM 1.2、非 Ubuntu</td></tr>
-        <tr><td>憑證機構</td><td>TWCA OpenCert 測試環境（軟體憑證 E2E）</td><td>TWCA ID Center 正式整合</td><td>客戶自有 PKI、LDevID</td></tr>
-        <tr><td>存取整合</td><td>OpenVPN 參考整合（TWID）</td><td>TPM-backed VPN</td><td>既有 VPN / ZTNA / MDM 整合</td></tr>
-        <tr><td>進階能力</td><td>—</td><td>—</td><td>Remote Attestation / Measured Boot、產線大量佈建</td></tr>
-      </tbody>
-    </table></div>
-    <div class="grid-2" style="margin-top:14px">
-      <div class="tile green"><div class="tile-icon">🎯</div><h4>理想客戶</h4><span class="en">Ideal customer</span><p>出口歐盟、設備已具 TPM 2.0、採 Ubuntu x86_64，並接受單節點自架平台與 TWCA CA 的工業閘道 / 機台設備商；需要以憑證取代共用帳密並要求逐台撤銷的 OT / 關鍵基礎設施營運者或 SI。</p></div>
-      <div class="tile purple"><div class="tile-icon">⚙</div><h4>走 NRE / 另行評估</h4><span class="en">Not Standard</span><p>LDevID、客戶自有 PKI、fTPM / TrustZone、非 Ubuntu、HA / Kubernetes、既有 VPN / ZTNA / MDM 整合、Remote Attestation、產線大量佈建。可先以短期工程評估確認可行性、工時與風險。</p></div>
-    </div>
-  </div>
-
-  <!-- ===== 9 ===== -->
-  <div class="sec" id="s9">
-    <div class="sec-hd"><div class="sec-num">9</div><div><div class="sec-title">導入方式：五步</div><div class="sec-sub">Delivery — 每一步都有清楚的輸入與可查驗的結果</div></div></div>
-    <div class="flow">
-      <div class="flow-step"><div class="flow-n">1</div><h5>確認環境</h5><p>主機、網路與埠、設備 TPM 2.0、CA 帳號歸屬與設備命名規則。</p><span class="out">導入範圍確認</span></div>
-      <div class="flow-step"><div class="flow-n">2</div><h5>部署平台</h5><p>建立單節點平台、設定首次管理員並完成健康檢查。</p><span class="out">Portal 可登入</span></div>
-      <div class="flow-step"><div class="flow-n">3</div><h5>設定身分</h5><p>CA profile、TLS、Trusted Access（如需）；設備端安裝 tpm-agent / ttpsctl。</p><span class="out">設定可追蹤</span></div>
-      <div class="flow-step"><div class="flow-n">4</div><h5>註冊與驗證</h5><p>執行 di enroll；完成 TPM 金鑰、CSR 與 di verify 三項驗證。</p><span class="out">設備驗證結果</span></div>
-      <div class="flow-step"><div class="flow-n">5</div><h5>驗收與交接</h5><p>依驗收清單簽收；交付操作、備份 / 還原、撤銷 SOP、manifest、checksums、SBOM。</p><span class="out">可維運的交付</span></div>
+    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">產品是什麼</div><div class="sec-sub">What it is — 一把鑰匙，多種應用</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="設備內的 TPM 晶片持有不可匯出的私鑰，可用於 VPN、mTLS、設備登錄、Secure OTA 與 Remote Attestation">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/></marker>
+          <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+        </defs>
+        <!-- device -->
+        <rect x="20" y="55" width="270" height="220" rx="18" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="155" y="85" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">🖥 設備 Device</text>
+        <!-- chip -->
+        <rect x="55" y="105" width="200" height="140" rx="12" fill="#1e3a5f" stroke="#60a5fa" stroke-width="2"/>
+        <g stroke="#60a5fa" stroke-width="2"><line x1="75" y1="105" x2="75" y2="95"/><line x1="105" y1="105" x2="105" y2="95"/><line x1="135" y1="105" x2="135" y2="95"/><line x1="165" y1="105" x2="165" y2="95"/><line x1="195" y1="105" x2="195" y2="95"/><line x1="225" y1="105" x2="225" y2="95"/>
+        <line x1="75" y1="245" x2="75" y2="255"/><line x1="105" y1="245" x2="105" y2="255"/><line x1="135" y1="245" x2="135" y2="255"/><line x1="165" y1="245" x2="165" y2="255"/><line x1="195" y1="245" x2="195" y2="255"/><line x1="225" y1="245" x2="225" y2="255"/></g>
+        <text x="155" y="130" text-anchor="middle" font-size="13" font-weight="700" fill="#93c5fd" letter-spacing="2">TPM 2.0</text>
+        <text x="155" y="180" text-anchor="middle" font-size="40">🔑</text>
+        <text x="155" y="212" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">私鑰在晶片內產生</text>
+        <text x="155" y="232" text-anchor="middle" font-size="12" fill="#bfdbfe">永不離開 · 不可匯出 🔒</text>
+        <!-- connectors -->
+        <path d="M290,165 C340,165 340,70 400,70" fill="none" stroke="#15803d" stroke-width="2.5" marker-end="url(#ahg)"/>
+        <path d="M290,165 C340,165 340,118 400,118" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#ah)"/>
+        <path d="M290,165 C340,165 340,166 400,166" fill="none" stroke="#1d4ed8" stroke-width="2.5" marker-end="url(#ah)"/>
+        <path d="M290,165 C340,165 340,214 400,214" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+        <path d="M290,165 C340,165 340,262 400,262" fill="none" stroke="#9ca3af" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+        <!-- apps -->
+        <rect x="402" y="50" width="298" height="40" rx="20" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+        <text x="551" y="76" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">🚪 VPN 連線 · Trusted Access</text>
+        <rect x="402" y="98" width="298" height="40" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="551" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">🌐 mTLS 服務連線</text>
+        <rect x="402" y="146" width="298" height="40" rx="20" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="551" y="172" text-anchor="middle" font-size="15" font-weight="700" fill="#1e3a8a">🪪 設備登錄 · 憑證 · 撤銷</text>
+        <rect x="402" y="194" width="298" height="40" rx="20" fill="#f9fafb" stroke="#d1d5db" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="551" y="220" text-anchor="middle" font-size="15" font-weight="700" fill="#6b7280">📦 Secure OTA 更新驗證（規劃）</text>
+        <rect x="402" y="242" width="298" height="40" rx="20" fill="#f9fafb" stroke="#d1d5db" stroke-width="2" stroke-dasharray="6 4"/>
+        <text x="551" y="268" text-anchor="middle" font-size="15" font-weight="700" fill="#6b7280">📡 Remote Attestation（規劃）</text>
+        <text x="551" y="310" text-anchor="middle" font-size="12" fill="#6b7280">實線＝現有 · 虛線＝規劃中</text>
+      </svg>
     </div>
     <div class="grid-3" style="margin-top:14px">
-      <div class="tile"><div class="tile-icon">🏢</div><h4>平台端</h4><span class="en">Platform deliverables</span><p>Credential Portal 網頁入口、Credential Server 憑證服務、部署 / 備份 / 還原工具；Trusted Access 為選配參考整合。</p></div>
-      <div class="tile green"><div class="tile-icon">🖥</div><h4>設備端</h4><span class="en">Device deliverables</span><p>tpm-agent 常駐程式與 ttpsctl CLI（Debian 套件）；依設備條件完成相容性確認。</p></div>
-      <div class="tile teal"><div class="tile-icon">📦</div><h4>操作交接</h4><span class="en">Handover</span><p>16 項驗收清單、操作 / 備份 / 撤銷 SOP、release manifest、checksums、元件 SBOM（CycloneDX）。</p></div>
+      <div class="tile green"><div class="tile-icon">🔑</div><h4>鑰匙拿不走</h4><p>私鑰在 TPM 內產生，複製硬碟也拿不到。</p></div>
+      <div class="tile"><div class="tile-icon">🪪</div><h4>設備認得出來</h4><p>憑證對應鑰匙，平台能驗證、能查、能撤銷。</p></div>
+      <div class="tile purple"><div class="tile-icon">🚪</div><h4>一把鑰匙多種用途</h4><p>VPN 連線、mTLS、設備管理；之後延伸 OTA 與狀態證明。</p></div>
     </div>
-    <p class="notice notice-info">客戶準備：主機、網路、目標設備與驗收窗口。FiduciaEdge 提供：平台部署、身分流程整合與操作交接。導入期間依平台、設備與 CA 前置條件確認；不承諾固定交期或 SLA。</p>
   </div>
 
-  <!-- ===== 10 ===== -->
+  <!-- 2 -->
+  <div class="sec" id="s2">
+    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">解決什麼問題</div><div class="sec-sub">Problems — 設備連上網路，不代表身分可信</div></div></div>
+    <div class="big3">
+      <div class="pic">
+        <h4>😈 映像被複製</h4>
+        <div class="row"><span>💽</span><span style="font-size:1.1rem;color:var(--ink-3)">→</span><span>💽💽💽</span></div>
+        <span class="bad">✘ 檔案裡的金鑰跟著映像一起被帶走</span>
+        <div class="row" style="margin-top:12px"><span>🔑</span><span style="font-size:1rem;color:var(--ink-3)">留在</span><span>🔒 TPM</span></div>
+        <span class="good">✔ 複製機沒有鑰匙，無法冒充</span>
+      </div>
+      <div class="pic">
+        <h4>📵 設備遺失或停用</h4>
+        <div class="row"><span>🖥</span><span style="font-size:1.1rem;color:var(--ink-3)">→</span><span>🌐</span></div>
+        <span class="bad">✘ 設備不見了，卻還連得上</span>
+        <div class="row" style="margin-top:12px"><span>🚫</span><span style="font-size:1rem;color:var(--ink-3)">撤銷</span><span>⛔</span></div>
+        <span class="good">✔ 逐台撤銷，下一次連線被拒</span>
+      </div>
+      <div class="pic">
+        <h4>❓ 缺少驗證依據</h4>
+        <div class="row"><span>🟢</span><span style="font-size:1rem;color:var(--ink-3)">在線</span><span>🤷</span></div>
+        <span class="bad">✘ 只知道在線，說不出怎麼確認的</span>
+        <div class="row" style="margin-top:12px"><span>📋</span><span style="font-size:1rem;color:var(--ink-3)">證據</span><span>✅✅✅</span></div>
+        <span class="good">✔ 一條指令輸出驗證報告，可查可稽核</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="sec" id="s3">
+    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">核心能力</div><div class="sec-sub">Core capabilities — 四件事，一個平台</div></div></div>
+    <div class="cap-grid">
+      <div class="cap" style="border-top-color:var(--green)"><div class="ic">🔑</div><h4>不可匯出金鑰</h4><span class="en">Hardware-rooted key</span><p>IAK / IDevID 在 TPM 2.0 內產生，fixedTPM，永不離開晶片。</p></div>
+      <div class="cap"><div class="ic">📜</div><h4>憑證生命週期</h4><span class="en">Certificate lifecycle</span><p>註冊 → 簽發 → 狀態 → 撤銷，全部留紀錄。CA 為 TWCA。</p></div>
+      <div class="cap" style="border-top-color:var(--teal)"><div class="ic">🧪</div><h4>三項驗證</h4><span class="en">Independent checks</span><p>憑證 ↔ 鑰匙相符、設備證明持有鑰匙、憑證鏈通過。</p></div>
+      <div class="cap" style="border-top-color:var(--red)"><div class="ic">🚫</div><h4>逐台撤銷</h4><span class="en">Per-device revocation</span><p>撤銷一台不影響其他台；驗證端即時回查，fail-closed。</p></div>
+    </div>
+    <div class="card" style="margin-top:12px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <div style="font-size:2.2rem">🚪</div>
+      <div style="flex:1;min-width:220px"><div class="card-title">Trusted Access：憑證就是通行證 <span class="en">reference integration</span></div><div class="card-body">服務（例如 VPN）看憑證狀態決定放不放行。OpenVPN 為目前已驗證的參考整合。</div></div>
+      <a href="#s5" class="st st-plan" style="text-decoration:none">看 VPN 流程圖 ↓</a>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="sec" id="s4">
+    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">怎麼運作</div><div class="sec-sub">How it works — 五步，從登記到可用</div></div></div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="ic">📋</div><h5>登記設備</h5><p>加入 Inventory</p></div>
+      <div class="step"><span class="n">2</span><div class="ic">🔑</div><h5>TPM 產生鑰匙</h5><p>私鑰留在晶片</p></div>
+      <div class="step"><span class="n">3</span><div class="ic">📜</div><h5>CA 簽發憑證</h5><p>憑證寫入 TPM</p></div>
+      <div class="step"><span class="n">4</span><div class="ic">🧪</div><h5>現場驗證</h5><p>三項檢查通過</p></div>
+      <div class="step"><span class="n">5</span><div class="ic">🚪</div><h5>拿來用</h5><p>VPN / mTLS / 撤銷</p></div>
+    </div>
+
+    <div class="dia" style="margin-top:16px">
+      <svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="複製磁碟映像到另一台設備，因為私鑰在原設備的 TPM 內，複製機無法通過驗證">
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker></defs>
+        <!-- A -->
+        <rect x="20" y="20" width="290" height="200" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+        <text x="165" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#14532d">🖥 原設備 A</text>
+        <rect x="45" y="68" width="240" height="44" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-dasharray="5 3"/>
+        <text x="165" y="95" text-anchor="middle" font-size="14" fill="#374151">💽 磁碟映像（OS · 程式 · 憑證）</text>
+        <rect x="45" y="124" width="240" height="44" rx="8" fill="#1e3a5f" stroke="#60a5fa" stroke-width="2"/>
+        <text x="165" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">🔒 TPM A：🔑 A 的私鑰</text>
+        <rect x="45" y="180" width="240" height="28" rx="14" fill="#dcfce7"/>
+        <text x="165" y="199" text-anchor="middle" font-size="13" font-weight="800" fill="#15803d">✔ 驗證通過 PASS</text>
+        <!-- arrow -->
+        <path d="M312,90 L408,90" stroke="#b45309" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#ah2)"/>
+        <text x="360" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">複製映像</text>
+        <!-- B -->
+        <rect x="410" y="20" width="290" height="200" rx="16" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+        <text x="555" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#7f1d1d">🖥 複製機 B</text>
+        <rect x="435" y="68" width="240" height="44" rx="8" fill="#ffffff" stroke="#d1d5db" stroke-dasharray="5 3"/>
+        <text x="555" y="95" text-anchor="middle" font-size="14" fill="#374151">💽 一模一樣的映像</text>
+        <rect x="435" y="124" width="240" height="44" rx="8" fill="#374151" stroke="#9ca3af" stroke-width="2"/>
+        <text x="555" y="152" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">🔒 TPM B：沒有 A 的鑰匙</text>
+        <rect x="435" y="180" width="240" height="28" rx="14" fill="#fee2e2"/>
+        <text x="555" y="199" text-anchor="middle" font-size="13" font-weight="800" fill="#b91c1c">✘ 無法證明持有鑰匙 → 拒絕</text>
+        <text x="360" y="252" text-anchor="middle" font-size="13" fill="#6b7280">檔案可以搬，鑰匙搬不走。</text>
+      </svg>
+      <div class="dia-cap">已驗證：vTPM 檔案複製負向測試。實體 dTPM 驗證列入後續。</div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="sec" id="s5">
+    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">應用範例：VPN 連線</div><div class="sec-sub">Use case — 憑證有效就放行，撤銷後下一次連線被拒</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="設備以 TPM 內鑰匙出示憑證給 VPN 閘道，閘道向 TTPS 平台查狀態；有效則 ALLOW，撤銷後 DENY">
+        <defs>
+          <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker>
+          <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+        </defs>
+        <!-- actors -->
+        <rect x="20" y="20" width="180" height="64" rx="14" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="110" y="47" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">🖥 設備</text>
+        <text x="110" y="68" text-anchor="middle" font-size="12" fill="#1e3a8a">🔑 鑰匙在 TPM</text>
+        <rect x="270" y="20" width="180" height="64" rx="14" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
+        <text x="360" y="47" text-anchor="middle" font-size="15" font-weight="800" fill="#4c1d95">🚪 VPN 閘道</text>
+        <text x="360" y="68" text-anchor="middle" font-size="12" fill="#4c1d95">OpenVPN（參考整合）</text>
+        <rect x="520" y="20" width="180" height="64" rx="14" fill="#f0fdfa" stroke="#99f6e4" stroke-width="2"/>
+        <text x="610" y="47" text-anchor="middle" font-size="15" font-weight="800" fill="#134e4a">🏢 TTPS 平台</text>
+        <text x="610" y="68" text-anchor="middle" font-size="12" fill="#134e4a">憑證狀態 · 撤銷紀錄</text>
+        <!-- lifelines -->
+        <g stroke="#e5e7eb" stroke-width="2" stroke-dasharray="4 4"><line x1="110" y1="84" x2="110" y2="310"/><line x1="360" y1="84" x2="360" y2="310"/><line x1="610" y1="84" x2="610" y2="310"/></g>
+        <!-- scenario 1 -->
+        <rect x="30" y="100" width="150" height="22" rx="11" fill="#dcfce7"/><text x="105" y="116" text-anchor="middle" font-size="12" font-weight="800" fill="#15803d">情境 1 · 憑證有效</text>
+        <line x1="115" y1="140" x2="352" y2="140" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="233" y="133" text-anchor="middle" font-size="12" fill="#1e3a8a">出示憑證 + TPM 簽章</text>
+        <line x1="365" y1="165" x2="602" y2="165" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="483" y="158" text-anchor="middle" font-size="12" fill="#1e3a8a">查憑證狀態？</text>
+        <line x1="605" y1="190" x2="368" y2="190" stroke="#15803d" stroke-width="2" marker-end="url(#ag)"/>
+        <text x="483" y="183" text-anchor="middle" font-size="12" fill="#15803d">有效 ✔</text>
+        <line x1="355" y1="215" x2="118" y2="215" stroke="#15803d" stroke-width="3" marker-end="url(#ag)"/>
+        <rect x="170" y="203" width="90" height="24" rx="12" fill="#15803d"/><text x="215" y="220" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">ALLOW ✔</text>
+        <!-- scenario 2 -->
+        <rect x="30" y="238" width="150" height="22" rx="11" fill="#fee2e2"/><text x="105" y="254" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">情境 2 · 已撤銷</text>
+        <rect x="548" y="236" width="124" height="24" rx="12" fill="#fee2e2" stroke="#fca5a5"/><text x="610" y="253" text-anchor="middle" font-size="12" font-weight="800" fill="#b91c1c">🚫 平台撤銷此設備</text>
+        <line x1="115" y1="278" x2="352" y2="278" stroke="#1d4ed8" stroke-width="2" marker-end="url(#ab)"/>
+        <text x="233" y="271" text-anchor="middle" font-size="12" fill="#1e3a8a">下一次連線</text>
+        <line x1="605" y1="300" x2="368" y2="300" stroke="#b91c1c" stroke-width="2" marker-end="url(#ar)"/>
+        <text x="483" y="293" text-anchor="middle" font-size="12" fill="#b91c1c">已撤銷 ✘</text>
+        <line x1="355" y1="300" x2="118" y2="300" stroke="#b91c1c" stroke-width="3" marker-end="url(#ar)"/>
+        <rect x="170" y="288" width="90" height="24" rx="12" fill="#b91c1c"/><text x="215" y="305" text-anchor="middle" font-size="13" font-weight="800" fill="#fff">DENY ✘</text>
+      </svg>
+      <div class="dia-cap">同一把鑰匙也可用於 mTLS 服務連線。已驗證範圍：TWID 憑證 + OpenVPN；撤銷後「下一次」連線被拒，不是立即切斷既有連線。</div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="sec" id="s6">
+    <div class="sec-hd"><div class="sec-num">6</div><div><div class="sec-title">系統架構</div><div class="sec-sub">Architecture — 三個角色（滑過元件看說明）</div></div></div>
+    <div class="arch">
+      <div class="arch-col dev">
+        <div class="arch-hd">🖥 設備端</div>
+        <div class="node" title="常駐程式，透過 gRPC 與平台溝通"><b>tpm-agent</b><small>在 TPM 內產鑰匙、簽章</small></div>
+        <div class="node" title="設備端 CLI"><b>ttpsctl</b><small>一條指令：註冊、驗證、輸出報告</small></div>
+      </div>
+      <div class="arch-col plat">
+        <div class="arch-hd">🏢 TTPS 平台（客戶內網自架）</div>
+        <div class="node"><b>Credential Portal</b><small>網頁：設備清單、憑證、撤銷、驗證結果</small></div>
+        <div class="node"><b>credential-server</b><small>憑證流程與紀錄；API 認證強制、fail-closed</small></div>
+        <div class="node"><b>Trusted Access（選配）</b><small>OpenVPN 參考整合</small></div>
+      </div>
+      <div class="arch-col ca">
+        <div class="arch-hd">🏛 憑證機構 CA</div>
+        <div class="node"><b>TWCA ID Center</b><small>TPM 鑰匙路徑（整合中）</small></div>
+        <div class="node"><b>TWCA OpenCert</b><small>軟體憑證路徑（已驗證）</small></div>
+        <div class="node" style="border-style:dashed"><b>Local Demo CA</b><small>LAB / DEMO ONLY</small></div>
+      </div>
+    </div>
+    <details class="more">
+      <summary>▸ 網路埠與前置條件 <span class="en">Ports &amp; prerequisites</span></summary>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>方向</th><th>Port</th><th>目的</th></tr></thead>
+        <tbody>
+          <tr><td>平台 → Internet</td><td>TCP 443</td><td>TWCA</td></tr>
+          <tr><td>管理者 → 平台</td><td>TCP 8080</td><td>Credential Portal</td></tr>
+          <tr><td>設備 → 平台</td><td>TCP 8443 / 8444</td><td>註冊、憑證下載、狀態回報</td></tr>
+          <tr><td>平台 → 設備</td><td>TCP 50051</td><td>呼叫 tpm-agent</td></tr>
+          <tr><td>設備 → 平台（選配）</td><td>UDP 12973</td><td>OpenVPN，埠號可調</td></tr>
+        </tbody>
+      </table></div>
+      <p class="notice notice-info">平台：Ubuntu 24.04 x86_64、Docker + Compose、2 vCPU / 4 GB / 20 GB、固定 IP 或 DNS、NTP。設備：Ubuntu 24.04 x86_64、TPM 2.0（/dev/tpmrm0）。</p>
+    </details>
+  </div>
+
+  <!-- 7 -->
+  <div class="sec" id="s7">
+    <div class="sec-hd"><div class="sec-num">7</div><div><div class="sec-title">兩種身分方式</div><div class="sec-sub">Two paths — 有 TPM 走硬體鑰匙，沒 TPM 走軟體憑證</div></div></div>
+    <div class="two">
+      <div class="idcard hw">
+        <div class="hd"><span class="ic">🔑</span>TPM DevID <span class="st st-ok">✔ 硬體保護</span></div>
+        <ul>
+          <li><b>鑰匙在</b>設備 TPM 內，拿不走</li>
+          <li><b>用途</b>硬體綁定身分、持有證明</li>
+          <li><b>CA</b>TWCA ID Center（整合中）</li>
+          <li><b>進度</b>實驗室已驗證</li>
+        </ul>
+      </div>
+      <div class="idcard sw">
+        <div class="hd"><span class="ic">📄</span>TWID / OpenCert <span class="st st-wip">軟體憑證</span></div>
+        <ul>
+          <li><b>鑰匙在</b>伺服器產生，受控交付</li>
+          <li><b>用途</b>沒有 TPM 的設備；簽發、查詢、撤銷</li>
+          <li><b>CA</b>TWCA OpenCert</li>
+          <li><b>進度</b>生命週期 + OpenVPN 已驗證</li>
+        </ul>
+      </div>
+    </div>
+    <p class="notice notice-warn">兩條路徑同一平台管理，但軟體憑證沒有「拿不走」的硬體保證。</p>
+  </div>
+
+  <!-- 8 -->
+  <div class="sec" id="s8">
+    <div class="sec-hd"><div class="sec-num">8</div><div><div class="sec-title">目前成熟度</div><div class="sec-sub">Maturity — 核心流程已驗證，交付持續完善</div></div></div>
+    <div class="mat">
+      <div class="mat-col ok"><h4>✔ 已驗證</h4><span class="en">Validated</span><ul>
+        <li>TPM 鑰匙 + 三項驗證（實驗室，vTPM）</li>
+        <li>軟體憑證生命週期（TWCA 測試環境）</li>
+        <li>撤銷後 VPN 重連 DENY</li>
+        <li>vTPM 複製負向測試</li>
+        <li>乾淨 VM 安裝（2026-09-13）</li>
+      </ul></div>
+      <div class="mat-col wip"><h4>⟳ 整合／驗收中</h4><span class="en">In progress</span><ul>
+        <li>統一設備管理網站驗收</li>
+        <li>TPM 鑰匙經 TWCA ID Center 正式簽發</li>
+        <li>第二輪重驗、套件與文件定版</li>
+        <li>實體 TPM 端到端證據</li>
+      </ul></div>
+      <div class="mat-col plan"><h4>◇ 規劃中</h4><span class="en">Planned</span><ul>
+        <li>Secure OTA</li>
+        <li>Remote Attestation</li>
+        <li>實體 dTPM 防複製驗證</li>
+        <li>LDevID / 客戶自有 PKI（NRE）</li>
+      </ul></div>
+    </div>
+    <details class="more">
+      <summary>▸ 驗證狀態明細 <span class="en">Validation table（2026-09-24）</span></summary>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>項目</th><th>狀態</th><th>範圍</th></tr></thead>
+        <tbody>
+          <tr><td>乾淨 VM 安裝</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · Ubuntu 24.04</td></tr>
+          <tr><td>軟體憑證生命週期</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · TWCA test</td></tr>
+          <tr><td>Trusted Access（撤銷 → DENY）</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>2026-09-13 · OpenVPN</td></tr>
+          <tr><td>TPM 鑰匙 / 簽章 / 驗證</td><td><span class="st st-ok">✔ VALIDATED</span></td><td>實驗室，含負向測試</td></tr>
+          <tr><td>TWCA ID Center 簽發</td><td><span class="st st-wip">⟳ IN PROGRESS</span></td><td>外部依賴</td></tr>
+          <tr><td>Ubuntu 22.04</td><td><span class="st st-plan">◇ EXPECTED</span></td><td>本版未測</td></tr>
+          <tr><td>實體 TPM E2E</td><td><span class="st st-wip">⟳ PARTIAL</span></td><td>相容性已測</td></tr>
+          <tr><td>第三方認證</td><td><span class="st st-no">✘ NONE</span></td><td>—</td></tr>
+        </tbody>
+      </table></div>
+    </details>
+  </div>
+
+  <!-- 9 -->
+  <div class="sec" id="s9">
+    <div class="sec-hd"><div class="sec-num">9</div><div><div class="sec-title">支援範圍</div><div class="sec-sub">Scope — ✔ 已驗證 · ◇ 機制相同未實測 · ⚙ 另行工程評估</div></div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>元件</th><th><span class="st st-ok">✔ 已驗證</span></th><th><span class="st st-plan">◇ Expected</span></th><th><span class="st st-nre">⚙ NRE</span></th></tr></thead>
+      <tbody>
+        <tr><td>平台</td><td>Ubuntu 24.04 x86_64 · Docker</td><td>Ubuntu 22.04</td><td>ARM64、K8s、HA</td></tr>
+        <tr><td>設備</td><td>Ubuntu 24.04 x86_64 · TPM 2.0（vTPM）</td><td>Ubuntu 22.04 · 實體 TPM</td><td>fTPM / TrustZone、TPM 1.2、非 Ubuntu</td></tr>
+        <tr><td>CA</td><td>TWCA OpenCert（測試）</td><td>TWCA ID Center</td><td>客戶自有 PKI、LDevID</td></tr>
+        <tr><td>存取</td><td>OpenVPN（TWID）</td><td>TPM-backed VPN</td><td>既有 VPN / ZTNA / MDM</td></tr>
+      </tbody>
+    </table></div>
+    <div class="grid-2" style="margin-top:12px">
+      <div class="tile green"><div class="tile-icon">🎯</div><h4>適合誰</h4><p>有 TPM 2.0、Ubuntu x86_64 的工業閘道 / 機台設備商；要用憑證取代帳密、要逐台撤銷的 OT 營運者。</p></div>
+      <div class="tile purple"><div class="tile-icon">⚙</div><h4>另案評估</h4><p>自有 PKI、fTPM、非 Ubuntu、HA、Remote Attestation、大量佈建。</p></div>
+    </div>
+  </div>
+
+  <!-- 10 -->
   <div class="sec" id="s10">
-    <div class="sec-hd"><div class="sec-num">10</div><div><div class="sec-title">Roadmap：從身分可信走向安全維運</div><div class="sec-sub">Roadmap — 以現有設備身分為基礎，逐步補上更新安全、狀態驗證與跨平台整合</div></div></div>
-    <div class="rm">
-      <div class="rm-item now"><div class="rm-hd"><span class="st st-ok">✔ NOW</span><h4>設備身分與撤銷</h4></div><p>Device Inventory、TPM DevID、現場驗證、撤銷與 Trusted Access 參考整合。持續完成整合驗收。</p></div>
-      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ PLANNED</span><h4>Secure OTA 安全更新</h4></div><p>不只是遠端傳檔，而是確認更新來源、適用設備與最終結果。</p>
-        <ul><li><strong>更新前：</strong>確認發布簽章與設備相容性</li><li><strong>更新中：</strong>套用版本政策，保留任務與事件紀錄</li><li><strong>更新後：</strong>確認版本與健康狀態，異常時受控恢復</li></ul>
-        <p style="margin-top:6px"><strong>上傳成功 ≠ 派送成功 ≠ 更新成功。</strong>設備身分金鑰用來確認目標設備，發布簽章金鑰用來確認更新來源，兩者角色不同。</p></div>
-      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ PLANNED</span><h4>Remote Attestation 設備狀態證明</h4></div><p>在身分驗證之外，以 TPM Quote + PCR / 參考量測值，評估被量測的系統狀態是否仍符合核准基準，判定 Trusted / Untrusted 並連動存取與更新條件。</p>
-        <div class="grid-2" style="margin-top:10px">
-          <div class="notice notice-green" style="margin:0"><strong>身分驗證</strong>（現有）：設備能否證明持有對應身分的金鑰？</div>
-          <div class="notice notice-info" style="margin:0"><strong>狀態證明</strong>（規劃）：被量測的設備狀態是否符合核准基準？</div>
-        </div></div>
-      <div class="rm-item rm"><div class="rm-hd"><span class="st st-na">◈ ROADMAP</span><h4>實體 dTPM 防複製驗證</h4></div><p>把目前 vTPM 負向測試延伸到實體 dTPM，形成可交付的實證。可與產品整合並行。</p></div>
-      <div class="rm-item nre"><div class="rm-hd"><span class="st st-nre">⚙ NRE</span><h4>LDevID / 客戶自有 PKI / 更多平台</h4></div><p>依客戶既有 PKI、LDevID、自有 CA、異質平台（fTPM / 非 Ubuntu）、HA 與大量佈建需求另行工程整合。</p></div>
+    <div class="sec-hd"><div class="sec-num">10</div><div><div class="sec-title">導入五步</div><div class="sec-sub">Delivery — 每一步都有可查驗的結果</div></div></div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="ic">🔍</div><h5>確認環境</h5><p>主機、網路、TPM、CA</p></div>
+      <div class="step"><span class="n">2</span><div class="ic">🏢</div><h5>部署平台</h5><p>Portal 可登入</p></div>
+      <div class="step"><span class="n">3</span><div class="ic">⚙</div><h5>設定身分</h5><p>CA、TLS、裝 agent</p></div>
+      <div class="step"><span class="n">4</span><div class="ic">🧪</div><h5>註冊與驗證</h5><p>三項驗證通過</p></div>
+      <div class="step"><span class="n">5</span><div class="ic">📦</div><h5>驗收交接</h5><p>SOP、備份、SBOM</p></div>
     </div>
-    <p class="notice notice-warn">Roadmap 為發展方向，不是已交付功能或承諾時程；下一階段的兩項能力可分階段整合。</p>
+    <p class="notice notice-info">客戶準備主機、網路、設備與驗收窗口；FiduciaEdge 負責部署、整合與交接。時程依前置條件確認，不承諾固定交期或 SLA。</p>
   </div>
 
-  <!-- ===== 11 ===== -->
+  <!-- 11 -->
   <div class="sec" id="s11">
-    <div class="sec-hd"><div class="sec-num">11</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ — 用產品能力與已驗證範圍回答</div></div></div>
-    <details class="faq"><summary>沒有 TPM，也能使用嗎？</summary><div class="ans">可以。平台已有 TWID 軟體憑證路徑，但它不具備 TPM 路徑相同的硬體金鑰保護；軟體私鑰是以受控的憑證包交付，可被搬移。</div></details>
-    <details class="faq"><summary>沒有正式 CA，可以先示範嗎？</summary><div class="ans">可以。Local Demo CA 可驗證實驗室流程，但不會自動替代正式 CA，也不代表正式簽發已完成。正式導入時以 TWCA 路徑為準。</div></details>
-    <details class="faq"><summary>驗證通過，就代表系統一定安全嗎？</summary><div class="ans">不是。現有結果主要證明設備身分與金鑰對應（憑證 ↔ 金鑰、持有證明、憑證鏈）；它不量測整個系統的軟體狀態。Remote Attestation 仍在規劃中。</div></details>
-    <details class="faq"><summary>導入後，產品就取得安全認證嗎？</summary><div class="ans">不會。TTPS 提供技術能力與驗證證據，可作為製造商 CRA 符合性評估的佐證之一；它不等於第三方產品認證，也不代表自動符合任何法規。</div></details>
-    <details class="faq"><summary>撤銷之後，設備會立刻被踢下線嗎？</summary><div class="ans">已驗證的是撤銷後「下一次握手被拒絕」。既有連線能否立即被終止，需要額外的連線管理機制與驗證。</div></details>
-    <details class="faq"><summary>TTPS 和 FideProtect 有什麼不同？</summary><div class="ans">TTPS 管「設備是誰」：設備身分、憑證與驗證證據。<a href="./fideprotect-product-overview.html">FideProtect</a> 管「程式能不能在這台設備執行」：執行檔加密封裝與設備綁定授權。兩者可以互補，但不是同一功能；FideProtect 不要求 TPM。</div></details>
+    <div class="sec-hd"><div class="sec-num">11</div><div><div class="sec-title">Roadmap</div><div class="sec-sub">從身分可信，走向安全維運</div></div></div>
+    <div class="rm">
+      <div class="rm-item now"><div class="rm-hd"><span class="st st-ok">✔ NOW</span><h4>設備身分、撤銷、VPN 存取</h4></div><p>一台一把鑰匙；登錄、驗證、撤銷、Trusted Access。</p></div>
+      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ PLANNED</span><h4>📦 Secure OTA</h4></div><p>用鑰匙確認「更新給哪台」，用簽章確認「更新從哪來」。上傳成功 ≠ 更新成功。</p></div>
+      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ PLANNED</span><h4>📡 Remote Attestation</h4></div><p>不只證明「是誰」，還證明「狀態對不對」：TPM Quote + PCR 比對基準 → Trusted / Untrusted。</p></div>
+      <div class="rm-item rm"><div class="rm-hd"><span class="st st-na">◈ ROADMAP</span><h4>實體 dTPM 防複製驗證</h4></div><p>把 vTPM 負向測試延伸到實體 TPM。</p></div>
+      <div class="rm-item nre"><div class="rm-hd"><span class="st st-nre">⚙ NRE</span><h4>LDevID / 自有 PKI / 更多平台</h4></div><p>依客戶既有 PKI 與平台另行整合。</p></div>
+    </div>
+    <p class="notice notice-warn">Roadmap 為方向，不是已交付功能或承諾時程。</p>
   </div>
 
-  <!-- ===== 12 ===== -->
+  <!-- 12 -->
   <div class="sec" id="s12">
-    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">定位與說法</div><div class="sec-sub">Positioning &amp; tone — 不混淆實驗室、正式環境與未來功能</div></div></div>
-    <div class="grid-2">
-      <div class="notice notice-red" style="margin:0"><div style="font-weight:800;color:var(--red);margin-bottom:6px">✗ 避免說</div>
-        保證 CRA 合規 / 已取得認證<br>複製映像一定無法冒充<br>撤銷後立即斷線<br>驗證通過 = 系統安全<br>TPM-backed VPN 已完成</div>
-      <div class="notice notice-green" style="margin:0"><div style="font-weight:800;color:var(--green);margin-bottom:6px">✓ 應該說</div>
-        提供 CRA 相關技術證據與佐證<br>私鑰留在 TPM，複製檔案拿不到原身分金鑰<br>撤銷後下一次握手被拒<br>驗證證明身分與金鑰對應<br>Trusted Access 為 TWID + OpenVPN 參考整合</div>
+    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ</div></div></div>
+    <details class="faq"><summary>沒有 TPM 也能用嗎？</summary><div class="ans">可以，走 TWID 軟體憑證路徑；但沒有「鑰匙拿不走」的硬體保證。</div></details>
+    <details class="faq"><summary>沒有正式 CA 可以先示範嗎？</summary><div class="ans">可以，用 Local Demo CA 跑流程；正式導入以 TWCA 為準。</div></details>
+    <details class="faq"><summary>驗證通過就代表系統安全嗎？</summary><div class="ans">不是。它證明「設備是誰、鑰匙對不對」；系統狀態要靠 Remote Attestation（規劃中）。</div></details>
+    <details class="faq"><summary>撤銷後設備會立刻斷線嗎？</summary><div class="ans">已驗證的是「下一次連線被拒」；要立即切斷既有連線需另加機制。</div></details>
+    <details class="faq"><summary>導入後就有安全認證嗎？</summary><div class="ans">不會。TTPS 提供技術能力與證據，可作為 CRA 佐證；不等於第三方認證。</div></details>
+    <details class="faq"><summary>TTPS 和 FideProtect 差在哪？</summary><div class="ans">TTPS 管「設備是誰」（鑰匙、憑證、證據）；<a href="./fideprotect-product-overview.html">FideProtect</a> 管「程式能不能在這台跑」（加密封裝、設備綁定授權，不需 TPM）。</div></details>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="notice notice-red" style="margin:0"><strong>✗ 避免說</strong><br>保證 CRA 合規 · 絕對防複製 · 撤銷立即斷線 · 驗證通過＝安全</div>
+      <div class="notice notice-green" style="margin:0"><strong>✓ 應該說</strong><br>提供 CRA 技術佐證 · 鑰匙留在 TPM 複製拿不到 · 撤銷後下一次連線被拒 · 驗證證明身分與鑰匙對應</div>
     </div>
-    <p class="notice notice-info">TTPS 提供設備身分與存取控制的技術證據，可作為製造商 EU CRA 符合性評估的佐證之一。合規宣告責任由製造商承擔；TTPS 本身不是認證。CRA 條文與對應請見 <a href="./cra-annex-mapping.html">CRA Annex 對應</a> 與 <a href="./cra-annex-i-bilingual.html">Annex I 英中對照</a>。</p>
   </div>
 
 </div>
 
 <div class="src">
-  <strong>資料來源 · Sources</strong>（內部文件，資料基準 2026-10-13）
-  <ul>
-    <li>TTPS One-Page Product Brief（ZH）· 2026-10-13</li>
-    <li>TTPS Product Overview &amp; Roadmap v2（簡報，18 頁）· 2026-10-13</li>
-    <li>TTPS Device Identity Standard Product Cut Sheet · Rev 0.1 · 2026-09-24（PROPOSED）</li>
-    <li>TTPS Standard Product Review Package · 2026-09-24 / 09-30</li>
-  </ul>
-  產品 DRI：Jerry Yang（jerry.yang@fiduciaedge.com）
+  <strong>資料來源</strong>（內部文件，資料基準 2026-10-13）：TTPS One-Page Brief · Product Overview &amp; Roadmap v2 · Device Identity Cut Sheet Rev 0.1 · Standard Product Review Package。產品 DRI：Jerry Yang（jerry.yang@fiduciaedge.com）
 </div>
 
 <footer>
   <strong>TTPS · Trusted Things Provisioning Service</strong><br>
-  FiduciaEdge 產品介紹 · 內容依內部審查資料整理；規劃不等同既有能力，未承諾交付日期<br>
+  FiduciaEdge 產品介紹 · 規劃不等同既有能力，未承諾交付日期<br>
   <a href="./index.html">← 回首頁</a> · <a href="./fideprotect-product-overview.html">FideProtect 產品總覽 →</a>
 </footer>
 
-<script>
-(function(){
-  var tabs=document.querySelectorAll('.tab');
-  tabs.forEach(function(t){
-    t.addEventListener('click',function(){
-      tabs.forEach(function(x){x.setAttribute('aria-selected','false');});
-      document.querySelectorAll('.tabpanel').forEach(function(p){p.classList.remove('active');});
-      t.setAttribute('aria-selected','true');
-      document.getElementById('tab-'+t.dataset.tab).classList.add('active');
-    });
-  });
-})();
-</script>
 </body>
 </html>
