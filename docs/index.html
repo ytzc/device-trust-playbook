@@ -299,15 +299,15 @@
   </div>
 
   <h1>FiduciaEdge <span>產品與設備信任</span><br>Playbook</h1>
-  <p class="hero-sub">查詢、了解 TTPS 與 FideProtect 兩個產品是什麼、怎麼運作、驗證到哪裡；再往下是設備信任、Root of Trust 與 CRA 的技術參考資料。中文為主、英文輔助。</p>
+  <p class="hero-sub">查詢、了解 TTPS 與 FideProtect 是什麼、各自保護什麼、驗證到哪裡。技術背景與法規收在參考資料頁。</p>
 
   <div class="hero-chips" style="margin-bottom:18px">
     <a href="./ttps-product-overview.html" class="chip" style="background:rgba(96,165,250,.2);color:#bfdbfe;border:1px solid rgba(96,165,250,.4);text-decoration:none;font-size:.86rem;padding:9px 18px">🪪 TTPS 產品總覽 →</a>
     <a href="./fideprotect-product-overview.html" class="chip" style="background:rgba(45,212,191,.18);color:#99f6e4;border:1px solid rgba(45,212,191,.4);text-decoration:none;font-size:.86rem;padding:9px 18px">🔒 FideProtect 產品總覽 →</a>
   </div>
   <div class="hero-chips">
-    <a href="#refs" class="chip chip-fe" style="text-decoration:none">📚 技術參考資料</a>
-    <a href="#cra" class="chip chip-fe" style="text-decoration:none">🇪🇺 EU CRA</a>
+    <a href="./references.html" class="chip chip-fe" style="text-decoration:none">📚 技術參考資料</a>
+    <a href="./references.html#cra" class="chip chip-fe" style="text-decoration:none">🇪🇺 EU CRA</a>
     <span class="chip chip-fe">📅 資料基準 2026-10-13</span>
   </div>
 
@@ -338,8 +338,8 @@
   <!-- ─── STATS ─────────────────────────────────────────────────── -->
   <div class="stats">
     <div class="stat"><div class="stat-num blue">2</div><div class="stat-lbl">產品總覽頁 <span style="color:var(--ink-3)">Products</span></div></div>
-    <div class="stat"><div class="stat-num green">10</div><div class="stat-lbl">技術參考頁 <span style="color:var(--ink-3)">References</span></div></div>
-    <div class="stat"><div class="stat-num orange">34</div><div class="stat-lbl">外部標準連結</div></div>
+    <div class="stat"><div class="stat-num green">1</div><div class="stat-lbl">產品總覽比較頁</div></div>
+    <div class="stat"><div class="stat-num orange">10</div><div class="stat-lbl">技術參考頁</div></div>
     <div class="stat"><div class="stat-num red">2027</div><div class="stat-lbl">CRA 強制執行年</div></div>
   </div>
 
@@ -382,203 +382,38 @@
       <table class="cmp">
         <thead><tr><th>一眼分辨</th><th class="ttps">🪪 TTPS</th><th class="fp">🔒 FideProtect</th></tr></thead>
         <tbody>
-          <tr><td>回答的問題</td><td>這台設備是誰？身分怎麼被確認？</td><td>這份程式能不能在這台設備執行？</td></tr>
-          <tr><td>保護的對象</td><td>設備身分（私鑰、憑證、驗證證據）</td><td>應用程式與資產（執行檔、模型、設定）</td></tr>
-          <tr><td>硬體需求</td><td>TPM 2.0（另有不需 TPM 的 TWID 軟體憑證路徑）</td><td>不要求 TPM；x86_64 machine-id 或 SoC UID 作指紋</td></tr>
-          <tr><td>關鍵機制</td><td>TPM 內產生金鑰 · CA 簽發 · 三項驗證 · 逐台撤銷</td><td>XChaCha20-Poly1305 封裝 · per-device .lic · 記憶體內執行</td></tr>
-          <tr><td>連線需求</td><td>設備與平台 / CA 需連線</td><td>授權準備後可永久離線執行</td></tr>
-          <tr><td>已驗證平台</td><td>Ubuntu 24.04 x86_64 + TPM 2.0（vTPM）</td><td>x86_64（Ubuntu / Debian）、Techmation TX8（aarch64）</td></tr>
-          <tr><td>下一階段</td><td>Secure OTA · Remote Attestation · 實體 dTPM 驗證</td><td>Admin Web 登入 · 可靠升級 / 離線更新 · 錯誤報告匯出</td></tr>
-          <tr><td>彼此關係</td><td colspan="2">可以互補，但不是同一功能：TTPS 證明「設備是誰」，FideProtect 控制「程式在哪台能跑」。</td></tr>
+          <tr><td>回答的問題</td><td>這台設備是誰？</td><td>這份程式能不能在這台跑？</td></tr>
+          <tr><td>保護的對象</td><td>設備身分：鑰匙、憑證、證據</td><td>軟體資產：執行檔、模型、設定</td></tr>
+          <tr><td>硬體需求</td><td>TPM 2.0（另有軟體憑證路徑）</td><td>不需 TPM，用設備指紋</td></tr>
+          <tr><td>關係</td><td colspan="2">互補，不是同一功能。<a href="./products-overview.html">看完整總覽與示意圖 →</a></td></tr>
         </tbody>
       </table>
     </div>
-    <p style="font-size:.78rem;color:var(--ink-3);margin-top:10px;padding-left:4px">兩頁內容依內部產品簡報、One-Page Brief、Cut Sheet 與 Standard Product Review 整理（資料基準 2026-10-13）。規劃不等同既有能力，未承諾交付日期；目前皆無第三方產品認證。</p>
   </div>
 
-  <!-- ─── REFERENCES (collapsible) ─────────────────────────────────── -->
-  <div class="section" id="refs">
-    <div class="sec-label">參考資料 References — 點選展開</div>
-
-    <!-- Group 1: on-site technical pages -->
-    <details class="refgroup">
-      <summary>
-        <span class="rg-icon" style="background:var(--blue-l)">📚</span>
-        <span>設備信任技術頁面<span class="rg-sub">Device Trust &amp; Root of Trust 知識庫 — 支撐 TTPS 的技術背景</span></span>
-        <span class="rg-count">8 頁</span><span class="rg-caret">▶</span>
-      </summary>
-      <div class="rg-body">
-        <ul class="page-list">
-          <li><span class="pl-ic">🧠</span><div><a href="./device-trust-memory-guide.html">Device Trust Memory Guide</a><small>13 章節記憶指南：RoT 心智模型、27 張閃卡、TPM 金鑰階層、FDO/BRSKI 上線、30 題口頭問答</small></div></li>
-          <li><span class="pl-ic">🛡</span><div><a href="./current-device-trust-cra-summary.html">Current Device Trust &amp; CRA Summary</a><small>14 章節總整理：Capability Model、平台決策、PLANET / TX8 / i.MX93 分析、三階段時程</small></div></li>
-          <li><span class="pl-ic">🗺</span><div><a href="./platform-solution-decision-map.html">Platform Solution Decision Map</a><small>x86 → hTPM、ARM + OP-TEE → fTPM、TX8 → Soteria hRoT、MIPS → feasibility、VM → vTPM</small></div></li>
-          <li><span class="pl-ic">⚓</span><div><a href="./rot-methods-comparison.html">RoT Methods Comparison</a><small>hTPM / fTPM / vTPM / hRoT / SE / PUF 比較；fTPM vs vTPM、OP-TEE fTPM、swtpm</small></div></li>
-          <li><span class="pl-ic">🔐</span><div><a href="./techmation-tx8-soteria-optee-ftpm-analysis.html">TX8 + Soteria hRoT + OP-TEE Integration</a><small>Soteria AHB 架構、Black Key / HUK、MSG command table、driver workflow</small></div></li>
-          <li><span class="pl-ic">🔑</span><div><a href="./soteria-native-device-identity-provisioning-survey.html">Soteria-native DevID &amp; Provisioning Survey</a><small>27 項能力調查、Soteria vs OP-TEE fTPM 比較、Device Trust Abstraction Layer、20 題確認問題</small></div></li>
-          <li><span class="pl-ic">🌏</span><div><a href="./planet-analysis.html">PLANET Analysis</a><small>PLANET Gateway 產品線：ARM gateway 潛力、Legacy MIPS 限制、三階段提案</small></div></li>
-          <li><span class="pl-ic">📋</span><div><a href="./meeting-prep-2026-06-12-rot-discussion.html">6/12 RoT Discussion Meeting Prep</a><small>2026-06-12 與 John 的 RoT 方法討論準備：決策圖、fTPM/vTPM、問題清單</small></div></li>
-        </ul>
-
-        <div style="margin-top:18px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;overflow-x:auto">
-          <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--ink-3);margin-bottom:12px">從製造到合規的完整技術鏈 · TTPS 落在哪裡</div>
-          <div style="display:flex;gap:0;align-items:stretch;min-width:680px">
-            <div style="flex:1;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px 0 0 10px;padding:12px 14px;border-right:none">
-              <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#15803d;margin-bottom:6px">🏭 製造</div>
-              <div style="font-size:.78rem;color:#1a3a24;line-height:1.8">EK 永久安裝<br><strong>IDevID + IAK</strong> 在 TPM 內產生<br>製造商 CA 簽發 Cert</div>
-            </div>
-            <div style="display:flex;align-items:center;padding:0 4px;background:#f0fdf4;border-top:1px solid #bbf7d0;border-bottom:1px solid #bbf7d0"><span style="color:#15803d">→</span></div>
-            <div style="flex:1.2;background:#eff6ff;border:1px solid #bfdbfe;padding:12px 14px;border-right:none;border-left:none">
-              <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#1d4ed8;margin-bottom:6px">🔌 上線 · <span style="color:#1d4ed8">TTPS NOW</span></div>
-              <div style="font-size:.78rem;color:#1e3a5f;line-height:1.8"><strong>Device Inventory</strong> → TPM 金鑰 / CSR<br>CA 簽發 → 三項驗證<br>撤銷 → Trusted Access</div>
-            </div>
-            <div style="display:flex;align-items:center;padding:0 4px;background:#eff6ff;border-top:1px solid #bfdbfe;border-bottom:1px solid #bfdbfe"><span style="color:#1d4ed8">→</span></div>
-            <div style="flex:1.2;background:#f5f3ff;border:1px solid #ddd6fe;padding:12px 14px;border-right:none;border-left:none">
-              <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#7c3aed;margin-bottom:6px">⚡ 運行 · <span style="color:#7c3aed">TTPS PLANNED</span></div>
-              <div style="font-size:.78rem;color:#2e1065;line-height:1.8">mTLS：LDevID 私鑰 client auth<br>Secure / Measured Boot → PCR<br><strong>RA</strong>：TPM2_Quote · <strong>Secure OTA</strong></div>
-            </div>
-            <div style="display:flex;align-items:center;padding:0 4px;background:#f5f3ff;border-top:1px solid #ddd6fe;border-bottom:1px solid #ddd6fe"><span style="color:#7c3aed">→</span></div>
-            <div style="flex:1;background:#fef2f2;border:1px solid #fecaca;border-radius:0 10px 10px 0;padding:12px 14px;border-left:none">
-              <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#b91c1c;margin-bottom:6px">🇪🇺 CRA 證據</div>
-              <div style="font-size:.78rem;color:#450a0a;line-height:1.8">Art. 2(d) ← IDevID/LDevID<br>Art. 2(e) ← Key protection<br>Art. 2(f) ← Firmware integrity</div>
-            </div>
-          </div>
-          <div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border:1px solid #fcd34d;border-radius:10px;font-size:.78rem;color:#451a03">
-            <span style="font-weight:700;color:#92400e">⚓ Root of Trust：</span> x86 → <strong>hTPM</strong> · ARM+TrustZone → <strong>OP-TEE fTPM</strong> · TX8 → <strong>Soteria hRoT</strong> · Legacy MIPS → feasibility · VM → <strong>vTPM</strong>（僅測試）
-          </div>
-        </div>
-      </div>
-    </details>
-
-    <!-- Group 2: CRA -->
-    <details class="refgroup" id="cra">
-      <summary>
-        <span class="rg-icon" style="background:var(--red-l)">🇪🇺</span>
-        <span>EU CRA 2024/2847 法規參考<span class="rg-sub">Cyber Resilience Act — 全面強制執行 2027-12-11；漏洞通報義務 2026-09-11（已生效）</span></span>
-        <span class="rg-count">2 頁 + 5 連結</span><span class="rg-caret">▶</span>
-      </summary>
-      <div class="rg-body">
-        <ul class="page-list">
-          <li><span class="pl-ic" style="background:var(--red-l)">📑</span><div><a href="./cra-annex-i-bilingual.html">CRA Annex I 英中對照表</a><small>Part I 產品安全 13 項 + Part II 漏洞處理 8 項，逐條英文原文對應中文翻譯與技術控制映射</small></div></li>
-          <li><span class="pl-ic" style="background:var(--red-l)">🧭</span><div><a href="./cra-annex-mapping.html">CRA Annex Mapping</a><small>11 個領域的中文說明與 gap 分析：Secure by Design、Authentication、Integrity、Secure Boot、Logging、Vulnerability Handling</small></div></li>
-        </ul>
-        <div class="timeline" style="margin-top:16px">
-          <div class="tl-card past"><span class="tl-badge done">已過</span><div class="tl-date">2026-06-11</div><h4>Conformity Assessment Bodies</h4><p>第三方合規評估機構指定生效日</p></div>
-          <div class="tl-card past"><span class="tl-badge done">已生效</span><div class="tl-date">2026-09-11</div><h4>漏洞通報義務</h4><p>Vulnerability handling &amp; reporting 義務正式生效</p></div>
-          <div class="tl-card final"><span class="tl-badge enforce">全面強制</span><div class="tl-date">2027-12-11</div><h4>CRA 全面強制執行</h4><p>Annex I 所有產品要求強制執行；違規最高 €15M 或全球營收 2.5%</p></div>
-        </div>
-        <div class="ref-card c-cra" style="margin-top:14px">
-          <div class="ref-cat-header"><span class="ref-cat-icon">🔗</span><span class="ref-cat-title c-cra">官方與外部連結</span></div>
-          <ul class="ref-links">
-            <li><a href="../references/cra/OJ_L_202402847_EN_TXT.pdf" target="_blank" rel="noopener">EU CRA 2024/2847 官方原文 PDF <span class="ref-badge std">PDF</span></a></li>
-            <li><a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R2847" target="_blank" rel="noopener">EU CRA 2024/2847 EUR-Lex 線上版 <span class="ref-badge std">EUR-Lex</span></a></li>
-            <li><a href="https://www.enisa.europa.eu/topics/cybersecurity-policy/cyber-resilience-act" target="_blank" rel="noopener">ENISA CRA 技術指引</a></li>
-            <li><a href="https://digital-strategy.ec.europa.eu/en/policies/cyber-resilience-act" target="_blank" rel="noopener">EC CRA Policy Overview</a></li>
-          </ul>
-        </div>
-        <div class="notice notice-info" style="margin-bottom:0">TTPS 與 FideProtect 提供的是 CRA 相關技術證據與佐證；conformity assessment 與 CE marking 的法律責任在 OEM 製造商，FiduciaEdge 提供技術服務。</div>
-      </div>
-    </details>
-
-    <!-- Group 3: external standards -->
-    <details class="refgroup">
-      <summary>
-        <span class="rg-icon" style="background:var(--purple-l)">🔗</span>
-        <span>外部標準與開源專案<span class="rg-sub">TPM / TCG · TrustZone / OP-TEE · Remote Attestation · Device Identity · Provisioning</span></span>
-        <span class="rg-count">30 連結</span><span class="rg-caret">▶</span>
-      </summary>
-      <div class="rg-body">
-        <div class="ref-grid" style="margin-top:14px">
-          <div class="ref-card c-tpm">
-            <div class="ref-cat-header"><span class="ref-cat-icon">🔐</span><span class="ref-cat-title c-tpm">TPM &amp; TCG Standards</span></div>
-            <ul class="ref-links">
-              <li><a href="https://trustedcomputinggroup.org/resource/tpm-library-specification/" target="_blank" rel="noopener">TCG TPM 2.0 Library Specification <span class="ref-badge std">STD</span></a></li>
-              <li><a href="https://tpm2-software.github.io/" target="_blank" rel="noopener">tpm2-software Project <span class="ref-badge oss">OSS</span></a></li>
-              <li><a href="https://github.com/microsoft/ms-tpm-20-ref" target="_blank" rel="noopener">MS TPM 2.0 Reference Implementation <span class="ref-badge oss">GitHub</span></a></li>
-              <li><a href="https://trustedcomputinggroup.org/resource/dice-attestation-architecture/" target="_blank" rel="noopener">TCG DICE Attestation Architecture <span class="ref-badge std">STD</span></a></li>
-              <li><a href="https://github.com/tpm2-software/tpm2-tools" target="_blank" rel="noopener">tpm2-tools CLI <span class="ref-badge oss">OSS</span></a></li>
-            </ul>
-          </div>
-          <div class="ref-card c-optee">
-            <div class="ref-cat-header"><span class="ref-cat-icon">🛡</span><span class="ref-cat-title c-optee">TrustZone &amp; OP-TEE</span></div>
-            <ul class="ref-links">
-              <li><a href="https://optee.readthedocs.io/" target="_blank" rel="noopener">OP-TEE Documentation <span class="ref-badge oss">Docs</span></a></li>
-              <li><a href="https://github.com/OP-TEE/optee_os" target="_blank" rel="noopener">OP-TEE OS <span class="ref-badge oss">GitHub</span></a></li>
-              <li><a href="https://www.trustedfirmware.org/projects/tf-a/" target="_blank" rel="noopener">Trusted Firmware-A (TF-A)</a></li>
-              <li><a href="https://github.com/microsoft/ms-tpm-20-ref/tree/master/Samples/ARM32-FirmwareTPM" target="_blank" rel="noopener">OP-TEE fTPM TA (MS ref) <span class="ref-badge oss">GitHub</span></a></li>
-              <li><a href="https://developer.arm.com/documentation/den0024/latest" target="_blank" rel="noopener">ARM TrustZone Architecture Guide</a></li>
-            </ul>
-          </div>
-          <div class="ref-card c-ra">
-            <div class="ref-cat-header"><span class="ref-cat-icon">📡</span><span class="ref-cat-title c-ra">Remote Attestation</span></div>
-            <ul class="ref-links">
-              <li><a href="https://datatracker.ietf.org/wg/rats/about/" target="_blank" rel="noopener">IETF RATS WG <span class="ref-badge rfc">IETF</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/rfc9711/" target="_blank" rel="noopener">RFC 9711 — Entity Attestation Token (EAT) <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/draft-ietf-rats-corim/" target="_blank" rel="noopener">CoRIM — Concise Ref Integrity Manifest <span class="ref-badge rfc">Draft</span></a></li>
-              <li><a href="https://keylime.dev/" target="_blank" rel="noopener">Keylime — TPM-based attestation <span class="ref-badge oss">OSS</span></a></li>
-              <li><a href="https://github.com/veraison/services" target="_blank" rel="noopener">Veraison Attestation Verifier <span class="ref-badge oss">GitHub</span></a></li>
-            </ul>
-          </div>
-          <div class="ref-card c-devid">
-            <div class="ref-cat-header"><span class="ref-cat-icon">🪪</span><span class="ref-cat-title c-devid">Device Identity</span></div>
-            <ul class="ref-links">
-              <li><a href="https://1.ieee802.org/security/802-1ar/" target="_blank" rel="noopener">IEEE 802.1AR — DevID Standard <span class="ref-badge std">IEEE</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/rfc8995/" target="_blank" rel="noopener">RFC 8995 — BRSKI Bootstrap <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/rfc8366/" target="_blank" rel="noopener">RFC 8366 — Voucher Artifact <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/rfc7030/" target="_blank" rel="noopener">RFC 7030 — EST (Enrollment over TLS) <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://datatracker.ietf.org/doc/html/draft-ietf-lamps-rfc7030-csrattrs" target="_blank" rel="noopener">EST CSR Attributes Extension <span class="ref-badge rfc">Draft</span></a></li>
-            </ul>
-          </div>
-          <div class="ref-card c-prov">
-            <div class="ref-cat-header"><span class="ref-cat-icon">🏭</span><span class="ref-cat-title c-prov">Provisioning &amp; Key Mgmt</span></div>
-            <ul class="ref-links">
-              <li><a href="https://fidoalliance.org/specs/FDO/" target="_blank" rel="noopener">FIDO Device Onboard (FDO) Spec <span class="ref-badge std">FIDO</span></a></li>
-              <li><a href="https://www.nxp.com/products/security-and-authentication/authentication/edgelock-2go:EDGELOCK-2GO" target="_blank" rel="noopener">NXP EdgeLock 2GO</a></li>
-              <li><a href="https://www.openssl.org/docs/man3.0/man7/provider.html" target="_blank" rel="noopener">OpenSSL Provider API (TPM2 Provider)</a></li>
-              <li><a href="https://github.com/tpm2-software/tpm2-pkcs11" target="_blank" rel="noopener">tpm2-pkcs11 <span class="ref-badge oss">OSS</span></a></li>
-              <li><a href="https://www.rfc-editor.org/rfc/rfc4210" target="_blank" rel="noopener">RFC 4210 — CMP (Cert Mgmt Protocol) <span class="ref-badge rfc">RFC</span></a></li>
-            </ul>
-          </div>
-          <div class="ref-card c-cra">
-            <div class="ref-cat-header"><span class="ref-cat-icon">🧩</span><span class="ref-cat-title c-cra">FideProtect 相關技術</span></div>
-            <ul class="ref-links">
-              <li><a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha" target="_blank" rel="noopener">XChaCha20-Poly1305 (IRTF CFRG draft) <span class="ref-badge rfc">Draft</span></a></li>
-              <li><a href="https://www.rfc-editor.org/rfc/rfc8439" target="_blank" rel="noopener">RFC 8439 — ChaCha20 &amp; Poly1305 <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://www.rfc-editor.org/rfc/rfc8032" target="_blank" rel="noopener">RFC 8032 — EdDSA / Ed25519 <span class="ref-badge rfc">RFC</span></a></li>
-              <li><a href="https://man7.org/linux/man-pages/man2/memfd_create.2.html" target="_blank" rel="noopener">memfd_create(2) / fexecve(3) <span class="ref-badge oss">man</span></a></li>
-              <li><a href="https://keygen.sh/docs/api/" target="_blank" rel="noopener">Keygen API（licensing-server 相容介面）</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </details>
-  </div>
-
-  <!-- ─── TONE RULES ───────────────────────────────────────────────── -->
+  <!-- ─── MORE ─────────────────────────────────────────────────────── -->
   <div class="section">
-    <div class="sec-label">語氣規則 Tone Rules</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div style="background:var(--red-l);border-left:4px solid var(--red);border-radius:12px;padding:16px 18px;">
-        <div style="font-size:.75rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✗ 避免說</div>
-        <div style="font-size:.83rem;color:var(--ink-2);line-height:2">
-          guarantee full CRA compliance / CRA certified<br>
-          TPM equals CRA compliance<br>
-          Remote Attestation immediately available<br>
-          絕對防複製 / tamper-proof / 通過第三方認證<br>
-          撤銷後立即斷線
+    <div class="sec-label">更多 More</div>
+    <div class="report-grid">
+      <a href="./products-overview.html" class="report-card">
+        <div class="rc-icon" style="background:linear-gradient(135deg,#eff6ff,#f0fdfa)">⚖</div>
+        <div class="rc-body">
+          <h3>TTPS vs FideProtect 總覽</h3>
+          <p>一張圖看懂兩個產品各自保護什麼、差在哪、怎麼一起用。</p>
+          <div class="rc-tags"><span class="tag tag-blue">設備是誰</span><span class="tag tag-teal">程式能不能跑</span><span class="tag tag-gray">互補關係</span></div>
         </div>
-      </div>
-      <div style="background:var(--green-l);border-left:4px solid var(--green);border-radius:12px;padding:16px 18px;">
-        <div style="font-size:.75rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✓ 應該說</div>
-        <div style="font-size:.83rem;color:var(--ink-2);line-height:2">
-          CRA-ready · supports CRA-related evidence preparation<br>
-          hardware-protected key mechanism<br>
-          Remote Attestation is a roadmap<br>
-          已驗證範圍 + 日期 + 平台一起說<br>
-          撤銷後下一次握手被拒
+        <div class="rc-arrow">→</div>
+      </a>
+      <a href="./references.html" class="report-card">
+        <div class="rc-icon" style="background:#f3f4f6">📚</div>
+        <div class="rc-body">
+          <h3>技術參考資料</h3>
+          <p>設備信任知識頁 8 頁、EU CRA 法規與時程、外部標準 30 連結、語氣規則。</p>
+          <div class="rc-tags"><span class="tag tag-purple">Device Trust</span><span class="tag" style="background:var(--red-l);color:var(--red)">EU CRA</span><span class="tag tag-gray">標準連結</span></div>
         </div>
-      </div>
+        <div class="rc-arrow">→</div>
+      </a>
     </div>
-    <p style="font-size:.78rem;color:var(--ink-3);margin-top:10px;padding-left:4px">Conformity assessment 與 CE marking 的法律責任在 OEM 製造商，FiduciaEdge 提供技術服務。</p>
   </div>
 
 </div>

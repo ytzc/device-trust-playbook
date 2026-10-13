@@ -6,7 +6,7 @@ TTPS 與 FideProtect 兩個產品的總覽頁（中文為主、英文輔助）�
 
 ## 用途
 
-本 repo 是 FiduciaEdge 的長期技術知識庫。首頁以兩個產品總覽為主，技術參考資料收在可展開的「參考資料」區：
+本 repo 是 FiduciaEdge 的長期技術知識庫。首頁只放產品入口；產品比較在 `products-overview.html`，技術參考資料在 `references.html`：
 
 - **TTPS（Trusted Things Provisioning Service）** — 設備身分與存取管理平台：IAK / IDevID 私鑰留在 TPM 2.0、憑證生命週期、三項獨立驗證、逐台撤銷、Trusted Access 參考整合；Roadmap 為 Secure OTA 與 Remote Attestation
 - **FideProtect** — 執行檔保護與離線授權平台：XChaCha20-Poly1305 加密封裝、設備指紋綁定、永久離線 per-device `.lic`、記憶體內執行、跨站發證；不改碼、不重編、不要求 TPM
@@ -35,6 +35,8 @@ TTPS 與 FideProtect 兩個產品的總覽頁（中文為主、英文輔助）�
 | **首頁（產品入口 + 參考資料）** | <https://ytzc.github.io/device-trust-playbook/> |
 | **TTPS 產品總覽** — 設備身分與存取管理平台 | <https://ytzc.github.io/device-trust-playbook/ttps-product-overview.html> |
 | **FideProtect 產品總覽** — 執行檔保護與離線授權平台 | <https://ytzc.github.io/device-trust-playbook/fideprotect-product-overview.html> |
+| **TTPS vs FideProtect 總覽** — 各自保護什麼、差異、一起用 | <https://ytzc.github.io/device-trust-playbook/products-overview.html> |
+| **技術參考資料** — 設備信任知識頁、EU CRA、外部標準、語氣規則 | <https://ytzc.github.io/device-trust-playbook/references.html> |
 | Device Trust & CRA Readiness Summary | <https://ytzc.github.io/device-trust-playbook/current-device-trust-cra-summary.html> |
 | Soteria-native DevID & Provisioning Survey | <https://ytzc.github.io/device-trust-playbook/soteria-native-device-identity-provisioning-survey.html> |
 | Techmation TX8 Soteria / OP-TEE fTPM 分析 | <https://ytzc.github.io/device-trust-playbook/techmation-tx8-soteria-optee-ftpm-analysis.html> |
@@ -55,9 +57,11 @@ TTPS 與 FideProtect 兩個產品的總覽頁（中文為主、英文輔助）�
 ```
 device-trust-playbook/
 ├── docs/
-│   ├── index.html                                          # GitHub Pages 首頁（產品入口 + 可展開參考資料）
-│   ├── ttps-product-overview.html                         # TTPS 產品總覽（12 章節）
-│   ├── fideprotect-product-overview.html                  # FideProtect 產品總覽（14 章節）
+│   ├── index.html                                          # GitHub Pages 首頁（只放產品入口）
+│   ├── products-overview.html                             # TTPS vs FideProtect 總覽（一張圖、對照表、一起用、怎麼選）
+│   ├── ttps-product-overview.html                         # TTPS 產品總覽（圖解版）
+│   ├── fideprotect-product-overview.html                  # FideProtect 產品總覽（圖解版）
+│   ├── references.html                                    # 技術參考資料（知識頁、CRA、外部標準、語氣規則）
 │   ├── current-device-trust-cra-summary.html              # Device Trust & CRA 整理
 │   ├── platform-solution-decision-map.html                # 平台決策圖
 │   ├── rot-methods-comparison.html                        # RoT 方法比較
