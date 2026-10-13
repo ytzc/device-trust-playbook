@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TTPS vs FideProtect 總覽 — FiduciaEdge</title>
+  <title>TTPS 與 FideProtect 產品定位與差異 — FiduciaEdge</title>
   <meta name="description" content="一張圖看懂 TTPS 與 FideProtect 各自保護什麼、差在哪、怎麼一起用。TTPS 管設備是誰，FideProtect 管程式能不能在這台跑。">
   <style>
     :root {
@@ -287,9 +287,9 @@
     <a class="hero-brand" href="./index.html">FiduciaEdge · Products</a>
     <span class="version-badge" id="site-version">Version: __VERSION__</span>
   </div>
-  <div class="hero-kicker">Products at a glance</div>
-  <h1><span>TTPS</span> 與 <em>FideProtect</em><br>各自保護什麼</h1>
-  <div class="hero-en">Device identity vs. application protection</div>
+  <div class="hero-kicker">Product Positioning &amp; Differentiation</div>
+  <h1><span>TTPS</span> 與 <em>FideProtect</em><br>產品定位與差異</h1>
+  <div class="hero-en">Device Identity Platform vs. Application Protection Platform</div>
   <p class="hero-sub">TTPS 回答「這台設備是誰」，FideProtect 回答「這份程式能不能在這台跑」。兩個產品可以各用，也可以一起用。</p>
   <div class="hero-chips">
     <a href="./ttps-product-overview.html" class="chip" style="text-decoration:none;background:rgba(96,165,250,.2);color:#bfdbfe;border-color:rgba(96,165,250,.4)">🪪 TTPS 產品頁 →</a>
@@ -299,11 +299,11 @@
 </div>
 
 <nav class="sticky-nav">
-  <a href="#s1">1 一張圖</a>
-  <a href="#s2">2 各自保護什麼</a>
-  <a href="#s3">3 對照表</a>
-  <a href="#s4">4 一起用</a>
-  <a href="#s5">5 怎麼選</a>
+  <a href="#s1">1 定位總覽</a>
+  <a href="#s2">2 保護範疇</a>
+  <a href="#s3">3 功能對照</a>
+  <a href="#s4">4 整合部署</a>
+  <a href="#s5">5 選型建議</a>
   <span class="ver" id="nav-version">__VERSION__</span>
 </nav>
 <script>
@@ -318,7 +318,7 @@
 
   <!-- 1 -->
   <div class="sec" id="s1" style="margin-top:28px">
-    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">一張圖看懂</div><div class="sec-sub">同一台設備上，兩個產品守不同的東西</div></div></div>
+    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">產品定位總覽</div><div class="sec-sub">Positioning Overview — 同一台設備上，兩個產品負責不同層面的保護</div></div></div>
     <div class="dia">
       <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="一台設備：左邊 TPM 內的鑰匙由 TTPS 保護設備身分，右邊受保護程式與授權檔由 FideProtect 保護軟體資產">
         <defs>
@@ -366,7 +366,7 @@
 
   <!-- 2 -->
   <div class="sec" id="s2">
-    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">各自保護什麼</div><div class="sec-sub">What each protects</div></div></div>
+    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">保護範疇</div><div class="sec-sub">Protection Scope — 保護對象、威脅模型、機制與適用場景</div></div></div>
     <div class="duo">
       <div class="side t">
         <div class="hd">🪪 TTPS</div>
@@ -397,7 +397,7 @@
 
   <!-- 3 -->
   <div class="sec" id="s3">
-    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">對照表</div><div class="sec-sub">Side by side</div></div></div>
+    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">功能對照</div><div class="sec-sub">Feature Comparison — 十個面向並排比較</div></div></div>
     <div class="tbl-wrap"><table>
       <thead><tr><th>面向</th><th style="color:var(--blue)">🪪 TTPS</th><th style="color:var(--teal)">🔒 FideProtect</th></tr></thead>
       <tbody>
@@ -417,7 +417,7 @@
 
   <!-- 4 -->
   <div class="sec" id="s4">
-    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">一起用：設備可信，程式受控</div><div class="sec-sub">Better together — 互補，不重疊</div></div></div>
+    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">整合部署情境</div><div class="sec-sub">Combined Deployment — 設備可信、程式受控；互補而不重疊</div></div></div>
     <div class="dia">
       <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="出貨前：FideProtect 封裝程式並發授權，TTPS 在 TPM 產鑰匙並簽憑證；現場：TTPS 憑證連 VPN，FideProtect 程式離線啟動；營運：TTPS 撤銷設備，FideProtect 重新授權">
         <defs><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/></marker></defs>
@@ -457,11 +457,11 @@
 
   <!-- 5 -->
   <div class="sec" id="s5">
-    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">怎麼選</div><div class="sec-sub">Which one</div></div></div>
+    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">選型建議</div><div class="sec-sub">Selection Guide — 依需求情境選擇</div></div></div>
     <div class="pick">
-      <div class="tile" style="border-top-color:var(--teal)"><div class="ic">📦</div><h4>我怕程式 / 模型被拿走或被複製到別台</h4><span class="ans" style="background:var(--teal-l);color:var(--teal)">→ FideProtect</span></div>
-      <div class="tile" style="border-top-color:var(--blue)"><div class="ic">🪪</div><h4>我要認得出每台設備、用憑證連 VPN、遺失能撤銷</h4><span class="ans" style="background:var(--blue-l);color:var(--blue)">→ TTPS</span></div>
-      <div class="tile" style="border-top-color:var(--purple)"><div class="ic">🤝</div><h4>設備要可信，程式也要受控</h4><span class="ans" style="background:var(--purple-l);color:var(--purple)">→ 兩者一起用</span></div>
+      <div class="tile" style="border-top-color:var(--teal)"><div class="ic">📦</div><h4>需防止程式或模型被取走、被複製到未授權設備</h4><span class="ans" style="background:var(--teal-l);color:var(--teal)">→ FideProtect</span></div>
+      <div class="tile" style="border-top-color:var(--blue)"><div class="ic">🪪</div><h4>需辨識每台設備、以憑證建立 VPN 連線、遺失可撤銷</h4><span class="ans" style="background:var(--blue-l);color:var(--blue)">→ TTPS</span></div>
+      <div class="tile" style="border-top-color:var(--purple)"><div class="ic">🤝</div><h4>設備身分需可信，軟體資產也需受控</h4><span class="ans" style="background:var(--purple-l);color:var(--purple)">→ 兩者一起用</span></div>
     </div>
     <div class="grid-2" style="margin-top:14px">
       <div class="notice notice-info" style="margin:0"><strong>常見誤會：</strong>FideProtect 不需要 TPM，也不是 TTPS 的一部分；TTPS 不保護程式內容，只保護設備身分。</div>
@@ -472,7 +472,7 @@
 </div>
 
 <footer>
-  <strong>TTPS vs FideProtect 總覽</strong><br>
+  <strong>TTPS 與 FideProtect 產品定位與差異</strong><br>
   FiduciaEdge 產品介紹 · 資料基準 2026-10-13<br>
   <a href="./index.html">← 回首頁</a> · <a href="./ttps-product-overview.html">TTPS →</a> · <a href="./fideprotect-product-overview.html">FideProtect →</a> · <a href="./references.html">技術參考資料 →</a>
 </footer>

@@ -261,6 +261,31 @@
     .idcard li{font-size:.85rem;color:var(--ink-2);padding:6px 0;border-top:1px dashed var(--border);display:flex;gap:8px}
     .idcard li b{min-width:64px;color:var(--ink)}
 
+    /* SWOT */
+    .swot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:640px){.swot{grid-template-columns:1fr}}
+    .sw{border-radius:var(--radius);padding:16px 18px;border:1px solid var(--border);background:var(--bg-2);box-shadow:var(--shadow-sm);border-top:5px solid}
+    .sw h4{font-size:1rem;font-weight:900;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+    .sw .en{display:block;margin-bottom:8px}
+    .sw ul{list-style:none} .sw li{font-size:.85rem;color:var(--ink-2);padding:5px 0;border-top:1px dashed var(--border);display:flex;gap:8px}
+    .sw li::before{flex-shrink:0}
+    .sw.s{border-top-color:var(--green)} .sw.s h4{color:var(--green)} .sw.s li::before{content:'＋';color:var(--green)}
+    .sw.w{border-top-color:var(--orange)} .sw.w h4{color:var(--orange)} .sw.w li::before{content:'－';color:var(--orange)}
+    .sw.o{border-top-color:var(--blue)} .sw.o h4{color:var(--blue)} .sw.o li::before{content:'↗';color:var(--blue)}
+    .sw.t{border-top-color:var(--red)} .sw.t h4{color:var(--red)} .sw.t li::before{content:'⚠';color:var(--red)}
+    /* planned capability blocks */
+    .plan-hd{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .plan-hd h3{font-size:1.15rem;font-weight:900}
+    .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media(max-width:700px){.kv{grid-template-columns:1fr}}
+    .kv .tile h4{display:flex;align-items:center;gap:6px}
+    .kv .tile ul{margin:6px 0 0 16px;font-size:.82rem;color:var(--ink-2)}
+    .vs{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+    @media(max-width:600px){.vs{grid-template-columns:1fr}.vs .mid{transform:rotate(90deg)}}
+    .vs .box{border-radius:12px;padding:12px 14px;font-size:.84rem}
+    .vs .box b{display:block;font-size:.92rem;margin-bottom:4px}
+    .vs .mid{display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ink-3)}
+
   </style>
 </head>
 <body>
@@ -295,7 +320,9 @@
   <a href="#s9">9 支援範圍</a>
   <a href="#s10">10 導入</a>
   <a href="#s11">11 Roadmap</a>
-  <a href="#s12">12 FAQ</a>
+  <a href="#s12">12 OTA / RA 規劃</a>
+  <a href="#s13">13 FAQ</a>
+  <a href="#s14">14 SWOT</a>
   <span class="ver" id="nav-version">__VERSION__</span>
 </nav>
 <script>
@@ -643,9 +670,59 @@
     <p class="notice notice-warn">Roadmap 為方向，不是已交付功能或承諾時程。</p>
   </div>
 
-  <!-- 12 -->
+
+  <!-- 12 planned capabilities -->
   <div class="sec" id="s12">
-    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ</div></div></div>
+    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">規劃能力：Secure OTA 與 Remote Attestation</div><div class="sec-sub">Planned capabilities — 同一把鑰匙，延伸到「更新可信」與「狀態可信」</div></div></div>
+    <p class="notice notice-warn" style="margin-top:0">以下兩項為 <strong>規劃中</strong>，不是已交付功能；內容說明規劃方向、價值與和現況的差異，不承諾時程。</p>
+
+    <!-- OTA -->
+    <div class="card" style="margin-top:16px">
+      <div class="plan-hd"><span class="st st-plan">◇ PLANNED</span><h3>📦 Secure OTA 安全更新</h3><span class="en">讓更新過程可控、可追溯</span></div>
+      <div class="steps">
+        <div class="step"><span class="n">1</span><div class="ic">🗂</div><h5>建立套件版本</h5><p>版本、簽章、相容性</p></div>
+        <div class="step"><span class="n">2</span><div class="ic">✅</div><h5>核准發布</h5><p>誰核准、何時</p></div>
+        <div class="step"><span class="n">3</span><div class="ic">🎯</div><h5>選擇目標設備</h5><p>用設備身分指定</p></div>
+        <div class="step"><span class="n">4</span><div class="ic">🔏</div><h5>驗證並安裝</h5><p>驗簽章、套版本政策</p></div>
+        <div class="step"><span class="n">5</span><div class="ic">📋</div><h5>確認結果</h5><p>版本、健康、失敗恢復</p></div>
+      </div>
+      <div class="vs" style="margin-top:14px">
+        <div class="box" style="background:var(--red-l)"><b>✘ 一般遠端傳檔</b>上傳成功就當作更新成功；來源不驗、對象不確認、失敗沒回滾。</div>
+        <div class="mid">vs</div>
+        <div class="box" style="background:var(--green-l)"><b>✔ Secure OTA（規劃）</b>更新前驗簽章與相容性；更新中套版本政策、留紀錄；更新後確認健康，異常受控恢復。</div>
+      </div>
+      <div class="kv" style="margin-top:14px">
+        <div class="tile green"><h4>💎 價值</h4><ul><li>上傳成功 ≠ 派送成功 ≠ 更新成功，每一步有證據</li><li>逐台 rollout、可回滾</li><li>防未授權降版</li></ul></div>
+        <div class="tile"><h4>🔑 與 TTPS 的關係</h4><ul><li>設備身分鑰匙確認「更新給哪台」</li><li>發布簽章鑰匙確認「更新從哪來」</li><li>兩把鑰匙角色不同，互相補位</li></ul></div>
+        <div class="tile purple"><h4>🏆 優點</h4><ul><li>延用現有設備登錄與憑證，不另建設備清冊</li><li>更新紀錄可作 CRA 安全更新與漏洞處理佐證</li><li>先做版本 / 任務管理，再整合設備端執行，可分階段</li></ul></div>
+      </div>
+    </div>
+
+    <!-- RA -->
+    <div class="card" style="margin-top:16px">
+      <div class="plan-hd"><span class="st st-plan">◇ PLANNED</span><h3>📡 Remote Attestation 設備狀態證明</h3><span class="en">持續確認設備狀態是否仍符合核准基準</span></div>
+      <div class="steps" style="grid-template-columns:repeat(3,1fr)">
+        <div class="step"><span class="n">1</span><div class="ic">🖥</div><h5>設備提出證據</h5><p>回應新挑戰，TPM Quote 簽 PCR 量測值</p></div>
+        <div class="step"><span class="n">2</span><div class="ic">⚖</div><h5>平台比對基準</h5><p>證據有效？對照核准狀態與政策</p></div>
+        <div class="step"><span class="n">3</span><div class="ic">🚦</div><h5>依結果執行政策</h5><p>Trusted / Untrusted → 允許、限制或修復</p></div>
+      </div>
+      <div class="vs" style="margin-top:14px">
+        <div class="box" style="background:var(--blue-l)"><b>🪪 身分驗證（現有）</b>設備能否證明持有對應身分的鑰匙？回答「是誰」。</div>
+        <div class="mid">＋</div>
+        <div class="box" style="background:var(--purple-l)"><b>📡 狀態證明（規劃）</b>被量測的設備狀態是否符合核准基準？回答「現在狀態對不對」。</div>
+      </div>
+      <div class="kv" style="margin-top:14px">
+        <div class="tile green"><h4>💎 價值</h4><ul><li>開機與系統狀態有可驗證的證據，不只「在線」</li><li>狀態不符可連動存取與更新條件</li><li>證據具時效性，可重複取得</li></ul></div>
+        <div class="tile"><h4>🔑 與 TTPS 的關係</h4><ul><li>用同一顆 TPM、同一條信任鏈：IAK 出廠簽章鑰匙</li><li>身分驗證通過是前提，狀態證明疊在上面</li><li>平台延伸為 Verifier，加入基準與政策</li></ul></div>
+        <div class="tile purple"><h4>🏆 優點</h4><ul><li>不需新增硬體，TPM 2.0 原生支援 Quote / PCR</li><li>對應 CRA Annex I 完整性與安全狀態相關要求的技術佐證</li><li>走 IETF RATS（EAT / CoRIM）標準格式，利於與 NMS 整合</li></ul></div>
+      </div>
+      <p class="notice notice-warn">驗證保證取決於量測範圍、證據時效與政策；不代表能偵測所有入侵。需先定義證據時效、驗證方、基準版本與受控修復流程。PoP、連線成功與憑證鏈通過都不能替代這項能力。</p>
+    </div>
+  </div>
+
+  <!-- 13 -->
+  <div class="sec" id="s13">
+    <div class="sec-hd"><div class="sec-num">13</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ</div></div></div>
     <details class="faq"><summary>沒有 TPM 也能用嗎？</summary><div class="ans">可以，走 TWID 軟體憑證路徑；但沒有「鑰匙拿不走」的硬體保證。</div></details>
     <details class="faq"><summary>沒有正式 CA 可以先示範嗎？</summary><div class="ans">可以，用 Local Demo CA 跑流程；正式導入以 TWCA 為準。</div></details>
     <details class="faq"><summary>驗證通過就代表系統安全嗎？</summary><div class="ans">不是。它證明「設備是誰、鑰匙對不對」；系統狀態要靠 Remote Attestation（規劃中）。</div></details>
@@ -655,6 +732,41 @@
     <div class="grid-2" style="margin-top:16px">
       <div class="notice notice-red" style="margin:0"><strong>✗ 避免說</strong><br>保證 CRA 合規 · 絕對防複製 · 撤銷立即斷線 · 驗證通過＝安全</div>
       <div class="notice notice-green" style="margin:0"><strong>✓ 應該說</strong><br>提供 CRA 技術佐證 · 鑰匙留在 TPM 複製拿不到 · 撤銷後下一次連線被拒 · 驗證證明身分與鑰匙對應</div>
+    </div>
+  </div>
+
+  <!-- 14 SWOT -->
+  <div class="sec" id="s14">
+    <div class="sec-hd"><div class="sec-num">14</div><div><div class="sec-title">SWOT 分析</div><div class="sec-sub">依 2026-10 內部審查資料整理，供內部討論</div></div></div>
+    <div class="swot">
+      <div class="sw s"><h4>💪 Strengths 優勢</h4><span class="en">現在就有的強項</span><ul>
+        <li>私鑰在 TPM 2.0 內產生、不可匯出，硬體根信任</li>
+        <li>三項獨立驗證可一條指令輸出報告，證據可查可稽核</li>
+        <li>逐台撤銷、驗證端即時回查、fail-closed</li>
+        <li>自架單節點，資料不出客戶網路</li>
+        <li>Portal + server + agent + CLI 完整工具鏈，附 SBOM / checksums</li>
+      </ul></div>
+      <div class="sw w"><h4>🩹 Weaknesses 劣勢</h4><span class="en">目前的缺口</span><ul>
+        <li>TPM 鑰匙經 TWCA ID Center 正式簽發仍在整合，外部依賴</li>
+        <li>主流程以 vTPM 驗證，實體 dTPM 端到端證據待補</li>
+        <li>單節點 SQLite，無 HA；tpm-agent 明文 gRPC；CRL 未實作</li>
+        <li>僅 Ubuntu x86_64；fTPM / 非 Ubuntu 走 NRE</li>
+        <li>尚無付費客戶、無第三方產品認證</li>
+      </ul></div>
+      <div class="sw o"><h4>🚀 Opportunities 機會</h4><span class="en">外部趨勢</span><ul>
+        <li>EU CRA 2027-12 全面強制執行，設備唯一識別與撤銷證據成為必答題</li>
+        <li>OT / 關鍵基礎設施以憑證取代共用帳密的需求</li>
+        <li>同一把鑰匙延伸 Secure OTA 與 Remote Attestation，形成安全維運套件</li>
+        <li>TX8 / Soteria 等異質 RoT 平台整合，擴大可支援設備</li>
+        <li>與 FideProtect 搭配：設備可信 + 程式受控</li>
+      </ul></div>
+      <div class="sw t"><h4>⚠ Threats 威脅</h4><span class="en">外部風險</span><ul>
+        <li>客戶把 Remote Attestation 當採購前提，而它仍在規劃</li>
+        <li>客戶已有自有 PKI / ZTNA / MDM，整合需 NRE</li>
+        <li>CA 外部服務可用性影響示範與交付節奏</li>
+        <li>晶片廠與雲端 IoT 身分服務提供類似能力</li>
+        <li>高安全客戶要求第三方評估報告</li>
+      </ul></div>
     </div>
   </div>
 

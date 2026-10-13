@@ -273,6 +273,18 @@
     .res .big{font-size:1.7rem;font-weight:900;color:var(--green);line-height:1.1;margin-bottom:4px}
     .res .date{font-size:.72rem;color:var(--ink-3);margin-top:8px;font-weight:600}
 
+    .swot{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:640px){.swot{grid-template-columns:1fr}}
+    .sw{border-radius:var(--radius);padding:16px 18px;border:1px solid var(--border);background:var(--bg-2);box-shadow:var(--shadow-sm);border-top:5px solid}
+    .sw h4{font-size:1rem;font-weight:900;display:flex;align-items:center;gap:8px;margin-bottom:2px}
+    .sw .en{display:block;margin-bottom:8px}
+    .sw ul{list-style:none} .sw li{font-size:.85rem;color:var(--ink-2);padding:5px 0;border-top:1px dashed var(--border);display:flex;gap:8px}
+    .sw li::before{flex-shrink:0}
+    .sw.s{border-top-color:var(--green)} .sw.s h4{color:var(--green)} .sw.s li::before{content:'＋';color:var(--green)}
+    .sw.w{border-top-color:var(--orange)} .sw.w h4{color:var(--orange)} .sw.w li::before{content:'－';color:var(--orange)}
+    .sw.o{border-top-color:var(--blue)} .sw.o h4{color:var(--blue)} .sw.o li::before{content:'↗';color:var(--blue)}
+    .sw.t{border-top-color:var(--red)} .sw.t h4{color:var(--red)} .sw.t li::before{content:'⚠';color:var(--red)}
+
   </style>
 </head>
 <body>
@@ -310,6 +322,7 @@
   <a href="#s12">12 導入</a>
   <a href="#s13">13 Roadmap</a>
   <a href="#s14">14 FAQ</a>
+  <a href="#s15">15 SWOT</a>
   <span class="ver" id="nav-version">__VERSION__</span>
 </nav>
 <script>
@@ -667,6 +680,41 @@
     <div class="grid-2" style="margin-top:16px">
       <div class="notice notice-red" style="margin:0"><strong>✗ 避免說</strong><br>絕對安全 / tamper-proof · 防所有逆向 · 所有程式零調整 · 通過第三方認證</div>
       <div class="notice notice-green" style="margin:0"><strong>✓ 應該說</strong><br>封裝與授權檢查已實機驗證 · 支援平台先試裝 · 錯裝置會被拒 · 安全評估持續修補</div>
+    </div>
+  </div>
+
+  <!-- 15 SWOT -->
+  <div class="sec" id="s15">
+    <div class="sec-hd"><div class="sec-num">15</div><div><div class="sec-title">SWOT 分析</div><div class="sec-sub">依 2026-10 內部審查資料整理，供內部討論</div></div></div>
+    <div class="swot">
+      <div class="sw s"><h4>💪 Strengths 優勢</h4><span class="en">現在就有的強項</span><ul>
+        <li>不改碼、不重編、不需 TPM，導入門檻低</li>
+        <li>永久離線授權，封閉網路與產線可用</li>
+        <li>x86_64 與 Techmation TX8 實機驗證，跨站發證已在客戶站通過</li>
+        <li>一支腳本部署完成，Admin Web 授權精靈降低操作負擔</li>
+        <li>保護後靜態檢查無明文；錯裝置授權實機拒絕</li>
+      </ul></div>
+      <div class="sw w"><h4>🩹 Weaknesses 劣勢</h4><span class="en">目前的缺口</span><ul>
+        <li>Admin Web 尚無帳號登入，只能內網 / VPN 使用</li>
+        <li>Legacy 派送服務 root 無認證，須隔離</li>
+        <li>Launcher 內部安全評估仍有未結案項目；記憶體內執行不等於 TEE</li>
+        <li>Qt / QML 與讀 /proc/self/exe 的程式相容性限制</li>
+        <li>永久授權無法遠端收回；尚無 SBOM 流程、FPY 未達 100%</li>
+      </ul></div>
+      <div class="sw o"><h4>🚀 Opportunities 機會</h4><span class="en">外部趨勢</span><ul>
+        <li>Edge AI 設備「模型即售價」，模型保護需求上升</li>
+        <li>工控 / 嵌入式 OEM 軟體隨機出貨、需綁定硬體授權</li>
+        <li>封閉網路與斷網產線排除雲端授權方案</li>
+        <li>CRA 供應鏈與資產保護要求帶動技術佐證需求</li>
+        <li>與 TTPS 搭配成「設備可信 + 程式受控」組合</li>
+      </ul></div>
+      <div class="sw t"><h4>⚠ Threats 威脅</h4><span class="en">外部風險</span><ul>
+        <li>高權限或執行期擷取攻擊無法全面保證，易被要求 tamper-proof 承諾</li>
+        <li>客戶要求第三方滲透測試報告</li>
+        <li>時間制 / 訂閱 / 浮動授權需求不在 Standard</li>
+        <li>Windows / RTOS / MCU 平台需求無法承接</li>
+        <li>成熟的商用加殼與授權管理方案競爭</li>
+      </ul></div>
     </div>
   </div>
 
