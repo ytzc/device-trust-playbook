@@ -21,6 +21,28 @@
 
 ---
 
+## 線上閱讀（GitHub Pages）
+
+**公開網址：<https://ytzc.github.io/device-trust-playbook/>**
+
+| 頁面 | 連結 |
+|------|------|
+| 首頁 / 技術總覽 | <https://ytzc.github.io/device-trust-playbook/> |
+| Device Trust & CRA Readiness Summary | <https://ytzc.github.io/device-trust-playbook/current-device-trust-cra-summary.html> |
+| Soteria-native DevID & Provisioning Survey | <https://ytzc.github.io/device-trust-playbook/soteria-native-device-identity-provisioning-survey.html> |
+| Techmation TX8 Soteria / OP-TEE fTPM 分析 | <https://ytzc.github.io/device-trust-playbook/techmation-tx8-soteria-optee-ftpm-analysis.html> |
+| Device Trust Memory Guide | <https://ytzc.github.io/device-trust-playbook/device-trust-memory-guide.html> |
+| RoT 方法比較 | <https://ytzc.github.io/device-trust-playbook/rot-methods-comparison.html> |
+| 平台決策圖 | <https://ytzc.github.io/device-trust-playbook/platform-solution-decision-map.html> |
+| CRA Annex I 對應 | <https://ytzc.github.io/device-trust-playbook/cra-annex-mapping.html> |
+| CRA Annex I 中英對照 | <https://ytzc.github.io/device-trust-playbook/cra-annex-i-bilingual.html> |
+| PLANET 分析 | <https://ytzc.github.io/device-trust-playbook/planet-analysis.html> |
+| 6/12 RoT 會議準備 | <https://ytzc.github.io/device-trust-playbook/meeting-prep-2026-06-12-rot-discussion.html> |
+
+> 線上內容對應最新的 `v*` tag（見下方「GitHub Pages 部署」）；頁面右上角 version badge 顯示目前部署版本。
+
+---
+
 ## Repo 結構
 
 ```
@@ -33,14 +55,16 @@ device-trust-playbook/
 │   ├── cra-annex-mapping.html                             # CRA Annex I 對應
 │   ├── planet-analysis.html                               # PLANET 分析
 │   ├── meeting-prep-2026-06-12-rot-discussion.html        # 6/12 會議準備
+│   ├── cra-annex-i-bilingual.html                         # CRA Annex I 中英對照
+│   ├── device-trust-memory-guide.html                     # Device Trust 記憶指南（13 節）
 │   ├── techmation-tx8-soteria-optee-ftpm-analysis.html    # TX8 AHB 架構分析
-│   └── soteria-native-device-identity-provisioning-survey.html  # NEW: Soteria DevID 調查
+│   └── soteria-native-device-identity-provisioning-survey.html  # Soteria DevID 調查
 ├── notes/
 │   ├── current-device-trust-cra-summary.md
 │   ├── platform-solution-decision-map.md
 │   ├── rot-methods-comparison.md
 │   ├── techmation-tx8-soteria-optee-ftpm-analysis.md
-│   └── soteria-native-device-identity-provisioning-survey.md    # NEW: Soteria DevID 調查
+│   └── soteria-native-device-identity-provisioning-survey.md    # Soteria DevID 調查
 ├── references/
 │   └── cra/                                               # CRA 參考資料
 └── README.md
@@ -119,7 +143,7 @@ git push origin v0.2.0
 
 CI workflow（`.github/workflows/`）會：
 1. 將所有 `docs/*.html` 中的 `__VERSION__` 替換為 tag 名稱（如 `v0.2.0`）
-2. 上傳 `docs/` 並部署到 GitHub Pages
+2. 上傳 `docs/` 並部署到 GitHub Pages → <https://ytzc.github.io/device-trust-playbook/>
 
 > 本機瀏覽時，version badge 顯示 `dev (local)`；部署後顯示實際 tag（如 `v0.2.0`）。
 
