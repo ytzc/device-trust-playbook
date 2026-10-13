@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FideProtect 產品總覽 — FiduciaEdge</title>
-  <meta name="description" content="FideProtect 執行檔保護與離線授權平台：加密封裝、設備綁定、永久離線授權、跨站發證、驗證成果、成熟度、導入方式與 Roadmap。中文為主、英文輔助。">
+  <meta name="description" content="FideProtect：程式可以複製，執行權必須授權。加密封裝 Linux 程式與模型、綁定設備指紋、永久離線授權。圖解為主、文字精簡。">
   <style>
     :root {
       --ink:#111827; --ink-2:#374151; --ink-3:#6b7280;
@@ -26,7 +26,7 @@
     strong{font-weight:700}
 
     /* HERO */
-    .hero{background:linear-gradient(140deg,#0f172a 0%,#1e3a5f 55%,#0f2d4a 100%);color:#fff;padding:32px 20px 80px;text-align:center;position:relative;overflow:hidden}
+    .hero{background:linear-gradient(140deg,#0f172a 0%,#1e3a5f 55%,#0f2d4a 100%);color:#fff;padding:32px 20px 64px;text-align:center;position:relative;overflow:hidden}
     .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(59,130,246,.2) 0%,transparent 70%);pointer-events:none}
     .hero-topbar{display:flex;justify-content:space-between;align-items:center;max-width:860px;margin:0 auto 28px;gap:12px;position:relative}
     .hero-brand{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);text-decoration:none}
@@ -53,7 +53,7 @@
 
     /* PAGE */
     .page{max-width:980px;margin:0 auto;padding:8px 20px 60px}
-    .sec{margin-top:52px;scroll-margin-top:52px}
+    .sec{margin-top:52px;scroll-margin-top:60px}
     .sec-hd{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px}
     .sec-num{width:38px;height:38px;border-radius:11px;background:var(--blue);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm)}
     .sec-title{font-size:1.35rem;font-weight:800;line-height:1.25;letter-spacing:-.2px}
@@ -81,7 +81,7 @@
     .tile .en{display:block;margin-top:-2px;margin-bottom:6px}
 
     /* STAT TILES */
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:-44px;position:relative;z-index:2}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
     @media(max-width:640px){.stats{grid-template-columns:1fr 1fr}}
     .stat{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 14px;box-shadow:var(--shadow-md);text-align:center}
     .stat-num{font-size:1.5rem;font-weight:800;line-height:1.1;color:var(--ink)}
@@ -224,45 +224,55 @@
     footer strong{color:rgba(255,255,255,.8)} footer a{color:rgba(255,255,255,.6);text-decoration:none} footer a:hover{color:#fff}
     .src{max-width:980px;margin:0 auto;padding:0 20px 30px;font-size:.78rem;color:var(--ink-3)}
     .src ul{margin:6px 0 0 18px}
+    /* ── diagrams ── */
+    .dia{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px 6px;box-shadow:var(--shadow-sm);overflow-x:auto}
+    .dia svg{display:block;width:100%;height:auto;min-width:560px}
+    .dia-cap{font-size:.8rem;color:var(--ink-3);text-align:center;padding:6px 8px 8px}
+    .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media(max-width:700px){.big3{grid-template-columns:1fr}}
+    .pic{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);text-align:center}
+    .pic .row{display:flex;align-items:center;justify-content:center;gap:10px;font-size:1.6rem;margin:6px 0}
+    .pic .row small{font-size:.74rem;color:var(--ink-3);line-height:1.3;max-width:90px}
+    .pic h4{font-size:1rem;font-weight:800;margin-bottom:8px}
+    .pic .bad,.pic .good{display:block;font-size:.84rem;padding:7px 10px;border-radius:8px;margin-top:6px;font-weight:600}
+    .pic .bad{background:var(--red-l);color:var(--red)} .pic .good{background:var(--green-l);color:var(--green)}
+    .cap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media(max-width:760px){.cap-grid{grid-template-columns:1fr 1fr}}
+    .cap{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 14px;text-align:center;box-shadow:var(--shadow-sm);border-top:4px solid var(--blue)}
+    .cap .ic{font-size:2rem;line-height:1;margin-bottom:8px}
+    .cap h4{font-size:.95rem;font-weight:800;margin-bottom:3px}
+    .cap p{font-size:.8rem;color:var(--ink-2)}
+    .cap .en{display:block;margin-bottom:4px}
+    .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    @media(max-width:760px){.steps{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:460px){.steps{grid-template-columns:1fr}}
+    .step{background:var(--bg-2);border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center;box-shadow:var(--shadow-sm);position:relative}
+    .step .ic{font-size:1.7rem;line-height:1;margin-bottom:6px}
+    .step .n{position:absolute;top:8px;left:10px;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:.68rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+    .step h5{font-size:.88rem;font-weight:800;margin-bottom:2px}
+    .step p{font-size:.76rem;color:var(--ink-3);line-height:1.4}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:640px){.two{grid-template-columns:1fr}}
+    .idcard{background:var(--bg-2);border:2px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm)}
+    .idcard.hw{border-color:var(--green-m)} .idcard.sw{border-color:var(--orange-m)}
+    .idcard .hd{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1rem;margin-bottom:10px}
+    .idcard .hd .ic{font-size:1.6rem}
+    .idcard ul{list-style:none}
+    .idcard li{font-size:.85rem;color:var(--ink-2);padding:6px 0;border-top:1px dashed var(--border);display:flex;gap:8px}
+    .idcard li b{min-width:64px;color:var(--ink)}
+
     .hero{background:linear-gradient(140deg,#0f172a 0%,#134e4a 55%,#0f2d2a 100%)}
     .hero::before{background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(20,184,166,.22) 0%,transparent 70%)}
-    .hero-brand::before{background:#2dd4bf}
-    .hero-kicker{color:#5eead4}
-    .hero h1 span{color:#2dd4bf}
+    .hero-brand::before{background:#2dd4bf} .hero-kicker{color:#5eead4} .hero h1 span{color:#2dd4bf}
     .chip.hl{background:rgba(45,212,191,.16);color:#99f6e4;border-color:rgba(45,212,191,.35)}
     .sticky-nav a:hover{border-bottom-color:#2dd4bf}
-    .sec-num{background:var(--teal)}
-    .flow-n{background:var(--teal)}
-    .tab[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal)}
-    .tile{border-top-color:var(--teal)}
-    .tile-step{color:var(--teal)}
-    .layer{display:grid;grid-template-columns:repeat(3,1fr);gap:0;align-items:stretch}
-    @media(max-width:700px){.layer{grid-template-columns:1fr}}
-    .layer-box{padding:18px 18px 16px;position:relative;border:1px solid var(--border);background:var(--bg-2)}
-    .layer-box:first-child{border-radius:var(--radius) 0 0 var(--radius);background:linear-gradient(180deg,#f0fdfa,#fff)}
-    .layer-box:nth-child(2){background:linear-gradient(180deg,#eff6ff,#fff);border-left:none;border-right:none}
-    .layer-box:last-child{border-radius:0 var(--radius) var(--radius) 0;background:linear-gradient(180deg,#f5f3ff,#fff)}
-    @media(max-width:700px){.layer-box,.layer-box:first-child,.layer-box:last-child{border-radius:var(--radius);border:1px solid var(--border);margin-bottom:12px}}
-    .layer-n{font-size:.7rem;font-weight:800;letter-spacing:1.5px;margin-bottom:6px}
-    .layer-box:first-child .layer-n{color:var(--teal)} .layer-box:nth-child(2) .layer-n{color:var(--blue)} .layer-box:last-child .layer-n{color:var(--purple)}
-    .layer-box h4{font-size:1rem;font-weight:800;margin-bottom:4px}
-    .layer-box .in{font-size:.8rem;color:var(--ink-3);margin-bottom:8px}
-    .layer-box p{font-size:.85rem;color:var(--ink-2)}
-    .layer-box .tech{margin-top:10px;display:inline-block;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.74rem;background:var(--gray-l);padding:3px 8px;border-radius:6px;color:var(--ink-2)}
-    .site{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch}
-    @media(max-width:640px){.site{grid-template-columns:1fr}}
-    .site-box{background:var(--bg-2);border:2px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm)}
-    .site-box.a{border-color:var(--teal-m)} .site-box.b{border-color:var(--blue-m)}
-    .site-box h4{font-size:1rem;font-weight:800;margin-bottom:8px}
-    .site-box ol{margin-left:18px;font-size:.84rem;color:var(--ink-2)}
-    .site-box li{margin-bottom:4px}
-    .site-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:.76rem;color:var(--ink-3);font-weight:700;padding:0 6px}
-    .site-mid .big{font-size:1.6rem;line-height:1;color:var(--orange)}
+    .sec-num,.flow-n,.step .n{background:var(--teal)} .tile{border-top-color:var(--teal)} .cap{border-top-color:var(--teal)}
     .res{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
     @media(max-width:760px){.res{grid-template-columns:1fr 1fr}}
     .res .tile{text-align:center}
-    .res .big{font-size:1.6rem;font-weight:900;color:var(--green);line-height:1.1;margin-bottom:4px}
+    .res .big{font-size:1.7rem;font-weight:900;color:var(--green);line-height:1.1;margin-bottom:4px}
     .res .date{font-size:.72rem;color:var(--ink-3);margin-top:8px;font-weight:600}
+
   </style>
 </head>
 <body>
@@ -273,13 +283,13 @@
     <span class="version-badge" id="site-version">Version: __VERSION__</span>
   </div>
   <div class="hero-kicker">Application Protection &amp; Device-bound Licensing</div>
-  <h1>FideProtect <span>執行檔保護與離線授權平台</span></h1>
+  <h1>FideProtect <span>程式可以複製，執行權必須授權</span></h1>
   <div class="hero-en">Protect the program, bind the right to run</div>
-  <p class="hero-sub">程式可以複製，執行權必須授權。FideProtect 將 Linux ELF 與重要資產檔加密封裝、執行時在記憶體內解密；再用設備指紋與每台設備一份的 .lic，控制只有授權設備能執行。不改程式碼、不重新編譯、不要求 TPM。</p>
+  <p class="hero-sub">把程式和模型加密封裝，只有拿到授權的那台設備能執行。不改程式碼、不重新編譯、不需要 TPM，設備不連網也能跑。</p>
   <div class="hero-chips">
     <span class="chip hl">🔒 加密封裝</span>
-    <span class="chip">🔗 設備綁定</span>
-    <span class="chip">📴 永久離線授權</span>
+    <span class="chip">🔗 綁定設備</span>
+    <span class="chip">📴 離線授權</span>
     <span class="chip">📅 資料基準 2026-10-13</span>
   </div>
   <div class="hero-wave"><svg viewBox="0 0 1440 56" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path fill="#f6f8fb" d="M0,56 L0,30 C200,54 400,10 640,28 C880,46 1100,50 1440,30 L1440,56 Z"/></svg></div>
@@ -288,18 +298,18 @@
 <nav class="sticky-nav">
   <a href="#s1">1 是什麼</a>
   <a href="#s2">2 解決問題</a>
-  <a href="#s3">3 三層保護</a>
-  <a href="#s4">4 設備綁定</a>
-  <a href="#s5">5 離線運作</a>
-  <a href="#s6">6 架構</a>
-  <a href="#s7">7 跨站</a>
-  <a href="#s8">8 驗證成果</a>
-  <a href="#s9">9 成熟度</a>
-  <a href="#s10">10 支援範圍</a>
-  <a href="#s11">11 導入</a>
-  <a href="#s12">12 Roadmap</a>
-  <a href="#s13">13 FAQ</a>
-  <a href="#s14">14 定位</a>
+  <a href="#s3">3 核心能力</a>
+  <a href="#s4">4 三層保護</a>
+  <a href="#s5">5 設備綁定</a>
+  <a href="#s6">6 離線運作</a>
+  <a href="#s7">7 架構</a>
+  <a href="#s8">8 跨站</a>
+  <a href="#s9">9 驗證成果</a>
+  <a href="#s10">10 成熟度</a>
+  <a href="#s11">11 支援範圍</a>
+  <a href="#s12">12 導入</a>
+  <a href="#s13">13 Roadmap</a>
+  <a href="#s14">14 FAQ</a>
   <span class="ver" id="nav-version">__VERSION__</span>
 </nav>
 <script>
@@ -313,312 +323,362 @@
 <div class="page">
 
   <div class="stats">
-    <div class="stat"><div class="stat-ic">🔒</div><div class="stat-num">AEAD</div><div class="stat-lbl">XChaCha20-Poly1305 加密封裝</div></div>
-    <div class="stat"><div class="stat-ic">🧬</div><div class="stat-num">1 台 1 份</div><div class="stat-lbl">per-device .lic <span class="en">offline</span></div></div>
-    <div class="stat"><div class="stat-ic">🧠</div><div class="stat-num">記憶體內</div><div class="stat-lbl">解密後不寫回磁碟</div></div>
-    <div class="stat"><div class="stat-ic">🚫</div><div class="stat-num">不需 TPM</div><div class="stat-lbl">不改碼、不重編 <span class="en">no rebuild</span></div></div>
+    <div class="stat"><div class="stat-ic">🔒</div><div class="stat-num">加密</div><div class="stat-lbl">程式與模型封裝</div></div>
+    <div class="stat"><div class="stat-ic">🔗</div><div class="stat-num">1 台 1 份</div><div class="stat-lbl">授權綁定設備指紋</div></div>
+    <div class="stat"><div class="stat-ic">📴</div><div class="stat-num">離線</div><div class="stat-lbl">不連網也能執行</div></div>
+    <div class="stat"><div class="stat-ic">🛠</div><div class="stat-num">不改碼</div><div class="stat-lbl">不重編 · 不需 TPM</div></div>
   </div>
 
   <!-- 1 -->
   <div class="sec" id="s1">
-    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">一句話看懂 FideProtect</div><div class="sec-sub">What it is — 讓軟體價值，留在被授權的設備上</div></div></div>
-    <p class="lead">FideProtect 是 <strong>Application protection + device-bound licensing</strong>：保護執行檔、模型權重與設定等資產，並把執行權綁定到指定設備。檔案可以交付，授權不能任意複製。適合 Edge AI、工控與封閉網路環境。</p>
-    <div class="grid-3">
-      <div class="tile"><div class="tile-step">01</div><div class="tile-icon">🔒</div><h4>加密保護程式</h4><span class="en">Protect</span><p>將 Linux 執行檔與資產封裝，減少明文檔案直接外流。</p></div>
-      <div class="tile" style="border-top-color:var(--blue)"><div class="tile-step" style="color:var(--blue)">02</div><div class="tile-icon">🔗</div><h4>綁定授權設備</h4><span class="en">Bind</span><p>每台設備取得對應授權，啟動時檢查是否符合條件。</p></div>
-      <div class="tile purple"><div class="tile-step" style="color:var(--purple)">03</div><div class="tile-icon">📴</div><h4>離線檢查授權</h4><span class="en">Verify offline</span><p>完成授權準備後，裝置可在不連網時驗證並執行。</p></div>
+    <div class="sec-hd"><div class="sec-num">1</div><div><div class="sec-title">產品是什麼</div><div class="sec-sub">What it is — 封裝、綁定、執行</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="你的程式與模型經 FideProtect 加密封裝，配上綁定設備的授權檔，只有那台設備能在記憶體內解密執行">
+        <defs><marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/></marker></defs>
+        <!-- source -->
+        <rect x="20" y="70" width="170" height="150" rx="16" fill="#f9fafb" stroke="#d1d5db" stroke-width="2"/>
+        <text x="105" y="100" text-anchor="middle" font-size="14" font-weight="800" fill="#374151">你的軟體</text>
+        <text x="105" y="140" text-anchor="middle" font-size="30">📦</text>
+        <text x="105" y="170" text-anchor="middle" font-size="13" fill="#374151">Linux 程式 (ELF)</text>
+        <text x="105" y="192" text-anchor="middle" font-size="13" fill="#374151">AI 模型 · 設定檔</text>
+        <text x="105" y="212" text-anchor="middle" font-size="11" fill="#b91c1c">明文，誰拿到都能用</text>
+        <path d="M192,145 L258,145" stroke="#0f766e" stroke-width="3" marker-end="url(#a1)"/>
+        <!-- fideprotect -->
+        <rect x="262" y="55" width="196" height="180" rx="16" fill="#0f766e" stroke="#2dd4bf" stroke-width="2"/>
+        <text x="360" y="85" text-anchor="middle" font-size="14" font-weight="800" fill="#99f6e4" letter-spacing="1">FideProtect</text>
+        <text x="360" y="130" text-anchor="middle" font-size="34">🔒</text>
+        <text x="360" y="162" text-anchor="middle" font-size="14" font-weight="700" fill="#ffffff">加密封裝</text>
+        <text x="360" y="184" text-anchor="middle" font-size="12" fill="#ccfbf1">不改程式碼 · 不重編譯</text>
+        <text x="360" y="214" text-anchor="middle" font-size="12" fill="#ccfbf1">＋ 每台設備一份授權 📄 .lic</text>
+        <path d="M460,145 L526,145" stroke="#0f766e" stroke-width="3" marker-end="url(#a1)"/>
+        <!-- device -->
+        <rect x="530" y="55" width="170" height="180" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+        <text x="615" y="85" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">🖥 授權設備</text>
+        <rect x="548" y="100" width="134" height="30" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="615" y="120" text-anchor="middle" font-size="12" fill="#374151">🔒 受保護程式</text>
+        <rect x="548" y="138" width="134" height="30" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="615" y="158" text-anchor="middle" font-size="12" fill="#374151">📄 .lic（綁這台）</text>
+        <text x="615" y="196" text-anchor="middle" font-size="12" fill="#14532d">🧬 指紋相符 → 記憶體內解密</text>
+        <rect x="560" y="206" width="110" height="22" rx="11" fill="#15803d"/>
+        <text x="615" y="222" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">▶ 執行 ✔</text>
+        <text x="360" y="275" text-anchor="middle" font-size="13" fill="#6b7280">檔案可以交付，執行權跟著設備走。</text>
+      </svg>
     </div>
-    <div class="grid-2" style="margin-top:14px">
-      <div class="notice notice-green" style="margin-top:0"><strong>✓ FideProtect 是：</strong>支援平台上的加密封裝、設備指紋綁定與永久離線授權；Admin Web 管理產品、政策、設備與授權；選配跨站發證。</div>
-      <div class="notice notice-red" style="margin-top:0"><strong>✗ FideProtect 不是：</strong>AI 模型或雲端資料分析平台、可信任執行環境（TEE）、tamper-proof 保證，也不是第三方安全認證。</div>
+    <div class="grid-3" style="margin-top:14px">
+      <div class="tile"><div class="tile-icon">🔒</div><h4>程式被加密</h4><p>拿到檔案，看不到內容。</p></div>
+      <div class="tile" style="border-top-color:var(--blue)"><div class="tile-icon">🔗</div><h4>授權綁設備</h4><p>只有配對的那台能執行。</p></div>
+      <div class="tile purple"><div class="tile-icon">📴</div><h4>離線也能跑</h4><p>授權好之後，不需要連網。</p></div>
     </div>
   </div>
 
   <!-- 2 -->
   <div class="sec" id="s2">
-    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">解決什麼問題</div><div class="sec-sub">Problems it solves — 軟體隨設備出貨，也需要一起保護</div></div></div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>程式與模型直接交付</h4><p>軟體與 AI 模型若以明文出貨，容易被逆向、分析與直接取走，核心資產難以保護。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">FideProtect 做法 · Solution</div><h4>封裝後再交付</h4><p>降低明文暴露，由 Launcher 控制解密與啟動流程。</p></div>
+    <div class="sec-hd"><div class="sec-num">2</div><div><div class="sec-title">解決什麼問題</div><div class="sec-sub">Problems — 軟體隨設備出貨，也需要一起保護</div></div></div>
+    <div class="big3">
+      <div class="pic">
+        <h4>🕵️ 程式與模型被取走</h4>
+        <div class="row"><span>📦</span><span style="font-size:1.1rem;color:var(--ink-3)">→</span><span>🔍</span></div>
+        <span class="bad">✘ 明文出貨，可被逆向、直接拿走</span>
+        <div class="row" style="margin-top:12px"><span>📦</span><span style="font-size:1rem;color:var(--ink-3)">→</span><span>🔒</span></div>
+        <span class="good">✔ 封裝後交付，看不到內容</span>
+      </div>
+      <div class="pic">
+        <h4>📋 被複製到別台機器</h4>
+        <div class="row"><span>🖥</span><span style="font-size:1.1rem;color:var(--ink-3)">→</span><span>🖥🖥🖥</span></div>
+        <span class="bad">✘ 付一套、裝十台，授權失控</span>
+        <div class="row" style="margin-top:12px"><span>🖥</span><span style="font-size:1rem;color:var(--ink-3)">配</span><span>📄</span></div>
+        <span class="good">✔ 一台一份授權，別台拒絕</span>
+      </div>
+      <div class="pic">
+        <h4>📵 產線不能連外</h4>
+        <div class="row"><span>🏭</span><span style="font-size:1.1rem;color:var(--ink-3)">→</span><span>☁️❌</span></div>
+        <span class="bad">✘ 雲端授權服務連不到，程式不能跑</span>
+        <div class="row" style="margin-top:12px"><span>🏭</span><span style="font-size:1rem;color:var(--ink-3)">本機</span><span>✅</span></div>
+        <span class="good">✔ 本機檢查授權，永久離線</span>
+      </div>
     </div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>程式被複製到其他機台</h4><p>已付費程式若可被複製到未授權設備執行，授權範圍失控、營收流失。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">FideProtect 做法 · Solution</div><h4>每台設備對應授權</h4><p>啟動時檢查設備指紋與授權簽章，不只檢查檔案是否存在。</p></div>
-    </div>
-    <div class="ps">
-      <div class="ps-p"><div class="ps-lbl">客戶面臨 · Problem</div><h4>產線不能持續連外</h4><p>產線、封閉網路與無法持續連雲的設備，依賴雲端授權服務不可行。</p></div>
-      <div class="ps-arrow">→</div>
-      <div class="ps-s"><div class="ps-lbl">FideProtect 做法 · Solution</div><h4>本機執行授權檢查</h4><p>永久離線 .lic；不要求每次啟動都向雲端取得許可。</p></div>
-    </div>
-    <p class="notice notice-info">適用方向：Edge AI / 視覺檢測設備商、工控與嵌入式 Linux OEM；軟體或模型本身就是主要 IP，需要隨硬體出貨但不希望可任意複製。</p>
   </div>
 
   <!-- 3 -->
   <div class="sec" id="s3">
-    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">保護機制：從封裝到啟動，分成三層</div><div class="sec-sub">Protection mechanism — 先保護要交付的內容，再依授權條件決定是否允許執行</div></div></div>
-    <div class="layer">
-      <div class="layer-box"><div class="layer-n">LAYER 01</div><h4>加密封裝</h4><div class="in">執行檔 + 模型 / 設定等資產</div><p>交付受保護的檔案，降低明文直接可讀性。不要求修改原始碼或重新編譯。</p><span class="tech">XChaCha20-Poly1305</span></div>
-      <div class="layer-box"><div class="layer-n">LAYER 02</div><h4>授權檢查</h4><div class="in">設備指紋 + 授權檔 .lic</div><p>核對 .lic 簽章（Ed25519）、設備指紋與對應解密條件。每台設備一份授權。</p><span class="tech">machine-id / SoC UID</span></div>
-      <div class="layer-box"><div class="layer-n">LAYER 03</div><h4>記憶體內執行</h4><div class="in">Launcher 解密與啟動</div><p>在支援的執行流程中，解密內容不寫回磁碟，直接啟動。</p><span class="tech">memfd + fexecve</span></div>
+    <div class="sec-hd"><div class="sec-num">3</div><div><div class="sec-title">核心能力</div><div class="sec-sub">Core capabilities</div></div></div>
+    <div class="cap-grid">
+      <div class="cap"><div class="ic">🔒</div><h4>加密封裝</h4><span class="en">XChaCha20-Poly1305</span><p>ELF 與資產檔加密；不改碼、不重編。</p></div>
+      <div class="cap" style="border-top-color:var(--blue)"><div class="ic">🧬</div><h4>設備指紋綁定</h4><span class="en">machine-id / SoC UID</span><p>授權綁這台；錯裝置 .lic 直接拒絕。</p></div>
+      <div class="cap" style="border-top-color:var(--purple)"><div class="ic">📴</div><h4>永久離線授權</h4><span class="en">per-device .lic</span><p>每台一份，設備不連網也能執行。</p></div>
+      <div class="cap" style="border-top-color:var(--orange)"><div class="ic">🖱</div><h4>Admin Web 管理</h4><span class="en">products · policies · devices</span><p>授權精靈、備份還原、跨站發證。</p></div>
     </div>
-    <p class="notice notice-warn">記憶體內執行不等於具備可信任執行環境（TEE），也不代表已防止所有執行期擷取方式；內部安全評估仍有未結案項目，持續修補中。</p>
   </div>
 
   <!-- 4 -->
   <div class="sec" id="s4">
-    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">設備綁定：同一份程式，只有配對設備可以執行</div><div class="sec-sub">Device binding — 將程式交付與使用權分開管理</div></div></div>
-    <div class="clone">
-      <div class="machine a">
-        <div class="machine-hd">🖥 授權設備 A</div>
-        <div class="disk">📦 受保護程式 + A 的 .lic</div>
-        <div class="tpmbox">🧬 指紋 = A　✔ 簽章正確</div>
-        <div class="verdict">✔ 設備與授權相符 → 允許啟動</div>
-      </div>
-      <div class="clone-mid"><span class="big">⇢</span>複製檔案<br><span class="en">copy both files</span></div>
-      <div class="machine b">
-        <div class="machine-hd">🖥 另一台設備 B</div>
-        <div class="disk">📦 相同的受保護程式 + A 的 .lic</div>
-        <div class="tpmbox">🧬 指紋 = B　✘ 與 .lic 不符</div>
-        <div class="verdict">✘ 設備與授權不符 → 拒絕啟動（REJECTED）</div>
-      </div>
+    <div class="sec-hd"><div class="sec-num">4</div><div><div class="sec-title">三層保護</div><div class="sec-sub">Protection — 從封裝到啟動</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="三層保護：加密封裝、授權檢查、記憶體內執行">
+        <defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#9ca3af"/></marker></defs>
+        <rect x="20" y="30" width="200" height="150" rx="16" fill="#f0fdfa" stroke="#99f6e4" stroke-width="2"/>
+        <text x="120" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="#0f766e" letter-spacing="2">LAYER 1</text>
+        <text x="120" y="95" text-anchor="middle" font-size="32">🔒</text>
+        <text x="120" y="128" text-anchor="middle" font-size="15" font-weight="800" fill="#134e4a">加密封裝</text>
+        <text x="120" y="150" text-anchor="middle" font-size="12" fill="#134e4a">程式 + 模型 + 設定</text>
+        <text x="120" y="168" text-anchor="middle" font-size="11" fill="#6b7280">拿到檔案也看不懂</text>
+        <path d="M222,105 L258,105" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#a4)"/>
+        <rect x="260" y="30" width="200" height="150" rx="16" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="360" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="#1d4ed8" letter-spacing="2">LAYER 2</text>
+        <text x="360" y="95" text-anchor="middle" font-size="32">🧬📄</text>
+        <text x="360" y="128" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">授權檢查</text>
+        <text x="360" y="150" text-anchor="middle" font-size="12" fill="#1e3a8a">簽章對？指紋對？</text>
+        <text x="360" y="168" text-anchor="middle" font-size="11" fill="#6b7280">任一不符 → 拒絕啟動</text>
+        <path d="M462,105 L498,105" stroke="#9ca3af" stroke-width="2.5" marker-end="url(#a4)"/>
+        <rect x="500" y="30" width="200" height="150" rx="16" fill="#f5f3ff" stroke="#ddd6fe" stroke-width="2"/>
+        <text x="600" y="55" text-anchor="middle" font-size="11" font-weight="800" fill="#6d28d9" letter-spacing="2">LAYER 3</text>
+        <text x="600" y="95" text-anchor="middle" font-size="32">🧠▶</text>
+        <text x="600" y="128" text-anchor="middle" font-size="15" font-weight="800" fill="#2e1065">記憶體內執行</text>
+        <text x="600" y="150" text-anchor="middle" font-size="12" fill="#2e1065">Launcher 解密後直接跑</text>
+        <text x="600" y="168" text-anchor="middle" font-size="11" fill="#6b7280">解密內容不寫回硬碟</text>
+        <text x="360" y="212" text-anchor="middle" font-size="12" fill="#6b7280">記憶體內執行 ≠ 可信任執行環境（TEE）；執行期安全持續補強。</text>
+      </svg>
     </div>
-    <p class="notice notice-warn">已驗證：x86 實體設備的錯誤授權拒絕（錯 offlineKey、錯指紋、拿別台 .lic 均 REJECTED）。TX8 跨機負向測試仍待補齊書面紀錄。x86_64 的 machine-id 與嵌入式 SoC UID 不是同一種識別來源；不能概括宣稱所有硬體複製或高權限攻擊都被阻止。</p>
   </div>
 
   <!-- 5 -->
   <div class="sec" id="s5">
-    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">離線運作：設備不連網，也能在本機檢查授權</div><div class="sec-sub">Offline operation — 區分「授權準備」與「日常執行」</div></div></div>
-    <div class="grid-2">
-      <div class="card"><div class="card-title">① 先完成授權準備 <span class="en">Provisioning（需接觸管理端）</span></div>
-        <div class="flow" style="padding-bottom:0">
-          <div class="flow-step"><div class="flow-n">1</div><h5>取得設備指紋</h5><p>裝置執行 activator 產出指紋。</p></div>
-          <div class="flow-step"><div class="flow-n">2</div><h5>管理端核發 .lic</h5><p>綁定站台簽章、指紋與 offlineKey。</p></div>
-          <div class="flow-step"><div class="flow-n">3</div><h5>交付設備</h5><p>受保護程式 + .lic 放到設備。</p></div>
-        </div></div>
-      <div class="card"><div class="card-title">② 每次啟動，在本機確認 <span class="en">Runtime（可完全離線）</span></div>
-        <ul style="list-style:none;margin-top:6px">
-          <li style="padding:9px 0;border-top:1px dashed var(--border);font-size:.9rem"><span class="st st-ok">✔ 01</span>&nbsp; 授權簽章正確</li>
-          <li style="padding:9px 0;border-top:1px dashed var(--border);font-size:.9rem"><span class="st st-ok">✔ 02</span>&nbsp; 設備指紋相符</li>
-          <li style="padding:9px 0;border-top:1px dashed var(--border);font-size:.9rem"><span class="st st-ok">✔ 03</span>&nbsp; 授權可解鎖對應程式</li>
-          <li style="padding:9px 0;border-top:1px dashed var(--border);font-size:.86rem;color:var(--ink-3)">任一條件不符 → 拒絕啟動。時鐘回退不降級（已驗收）。</li>
-        </ul></div>
+    <div class="sec-hd"><div class="sec-num">5</div><div><div class="sec-title">設備綁定：同一份程式，只有配對設備能跑</div><div class="sec-sub">Device binding</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="把設備 A 的受保護程式與授權檔複製到設備 B，因指紋不符而拒絕啟動">
+        <defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker></defs>
+        <rect x="20" y="20" width="290" height="200" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+        <text x="165" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#14532d">🖥 授權設備 A　🧬 指紋 A</text>
+        <rect x="45" y="68" width="240" height="40" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="165" y="93" text-anchor="middle" font-size="14" fill="#374151">🔒 受保護程式</text>
+        <rect x="45" y="118" width="240" height="40" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="165" y="143" text-anchor="middle" font-size="14" fill="#374151">📄 .lic（綁定指紋 A）</text>
+        <rect x="45" y="176" width="240" height="28" rx="14" fill="#dcfce7"/>
+        <text x="165" y="195" text-anchor="middle" font-size="13" font-weight="800" fill="#15803d">✔ 指紋相符 → 允許啟動</text>
+        <path d="M312,113 L408,113" stroke="#b45309" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#a5)"/>
+        <text x="360" y="100" text-anchor="middle" font-size="13" font-weight="700" fill="#b45309">兩個檔都複製</text>
+        <rect x="410" y="20" width="290" height="200" rx="16" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+        <text x="555" y="50" text-anchor="middle" font-size="16" font-weight="800" fill="#7f1d1d">🖥 另一台設備 B　🧬 指紋 B</text>
+        <rect x="435" y="68" width="240" height="40" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="555" y="93" text-anchor="middle" font-size="14" fill="#374151">🔒 相同的受保護程式</text>
+        <rect x="435" y="118" width="240" height="40" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+        <text x="555" y="143" text-anchor="middle" font-size="14" fill="#374151">📄 A 的 .lic（指紋 A ≠ B）</text>
+        <rect x="435" y="176" width="240" height="28" rx="14" fill="#fee2e2"/>
+        <text x="555" y="195" text-anchor="middle" font-size="13" font-weight="800" fill="#b91c1c">✘ 指紋不符 → 拒絕啟動</text>
+        <text x="360" y="252" text-anchor="middle" font-size="13" fill="#6b7280">檔案搬得走，授權搬不走。</text>
+      </svg>
+      <div class="dia-cap">已驗證：x86 實體設備錯裝置授權拒絕（2026-09）。TX8 跨機負向測試待補書面紀錄。</div>
     </div>
-    <p class="notice notice-warn">設備離線執行 ≠ 管理平台可完全離線安裝；既有永久離線授權的撤回與重新授權規則，需在導入前另行定義。Standard 不含時間制 / 訂閱 / 浮動授權。</p>
   </div>
 
   <!-- 6 -->
   <div class="sec" id="s6">
-    <div class="sec-hd"><div class="sec-num">6</div><div><div class="sec-title">系統架構</div><div class="sec-sub">Architecture — 一個管理入口，完成保護、發證與交付（滑過元件看說明）</div></div></div>
-    <div class="arch">
-      <div class="arch-col ca" style="background:linear-gradient(180deg,#f0fdfa,#fff);border-color:var(--teal-m)">
-        <div class="arch-hd" style="color:var(--teal)">📤 軟體供應端 · Vendor</div>
-        <div class="node"><b>Linux 執行檔（ELF）</b><small>要保護的應用程式。</small></div>
-        <div class="node"><b>模型、設定等資產</b><small>權重檔、設定檔等重要資產。</small></div>
-        <div class="node"><b>產品與授權規則</b><small>Product / Policy / max_machines。</small></div>
-      </div>
-      <div class="arch-col plat">
-        <div class="arch-hd">🏢 FideProtect 管理平台（企業內網自架）</div>
-        <div class="node" title="網頁操作入口，:30000"><b>Admin Web</b><small>產品 / 政策 / 使用者 / 群組、授權與設備管理、六步裝置授權精靈、Protect、備份 / 還原、跨站、診斷。</small></div>
-        <div class="node" title="Keygen 相容 licensing-server + 私有 CA"><b>授權後端 + 私有 CA</b><small>licensing-server（Keygen 相容 REST）、step-ca、Traefik 內部 TLS。</small></div>
-        <div class="node"><b>fide-protector / fide-licensor CLI</b><small>保護工具與授權工具；Admin Web 為其包裝。</small></div>
-        <div class="node"><b>Deploy Kit</b><small><code>deploy.sh</code> 一支腳本安裝（實測 3–4 分鐘）；<code>status.sh</code> / <code>teardown.sh</code>。</small></div>
-      </div>
-      <div class="arch-col dev">
-        <div class="arch-hd">🖥 出貨設備 · Device</div>
-        <div class="node"><b>受保護的應用程式</b><small>內含 Launcher；記憶體內解密後直接執行。</small></div>
-        <div class="node"><b>每台對應的 .lic</b><small>永久離線授權檔。</small></div>
-        <div class="node" style="border-style:dashed"><b>無常駐 Agent</b><small>日常執行不需另裝授權代理；首次取得指紋需執行 activator。</small></div>
-      </div>
+    <div class="sec-hd"><div class="sec-num">6</div><div><div class="sec-title">離線運作</div><div class="sec-sub">Offline — 授權準備一次，之後本機自己檢查</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="授權準備階段需接觸管理端，之後每次啟動都在本機離線檢查三件事">
+        <defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0f766e"/></marker></defs>
+        <!-- phase 1 -->
+        <rect x="20" y="20" width="330" height="200" rx="16" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="185" y="48" text-anchor="middle" font-size="14" font-weight="800" fill="#1e3a8a">① 授權準備（一次，需接觸管理端）</text>
+        <g font-size="13" fill="#1e3a8a">
+          <rect x="40" y="68" width="290" height="34" rx="8" fill="#ffffff" stroke="#bfdbfe"/><text x="52" y="90">🧬 1. 設備產出指紋</text>
+          <rect x="40" y="112" width="290" height="34" rx="8" fill="#ffffff" stroke="#bfdbfe"/><text x="52" y="134">🏢 2. 管理端核發 .lic（綁指紋 + 簽章）</text>
+          <rect x="40" y="156" width="290" height="34" rx="8" fill="#ffffff" stroke="#bfdbfe"/><text x="52" y="178">📦 3. 程式 + .lic 放到設備</text>
+        </g>
+        <path d="M352,120 L398,120" stroke="#0f766e" stroke-width="3" marker-end="url(#a6)"/>
+        <!-- phase 2 -->
+        <rect x="400" y="20" width="300" height="200" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+        <text x="550" y="48" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">② 每次啟動，本機檢查（✈ 離線）</text>
+        <g font-size="13" fill="#14532d">
+          <rect x="420" y="68" width="260" height="34" rx="8" fill="#ffffff" stroke="#bbf7d0"/><text x="432" y="90">✔ 授權簽章正確</text>
+          <rect x="420" y="112" width="260" height="34" rx="8" fill="#ffffff" stroke="#bbf7d0"/><text x="432" y="134">✔ 設備指紋相符</text>
+          <rect x="420" y="156" width="260" height="34" rx="8" fill="#ffffff" stroke="#bbf7d0"/><text x="432" y="178">✔ 授權能解鎖這份程式</text>
+        </g>
+        <text x="550" y="208" text-anchor="middle" font-size="11" fill="#6b7280">三項都過才啟動 · 時鐘回退不降級</text>
+        <text x="360" y="240" text-anchor="middle" font-size="12" fill="#6b7280">不需要雲端、不需要常駐 Agent。</text>
+      </svg>
+      <div class="dia-cap">永久離線授權不代表能遠端即時撤回；設備更換或重裝的重新授權規則，導入前先定義。</div>
     </div>
-    <p class="notice notice-warn">目前 Admin Web 僅限受控內網 / VPN 使用；帳號登入與 80 / 443 統一入口為下一版強化項目。選配的 Legacy 派送服務（:7777）具高權限且無認證，必須網路隔離，建議不啟用。</p>
-    <details class="more">
-      <summary>▸ 技術細節：元件與埠 <span class="en">Components &amp; ports</span></summary>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>元件 / Port</th><th>用途 / 注意事項</th></tr></thead>
-        <tbody>
-          <tr><td>Licensing backend / HTTPS</td><td>授權後端與私有 CA 使用 TLS（Traefik 443 內部）；實際暴露方式依部署設定</td></tr>
-          <tr><td>Admin Web :30000</td><td>產品、政策、授權、設備、Protect、備份 / 還原、跨站與診斷；僅建議內網 / VPN 存取；<code>/api/health</code> liveness / deep</td></tr>
-          <tr><td>Legacy delivery :7777（選配）</td><td>舊式派送：SSH / scp 推送受保護檔與 .lic；root 執行且無登入機制，必須隔離內網</td></tr>
-          <tr><td>Target device</td><td>僅需受保護檔與 .lic；Standard 情境不安裝常駐 Agent；設備端無 API</td></tr>
-        </tbody>
-      </table></div>
-      <div class="card" style="margin-top:12px"><div class="card-title">部署伺服器</div><div class="card-body">Ubuntu 24.04 LTS x86_64；Docker Engine 24+ / Compose v2。deploy.sh 安裝 Traefik + step-ca + licensing-server（Postgres、Redis）+ CLI + Admin Web；離線 Python wheels 隨 kit。正式建議硬體規格待 RD 定版（1.9 GiB RAM 實體機可跑完整套件但會 swap）。</div></div>
-    </details>
   </div>
 
   <!-- 7 -->
   <div class="sec" id="s7">
-    <div class="sec-hd"><div class="sec-num">7</div><div><div class="sec-title">跨站應用：保護與發證，可以在不同站點完成</div><div class="sec-sub">Cross-site provisioning（選配）— 總部保護程式、現場核發授權</div></div></div>
-    <div class="site">
-      <div class="site-box a"><h4>🏢 站點 A · 保護程式</h4><ol><li>封裝應用與資產</li><li>準備受保護檔案</li><li>匯出簽章加密身分包</li></ol></div>
-      <div class="site-mid"><span class="big">⇄</span>安全同步身分<br><span class="en">先同步，再各自運作</span></div>
-      <div class="site-box b"><h4>🏭 站點 B · 核發設備授權</h4><ol><li>匯入並確認站台身分</li><li>依設備指紋發出 .lic</li><li>於現場完成執行驗收</li></ol></div>
+    <div class="sec-hd"><div class="sec-num">7</div><div><div class="sec-title">系統架構</div><div class="sec-sub">Architecture — 三個角色（滑過元件看說明）</div></div></div>
+    <div class="arch">
+      <div class="arch-col ca" style="background:linear-gradient(180deg,#f9fafb,#fff);border-color:var(--border)">
+        <div class="arch-hd" style="color:var(--ink-2)">📤 軟體供應端</div>
+        <div class="node"><b>程式與資產</b><small>ELF、模型、設定</small></div>
+        <div class="node"><b>產品與授權規則</b><small>Product / Policy</small></div>
+      </div>
+      <div class="arch-col plat" style="background:linear-gradient(180deg,#f0fdfa,#fff);border-color:var(--teal-m)">
+        <div class="arch-hd" style="color:var(--teal)">🏢 FideProtect 平台（客戶內網自架）</div>
+        <div class="node" title="網頁操作入口"><b>Admin Web</b><small>保護、發證、設備、備份、跨站、診斷</small></div>
+        <div class="node" title="Keygen 相容 licensing-server + 私有 CA"><b>授權後端 + 私有 CA</b><small>簽發 .lic</small></div>
+        <div class="node"><b>Deploy Kit</b><small><code>deploy.sh</code> 一支腳本裝完（3–4 分鐘）</small></div>
+      </div>
+      <div class="arch-col dev">
+        <div class="arch-hd">🖥 出貨設備</div>
+        <div class="node"><b>🔒 受保護程式</b><small>內含 Launcher</small></div>
+        <div class="node"><b>📄 .lic</b><small>這台專屬</small></div>
+        <div class="node" style="border-style:dashed"><b>無常駐 Agent</b><small>首次取指紋用 activator</small></div>
+      </div>
     </div>
-    <div class="grid-2" style="margin-top:14px">
-      <div class="notice notice-info" style="margin:0">兩站共享信任身分，但 License / Machine / User 等營運資料維持各站獨立、不自動同步（設計如此）。設備在授權階段只需接觸 B 站，授權後的執行可離線。</div>
-      <div class="notice notice-warn" style="margin:0">跨站身分包屬敏感資料，需以受控方式傳遞與保管；錯 passphrase 或竄改 bundle 會被拒絕，重複匯入為 NO-OP。不是任何兩台伺服器直接互認。</div>
-    </div>
-    <p class="notice notice-green">已於客戶站驗證跨站發證（2026-09-22）：客戶既有站保護 → 出貨機匯入身分並發證 → x86 裝置執行成功。</p>
+    <p class="notice notice-warn">Admin Web 目前限內網 / VPN；帳號登入為下一版項目。Legacy 派送服務（:7777）無認證，建議不啟用。</p>
+    <details class="more">
+      <summary>▸ 元件與埠 <span class="en">Components &amp; ports</span></summary>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>元件</th><th>說明</th></tr></thead>
+        <tbody>
+          <tr><td>授權後端 / HTTPS</td><td>Traefik 443 內部 TLS、step-ca、licensing-server（Keygen 相容）、Postgres、Redis</td></tr>
+          <tr><td>Admin Web :30000</td><td>僅內網 / VPN；<code>/api/health</code></td></tr>
+          <tr><td>Legacy :7777（選配）</td><td>SSH / scp 派送；root 無認證，需隔離</td></tr>
+          <tr><td>部署伺服器</td><td>Ubuntu 24.04 x86_64、Docker 24+ / Compose v2</td></tr>
+        </tbody>
+      </table></div>
+    </details>
   </div>
 
   <!-- 8 -->
   <div class="sec" id="s8">
-    <div class="sec-hd"><div class="sec-num">8</div><div><div class="sec-title">驗證成果：核心保護與跨站流程，已有實機驗證</div><div class="sec-sub">Validation results — 以具體測試與實際交付情境，說明目前能被支持的能力</div></div></div>
-    <div class="res">
-      <div class="tile green"><div class="big">5 / 5</div><h4>TX8 實機流程</h4><p>Techmation TX8 五階段端到端驗證通過（第一次 4/5，重新授權後 5/5）。</p><div class="date">2026-08-25</div></div>
-      <div class="tile green"><div class="big">0 筆</div><h4>封裝內容檢查</h4><p>保護後以 strings / hexdump 搜尋指定字串與十六進位，未見測試明文。</p><div class="date">2026-09-02</div></div>
-      <div class="tile green"><div class="big">拒絕</div><h4>錯誤設備授權</h4><p>x86 實體設備負向測試：錯指紋、錯 offlineKey、別台 .lic 均 REJECTED。</p><div class="date">2026-09-19 / 09-21</div></div>
-      <div class="tile green"><div class="big">通過</div><h4>跨站發證</h4><p>真實客戶站 A 保護、B 發證，x86 裝置執行成功。</p><div class="date">2026-09-22</div></div>
+    <div class="sec-hd"><div class="sec-num">8</div><div><div class="sec-title">跨站發證（選配）</div><div class="sec-sub">Cross-site — 總部保護，現場發證</div></div></div>
+    <div class="dia">
+      <svg viewBox="0 0 720 240" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="站點 A 保護程式並匯出身分包，站點 B 匯入後依設備指紋核發授權，設備在現場驗收執行">
+        <defs><marker id="a8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker><marker id="a8g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#15803d"/></marker></defs>
+        <rect x="20" y="30" width="230" height="160" rx="16" fill="#f0fdfa" stroke="#99f6e4" stroke-width="2"/>
+        <text x="135" y="58" text-anchor="middle" font-size="15" font-weight="800" fill="#134e4a">🏢 站點 A · 總部</text>
+        <text x="135" y="95" text-anchor="middle" font-size="28">🔒</text>
+        <text x="135" y="125" text-anchor="middle" font-size="13" fill="#134e4a">封裝程式與資產</text>
+        <text x="135" y="147" text-anchor="middle" font-size="13" fill="#134e4a">匯出站台身分包 🔐</text>
+        <text x="135" y="172" text-anchor="middle" font-size="11" fill="#6b7280">只做一次</text>
+        <path d="M252,110 L318,110" stroke="#b45309" stroke-width="3" marker-end="url(#a8)"/>
+        <text x="285" y="97" text-anchor="middle" font-size="11" font-weight="700" fill="#b45309">身分包</text>
+        <text x="285" y="130" text-anchor="middle" font-size="10" fill="#b45309">加密 + 簽章</text>
+        <rect x="320" y="30" width="230" height="160" rx="16" fill="#eff6ff" stroke="#bfdbfe" stroke-width="2"/>
+        <text x="435" y="58" text-anchor="middle" font-size="15" font-weight="800" fill="#1e3a8a">🏭 站點 B · 現場</text>
+        <text x="435" y="95" text-anchor="middle" font-size="28">📄</text>
+        <text x="435" y="125" text-anchor="middle" font-size="13" fill="#1e3a8a">匯入身分包</text>
+        <text x="435" y="147" text-anchor="middle" font-size="13" fill="#1e3a8a">依設備指紋核發 .lic</text>
+        <text x="435" y="172" text-anchor="middle" font-size="11" fill="#6b7280">不需連回 A</text>
+        <path d="M552,110 L598,110" stroke="#15803d" stroke-width="3" marker-end="url(#a8g)"/>
+        <rect x="600" y="60" width="100" height="100" rx="16" fill="#f0fdf4" stroke="#86efac" stroke-width="2"/>
+        <text x="650" y="100" text-anchor="middle" font-size="28">🖥</text>
+        <text x="650" y="128" text-anchor="middle" font-size="12" font-weight="800" fill="#15803d">▶ 執行 ✔</text>
+        <text x="650" y="146" text-anchor="middle" font-size="10" fill="#6b7280">可離線</text>
+        <text x="360" y="222" text-anchor="middle" font-size="12" fill="#6b7280">兩站共用信任身分，但授權與設備資料各自獨立、不自動同步。</text>
+      </svg>
+      <div class="dia-cap">已於客戶站驗證（2026-09-22）。身分包是敏感資料，需受控傳遞。</div>
     </div>
-    <details class="more">
-      <summary>▸ 版本測試明細 <span class="en">v1.3.0 / v1.3.1 test summary</span></summary>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th>日期 / 範圍</th><th>結果</th><th>狀態</th></tr></thead>
-        <tbody>
-          <tr><td>2026-08-25 · Techmation TX8</td><td>客戶硬體五階段驗證 5/5（無網路驗證含在內）</td><td><span class="st st-ok">✔ VALIDATED</span></td></tr>
-          <tr><td>2026-09-19 / 21 · v1.3.0</td><td>Unit 55/55；bundle 23/23；cross-site regression 29/29；乾淨安裝三模式、升級與 DB 相容（1.2.6 → 1.3.0）、兩台實體機跨站、備份還原來回</td><td><span class="st st-ok">✔ PASS</span></td></tr>
-          <tr><td>2026-09-22 · 跨站客戶流程</td><td>真實客戶站保護；出貨機匯入身分、發證；x86 裝置執行</td><td><span class="st st-ok">✔ VALIDATED</span></td></tr>
-          <tr><td>2026-04 · Launcher 安全評估</td><td>內部 Security Expert + Red Team / AI 輔助評估；仍有未修項目，詳細僅於 NDA 下揭露</td><td><span class="st st-wip">⟳ INTERNAL</span></td></tr>
-          <tr><td>第三方產品認證</td><td>—</td><td><span class="st st-no">✘ NOT CERTIFIED</span></td></tr>
-        </tbody>
-      </table></div>
-    </details>
-    <p class="notice notice-warn">測試僅對應指定版本、平台與樣本；不等於第三方認證，也不代表已涵蓋所有攻擊情境。「未見明文」是對指定內容的靜態檢查結果，不是數學上證明所有內容不可能被取得。</p>
   </div>
 
   <!-- 9 -->
   <div class="sec" id="s9">
-    <div class="sec-hd"><div class="sec-num">9</div><div><div class="sec-title">目前成熟度</div><div class="sec-sub">Maturity — 核心能力已驗證，維運與安全持續補強</div></div></div>
-    <div class="mat">
-      <div class="mat-col ok"><h4>✔ 已驗證</h4><span class="en">Validated — 保護與授權</span><ul>
-        <li>程式及資產加密封裝；保護後靜態檢查無明文</li>
-        <li>設備綁定與永久離線授權；錯裝置拒絕</li>
-        <li>x86_64 與 Techmation TX8 實機流程</li>
-        <li>跨站發證（真實客戶站）</li>
-        <li>deploy.sh 乾淨安裝、升級與 DB 相容、備份還原到另一台主機</li>
-      </ul></div>
-      <div class="mat-col wip"><h4>⟳ 整合／驗收中</h4><span class="en">In progress — 標準交付品質</span><ul>
-        <li>乾淨環境安裝重驗（FPY 100% 尚未達成）</li>
-        <li>操作手冊整合成單一交付版（目前分散四份）</li>
-        <li>已知問題與安全修補（Launcher 安全評估未結案項目）</li>
-        <li>TX8 跨機負向測試書面紀錄</li>
-        <li>SBOM 產生流程（沿用 TTPS 的 syft 流程）</li>
-      </ul></div>
-      <div class="mat-col plan"><h4>◇ 規劃中</h4><span class="en">Planned — 安全維運能力</span><ul>
-        <li>Admin Web 帳號密碼登入與權限；80 / 443 統一入口</li>
-        <li>錯誤報告匯出（移除敏感資訊）</li>
-        <li>deploy.sh --upgrade：自動備份、site-version、回滾</li>
-        <li>離線安裝 / 遠端更新路徑</li>
-        <li>Launcher / CLI 相容性改善與服務化</li>
-      </ul></div>
+    <div class="sec-hd"><div class="sec-num">9</div><div><div class="sec-title">驗證成果</div><div class="sec-sub">Validation — 實機測試結果</div></div></div>
+    <div class="res">
+      <div class="tile green"><div class="big">5 / 5</div><h4>TX8 實機流程</h4><p>五階段端到端通過</p><div class="date">2026-08-25</div></div>
+      <div class="tile green"><div class="big">0 筆</div><h4>封裝後找明文</h4><p>strings / hexdump 找不到</p><div class="date">2026-09-02</div></div>
+      <div class="tile green"><div class="big">拒絕</div><h4>錯裝置授權</h4><p>x86 實機負向測試</p><div class="date">2026-09-19 / 21</div></div>
+      <div class="tile green"><div class="big">通過</div><h4>跨站發證</h4><p>真實客戶站</p><div class="date">2026-09-22</div></div>
     </div>
-    <p class="notice notice-warn">現階段僅限受控內網 / VPN；管理端登入與安全評估未結案項目，需在導入前明確確認。</p>
+    <details class="more">
+      <summary>▸ 測試明細 <span class="en">v1.3.x test summary</span></summary>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>範圍</th><th>結果</th><th>狀態</th></tr></thead>
+        <tbody>
+          <tr><td>2026-08-25 · TX8</td><td>五階段 5/5，含無網路</td><td><span class="st st-ok">✔ VALIDATED</span></td></tr>
+          <tr><td>2026-09-19 / 21 · v1.3.0</td><td>Unit 55/55 · bundle 23/23 · 跨站回歸 29/29 · 乾淨安裝 · 升級 · 備份還原</td><td><span class="st st-ok">✔ PASS</span></td></tr>
+          <tr><td>2026-09-22 · 跨站客戶流程</td><td>A 保護 → B 發證 → x86 執行</td><td><span class="st st-ok">✔ VALIDATED</span></td></tr>
+          <tr><td>2026-04 · Launcher 安全評估</td><td>內部評估，仍有未修項目（NDA）</td><td><span class="st st-wip">⟳ INTERNAL</span></td></tr>
+          <tr><td>第三方認證</td><td>—</td><td><span class="st st-no">✘ NONE</span></td></tr>
+        </tbody>
+      </table></div>
+    </details>
+    <p class="notice notice-warn">測試只對應指定版本、平台與樣本；不等於第三方認證，也不涵蓋所有攻擊情境。</p>
   </div>
 
   <!-- 10 -->
   <div class="sec" id="s10">
-    <div class="sec-hd"><div class="sec-num">10</div><div><div class="sec-title">支援範圍</div><div class="sec-sub">Supported scope — 先確認平台與程式，再選擇導入方式</div></div></div>
-    <div class="grid-3">
-      <div class="tile green"><div class="tile-icon">✔</div><h4>已驗證平台</h4><span class="en">Validated</span><p><strong>x86_64</strong>：Ubuntu / Debian<br><strong>Techmation TX8</strong>：aarch64 / Buildroot<br>部署伺服器：Ubuntu 24.04 LTS x86_64</p></div>
-      <div class="tile orange"><div class="tile-icon">🧪</div><h4>先做相容性試裝</h4><span class="en">Expected / test first</span><p>通用 aarch64、arm_tx7、Yocto 與其他 Linux<br>Qt / QML 應用<br>讀取 /proc/self/exe 的程式</p></div>
-      <div class="tile purple"><div class="tile-icon">⚙</div><h4>另案評估（NRE）</h4><span class="en">Not Standard</span><p>時間制 / 訂閱 / 浮動授權<br>大規模產線自動綁定<br>Windows / RTOS / MCU、清單外 SoC<br>完全斷網安裝工程、tamper-detection 宣稱</p></div>
+    <div class="sec-hd"><div class="sec-num">10</div><div><div class="sec-title">目前成熟度</div><div class="sec-sub">Maturity</div></div></div>
+    <div class="mat">
+      <div class="mat-col ok"><h4>✔ 已驗證</h4><span class="en">Validated</span><ul>
+        <li>加密封裝、設備綁定、離線授權</li>
+        <li>x86_64 與 TX8 實機</li>
+        <li>跨站發證（客戶站）</li>
+        <li>一鍵安裝、升級、備份還原</li>
+      </ul></div>
+      <div class="mat-col wip"><h4>⟳ 整合／驗收中</h4><span class="en">In progress</span><ul>
+        <li>乾淨環境首次安裝一次過（FPY）</li>
+        <li>操作手冊整合成單一版本</li>
+        <li>Launcher 安全修補</li>
+        <li>SBOM 產生流程</li>
+      </ul></div>
+      <div class="mat-col plan"><h4>◇ 規劃中</h4><span class="en">Planned</span><ul>
+        <li>Admin Web 帳號登入、80 / 443 入口</li>
+        <li>錯誤報告匯出</li>
+        <li>升級回滾、離線 / 遠端更新</li>
+        <li>Launcher / CLI 相容性改善</li>
+      </ul></div>
     </div>
-    <div class="tbl-wrap" style="margin-top:14px"><table>
-      <thead><tr><th>元件</th><th>已驗證 <span class="st st-ok">✔</span></th><th>Expected / 待驗證 <span class="st st-plan">◇</span></th><th>不支援 / NRE <span class="st st-nre">⚙</span></th></tr></thead>
-      <tbody>
-        <tr><td>目標設備</td><td>x86_64（Ubuntu / Debian）；arm_tx8（TX8，aarch64，Buildroot）</td><td>通用 aarch64；arm_tx7；Yocto 與其他 Linux</td><td>Windows、RTOS、MCU；清單外 SoC 需評估</td></tr>
-        <tr><td>部署伺服器</td><td>Ubuntu 24.04 LTS x86_64；Docker Engine 24+ / Compose v2</td><td>後續 Ubuntu LTS 逐版驗證；硬體建議規格待定版</td><td>其他平台依需求評估</td></tr>
-        <tr><td>授權模式</td><td>每台永久離線 .lic</td><td>—</td><td>時間制、訂閱、浮動授權</td></tr>
-        <tr><td>應用類型</td><td>一般 Linux ELF</td><td>Qt / QML、依賴 /proc/self/exe 的程式（先試裝）</td><td>需改碼才能保護的特殊程式</td></tr>
-      </tbody>
-    </table></div>
-    <p class="notice notice-info">不要求 TPM；「無需改寫或重新編譯」以支援程式及保護後可正常執行為前提，不能承諾所有程式零調整。理想客戶：Edge AI / 視覺檢測設備商、工控 / 嵌入式 OEM；Linux ELF、x86_64 或已驗證 ARM；需要單機永久離線綁定與自架部署。</p>
   </div>
 
   <!-- 11 -->
   <div class="sec" id="s11">
-    <div class="sec-hd"><div class="sec-num">11</div><div><div class="sec-title">導入方式：四步</div><div class="sec-sub">Delivery — 先確認相容性，再完成保護與授權，最後以實際啟動結果驗收</div></div></div>
-    <div class="flow">
-      <div class="flow-step"><div class="flow-n">1</div><h5>確認環境</h5><p>設備型號 / SoC / CPU 架構 / OS、程式類型與資產、授權與出貨需求。Qt/QML 類先做相容性測試。</p><span class="out">確認適用範圍</span></div>
-      <div class="flow-step"><div class="flow-n">2</div><h5>部署平台</h5><p>以 deploy.sh 建立授權後端、CLI 與 Admin Web；完成健康檢查；設定 Product / Policy。</p><span class="out">管理入口可用</span></div>
-      <div class="flow-step"><div class="flow-n">3</div><h5>保護與綁定</h5><p>封裝程式與資產、取得設備指紋、核發每台 .lic。</p><span class="out">形成可交付套件</span></div>
-      <div class="flow-step"><div class="flow-n">4</div><h5>驗收與交接</h5><p>授權設備啟動成功、錯誤授權被拒絕；文件與備份交接。</p><span class="out">可操作、可維護</span></div>
+    <div class="sec-hd"><div class="sec-num">11</div><div><div class="sec-title">支援範圍</div><div class="sec-sub">Scope — ✔ 已驗證 · ◇ 先試裝 · ⚙ 另案評估</div></div></div>
+    <div class="grid-3">
+      <div class="tile green"><div class="tile-icon">✔</div><h4>已驗證平台</h4><p>x86_64（Ubuntu / Debian）<br>Techmation TX8（aarch64）<br>伺服器 Ubuntu 24.04</p></div>
+      <div class="tile orange"><div class="tile-icon">🧪</div><h4>先做試裝</h4><p>通用 aarch64、Yocto、其他 Linux<br>Qt / QML 程式<br>讀 /proc/self/exe 的程式</p></div>
+      <div class="tile purple"><div class="tile-icon">⚙</div><h4>另案評估</h4><p>時間制 / 浮動授權<br>Windows / RTOS / MCU<br>產線大量自動綁定</p></div>
     </div>
-    <div class="grid-4" style="margin-top:14px">
-      <div class="tile"><div class="tile-icon">🏢</div><h4>部署伺服器</h4><p>Deploy Kit、授權後端、私有 CA、fide-protector / fide-licensor CLI、Admin Web。</p></div>
-      <div class="tile" style="border-top-color:var(--blue)"><div class="tile-icon">🖱</div><h4>Admin Web</h4><p>產品 / Policy / 使用者管理、授權精靈、Protect、備份 / 還原、跨站、診斷。</p></div>
-      <div class="tile green"><div class="tile-icon">🖥</div><h4>目標設備</h4><p>受保護的執行檔 / 資產與對應 .lic；不需額外常駐代理程式。</p></div>
-      <div class="tile teal"><div class="tile-icon">📦</div><h4>交接文件</h4><p>FideProtect 手冊、Deploy Kit README、SOP、已知限制與支援窗口。</p></div>
-    </div>
-    <p class="notice notice-info">跨站選配另加一步：A 站匯出身分包 → B 站匯入 → A 保護 / B 發證驗證。導入時程依設備、網路與相容性確認；不承諾固定交期或 SLA。</p>
+    <p class="notice notice-info">適合誰：Edge AI / 視覺檢測、工控 / 嵌入式 Linux OEM；軟體或模型就是主要 IP，隨硬體出貨但不想被複製。</p>
   </div>
 
   <!-- 12 -->
   <div class="sec" id="s12">
-    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">Roadmap：從軟體保護走向可維護的產品</div><div class="sec-sub">Roadmap — 保護核心持續強化，同時降低安裝、診斷與版本更新的操作成本</div></div></div>
-    <div class="rm">
-      <div class="rm-item now"><div class="rm-hd"><span class="st st-ok">✔ NOW</span><h4>核心保護與離線授權</h4></div><p>加密封裝、設備指紋綁定、永久離線 .lic、Admin Web 與跨站 provisioning。已有驗證成果。</p></div>
-      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ NEXT</span><h4>管理與診斷：Admin Web 安全強化</h4></div><p>帳號密碼登入與權限、80 / 443 統一入口，作為更廣泛部署的前提；錯誤報告匯出。</p>
-        <ul><li>彙整版本、階段與錯誤原因</li><li>移除金鑰與其他敏感資訊</li><li>匯出報告，支援問題重現與處理</li></ul></div>
-      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ NEXT</span><h4>可靠升級與離線更新</h4></div><p>deploy.sh --upgrade、migration、自動備份、site-version、回滾，以及離線安裝 / 更新路徑。</p>
-        <ul><li>確認套件來源與相容版本</li><li>備份設定與授權相關資料</li><li>執行升級、檢查結果並支援回復</li></ul>
-        <p style="margin-top:6px">設備端受保護應用的遠端更新，還需驗證授權延續與失敗恢復；不因管理平台可升級就視為完成。</p></div>
-      <div class="rm-item rm"><div class="rm-hd"><span class="st st-na">◈ ROADMAP</span><h4>Launcher / CLI 改善</h4></div><p>Qt/QML、/proc/self/exe 相容性改善；核心 CLI 服務化；安全評估項目修補與回歸驗證。</p></div>
-      <div class="rm-item nre"><div class="rm-hd"><span class="st st-nre">⚙ NRE</span><h4>進階授權與更多平台</h4></div><p>時間制 / 浮動授權、清單外 SoC、產線批量綁定、CI/CD 或出貨流程整合與其他客製；以工程範圍另行定義。</p></div>
+    <div class="sec-hd"><div class="sec-num">12</div><div><div class="sec-title">導入四步</div><div class="sec-sub">Delivery</div></div></div>
+    <div class="steps" style="grid-template-columns:repeat(4,1fr)">
+      <div class="step"><span class="n">1</span><div class="ic">🔍</div><h5>確認環境</h5><p>設備、OS、程式類型</p></div>
+      <div class="step"><span class="n">2</span><div class="ic">🏢</div><h5>部署平台</h5><p>deploy.sh 一支搞定</p></div>
+      <div class="step"><span class="n">3</span><div class="ic">🔒</div><h5>保護與綁定</h5><p>封裝、取指紋、發 .lic</p></div>
+      <div class="step"><span class="n">4</span><div class="ic">✅</div><h5>驗收交接</h5><p>對的能跑、錯的被拒</p></div>
     </div>
-    <p class="notice notice-warn">Roadmap 為發展方向，不代表已包含於現行 Standard；順序與時程需依實作及驗收確認。</p>
+    <p class="notice notice-info">驗收標準很簡單：授權設備啟動成功，錯誤授權被拒絕。時程依設備、網路與相容性確認，不承諾固定交期或 SLA。</p>
   </div>
 
   <!-- 13 -->
   <div class="sec" id="s13">
-    <div class="sec-hd"><div class="sec-num">13</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ — 避免把個別測試延伸成全面保證</div></div></div>
-    <details class="faq"><summary>需要改程式或加 TPM 嗎？</summary><div class="ans">支援的程式可採不改原始碼、不重編方式保護；不要求 TPM，但需做相容性驗證（Qt / QML 與讀取 /proc/self/exe 的程式已知有限制，先試裝）。</div></details>
-    <details class="faq"><summary>設備完全不連網也能執行嗎？</summary><div class="ans">完成永久離線授權準備後可以。這不代表管理平台的安裝與升級已完全支援氣隙（air-gap）環境。</div></details>
-    <details class="faq"><summary>可以防止所有逆向或複製嗎？</summary><div class="ans">不能作全面保證。已驗證的是指定內容封裝與授權檢查；記憶體內執行不等於 TEE，執行期安全仍持續補強，也不防合法金鑰持有者。</div></details>
-    <details class="faq"><summary>設備更換或程式升級怎麼辦？</summary><div class="ans">需確認指紋、授權與版本相容性；重新授權規則及可回復的更新流程應在導入前定義。</div></details>
-    <details class="faq"><summary>FideProtect 和 TTPS 有什麼不同？</summary><div class="ans">FideProtect 管「程式能否被授權使用」：加密封裝與設備綁定授權，不要求 TPM。<a href="./ttps-product-overview.html">TTPS</a> 管「設備身分與證據」：TPM 內的私鑰、憑證與驗證紀錄。兩者可以互補，但不是同一功能。</div></details>
+    <div class="sec-hd"><div class="sec-num">13</div><div><div class="sec-title">Roadmap</div><div class="sec-sub">從軟體保護，走向可維護的產品</div></div></div>
+    <div class="rm">
+      <div class="rm-item now"><div class="rm-hd"><span class="st st-ok">✔ NOW</span><h4>保護、綁定、離線授權、跨站</h4></div><p>已有實機驗證成果。</p></div>
+      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ NEXT</span><h4>🔐 Admin Web 登入與診斷</h4></div><p>帳號密碼、統一入口；錯誤報告一鍵匯出（去除敏感資訊）。</p></div>
+      <div class="rm-item plan"><div class="rm-hd"><span class="st st-plan">◇ NEXT</span><h4>🔄 可靠升級與離線更新</h4></div><p>自動備份、版本追蹤、回滾；離線 / 遠端更新。設備端程式更新需驗證授權延續。</p></div>
+      <div class="rm-item rm"><div class="rm-hd"><span class="st st-na">◈ ROADMAP</span><h4>Launcher / CLI 改善</h4></div><p>Qt/QML 相容、服務化、安全修補。</p></div>
+      <div class="rm-item nre"><div class="rm-hd"><span class="st st-nre">⚙ NRE</span><h4>進階授權與更多平台</h4></div><p>時間制 / 浮動授權、清單外 SoC、產線批量綁定。</p></div>
+    </div>
+    <p class="notice notice-warn">Roadmap 為方向，不代表已包含於現行版本。</p>
   </div>
 
   <!-- 14 -->
   <div class="sec" id="s14">
-    <div class="sec-hd"><div class="sec-num">14</div><div><div class="sec-title">導入前確認條件與定位</div><div class="sec-sub">Preconditions &amp; positioning — 不因產品簡報精簡而省略</div></div></div>
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>項目</th><th>導入時的確認重點</th></tr></thead>
-      <tbody>
-        <tr><td>部署環境</td><td>管理主機以 Ubuntu 24.04 x86_64 與 Docker / Compose 為已驗證基準。</td></tr>
-        <tr><td>管理入口</td><td>Admin Web 登入尚待完成；現階段僅限受控內網 / VPN，不直接曝露公網。</td></tr>
-        <tr><td>派送服務</td><td>Legacy 派送具高權限且缺少認證；建議不啟用，必要時另作隔離與風險評估。</td></tr>
-        <tr><td>安裝與升級</td><td>一般安裝需取得相依套件；完全離線安裝與自動升級 / 回復仍待完整驗證。</td></tr>
-        <tr><td>安全評估</td><td>內部安全評估仍有未結案項目，最新修補與結案狀態需再確認；高安全需求的導入應先確認風險揭露與修補計畫。</td></tr>
-      </tbody>
-    </table></div>
-    <div class="grid-2" style="margin-top:14px">
-      <div class="notice notice-red" style="margin:0"><div style="font-weight:800;color:var(--red);margin-bottom:6px">✗ 避免說</div>
-        絕對安全 / tamper-proof<br>所有設備通用、零調整<br>防止所有逆向與複製<br>通過滲透測試 / 第三方認證<br>遠端即時撤回授權</div>
-      <div class="notice notice-green" style="margin:0"><div style="font-weight:800;color:var(--green);margin-bottom:6px">✓ 應該說</div>
-        指定內容加密封裝與授權檢查已驗證<br>支援平台先做相容性試裝<br>錯裝置授權會被拒絕（已實機驗證）<br>內部安全評估持續修補中<br>永久離線授權；撤回規則另行定義</div>
+    <div class="sec-hd"><div class="sec-num">14</div><div><div class="sec-title">常見問題</div><div class="sec-sub">FAQ</div></div></div>
+    <details class="faq"><summary>需要改程式或加 TPM 嗎？</summary><div class="ans">不用改碼、不用重編、不需 TPM；但要先做相容性試裝（Qt/QML 類已知有限制）。</div></details>
+    <details class="faq"><summary>設備完全不連網也能執行嗎？</summary><div class="ans">可以，授權準備好之後就能永久離線執行。管理平台本身的安裝與升級不等於完全氣隙支援。</div></details>
+    <details class="faq"><summary>可以防止所有逆向或複製嗎？</summary><div class="ans">不能保證。已驗證的是封裝後看不到明文、錯裝置被拒；執行期安全持續補強。</div></details>
+    <details class="faq"><summary>設備換機或程式升級怎麼辦？</summary><div class="ans">要重新取指紋、重新授權；規則與可回復的更新流程導入前先定義。</div></details>
+    <details class="faq"><summary>FideProtect 和 TTPS 差在哪？</summary><div class="ans">FideProtect 管「程式能不能在這台跑」（不需 TPM）；<a href="./ttps-product-overview.html">TTPS</a> 管「設備是誰」（鑰匙在 TPM）。可互補，不是同一功能。</div></details>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="notice notice-red" style="margin:0"><strong>✗ 避免說</strong><br>絕對安全 / tamper-proof · 防所有逆向 · 所有程式零調整 · 通過第三方認證</div>
+      <div class="notice notice-green" style="margin:0"><strong>✓ 應該說</strong><br>封裝與授權檢查已實機驗證 · 支援平台先試裝 · 錯裝置會被拒 · 安全評估持續修補</div>
     </div>
-    <p class="notice notice-info">FideProtect 可提供軟體資產保護與授權控制的技術證據；不應宣稱產品本身已通過 CRA 或第三方認證。目前無第三方產品認證。</p>
   </div>
 
 </div>
 
 <div class="src">
-  <strong>資料來源 · Sources</strong>（內部文件，資料基準 2026-10-12 / 報告日期 2026-10-13）
-  <ul>
-    <li>FideProtect One-Page Product Brief（ZH）· 2026-10-13</li>
-    <li>FideProtect Product Overview &amp; Roadmap v1（簡報，18 頁）· 2026-10-13</li>
-    <li>FideProtect Basic Standard Product Cut Sheet · Rev 0.1 · 2026-09-24（PROPOSED）</li>
-    <li>FideProtect Standard Product Review Package · 2026-09-24 / 09-30</li>
-  </ul>
-  產品 DRI：Jerry Yang（jerry.yang@fiduciaedge.com）
+  <strong>資料來源</strong>（內部文件，資料基準 2026-10-13）：FideProtect One-Page Brief · Product Overview &amp; Roadmap v1 · Basic Cut Sheet Rev 0.1 · Standard Product Review Package。產品 DRI：Jerry Yang（jerry.yang@fiduciaedge.com）
 </div>
 
 <footer>
   <strong>FideProtect · Application Protection &amp; Device-bound Licensing</strong><br>
-  FiduciaEdge 產品介紹 · 內容依內部審查資料整理；規劃不等同既有能力，未承諾交付日期<br>
+  FiduciaEdge 產品介紹 · 規劃不等同既有能力，未承諾交付日期<br>
   <a href="./index.html">← 回首頁</a> · <a href="./ttps-product-overview.html">TTPS 產品總覽 →</a>
 </footer>
 
