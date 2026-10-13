@@ -1,12 +1,17 @@
-# Device Trust & Platform Security Playbook
+# FiduciaEdge 產品與設備信任 Playbook
 
-設備信任、Root of Trust、安全佈建、設備上線、韌體完整性、Remote Attestation，以及 CRA-ready 產品安全的技術作戰手冊。
+TTPS 與 FideProtect 兩個產品的總覽頁（中文為主、英文輔助），加上設備信任、Root of Trust、安全佈建、Remote Attestation 與 EU CRA 的技術參考資料。
 
 ---
 
 ## 用途
 
-本 repo 是 FiduciaEdge 的長期技術知識庫，涵蓋：
+本 repo 是 FiduciaEdge 的長期技術知識庫。首頁以兩個產品總覽為主，技術參考資料收在可展開的「參考資料」區：
+
+- **TTPS（Trusted Things Provisioning Service）** — 設備身分與存取管理平台：IAK / IDevID 私鑰留在 TPM 2.0、憑證生命週期、三項獨立驗證、逐台撤銷、Trusted Access 參考整合；Roadmap 為 Secure OTA 與 Remote Attestation
+- **FideProtect** — 執行檔保護與離線授權平台：XChaCha20-Poly1305 加密封裝、設備指紋綁定、永久離線 per-device `.lic`、記憶體內執行、跨站發證；不改碼、不重編、不要求 TPM
+
+技術參考資料涵蓋：
 
 - **Device Identity** — IDevID / LDevID，hardware-bound，non-exportable private key，mTLS-ready device identity
 - **Root of Trust** — TPM 2.0 / fTPM / hTPM / Soteria hRoT / External SE / PUF
@@ -27,7 +32,9 @@
 
 | 頁面 | 連結 |
 |------|------|
-| 首頁 / 技術總覽 | <https://ytzc.github.io/device-trust-playbook/> |
+| **首頁（產品入口 + 參考資料）** | <https://ytzc.github.io/device-trust-playbook/> |
+| **TTPS 產品總覽** — 設備身分與存取管理平台 | <https://ytzc.github.io/device-trust-playbook/ttps-product-overview.html> |
+| **FideProtect 產品總覽** — 執行檔保護與離線授權平台 | <https://ytzc.github.io/device-trust-playbook/fideprotect-product-overview.html> |
 | Device Trust & CRA Readiness Summary | <https://ytzc.github.io/device-trust-playbook/current-device-trust-cra-summary.html> |
 | Soteria-native DevID & Provisioning Survey | <https://ytzc.github.io/device-trust-playbook/soteria-native-device-identity-provisioning-survey.html> |
 | Techmation TX8 Soteria / OP-TEE fTPM 分析 | <https://ytzc.github.io/device-trust-playbook/techmation-tx8-soteria-optee-ftpm-analysis.html> |
@@ -48,7 +55,9 @@
 ```
 device-trust-playbook/
 ├── docs/
-│   ├── index.html                                          # GitHub Pages 首頁
+│   ├── index.html                                          # GitHub Pages 首頁（產品入口 + 可展開參考資料）
+│   ├── ttps-product-overview.html                         # TTPS 產品總覽（12 章節）
+│   ├── fideprotect-product-overview.html                  # FideProtect 產品總覽（14 章節）
 │   ├── current-device-trust-cra-summary.html              # Device Trust & CRA 整理
 │   ├── platform-solution-decision-map.html                # 平台決策圖
 │   ├── rot-methods-comparison.html                        # RoT 方法比較
@@ -67,12 +76,29 @@ device-trust-playbook/
 │   └── soteria-native-device-identity-provisioning-survey.md    # Soteria DevID 調查
 ├── references/
 │   └── cra/                                               # CRA 參考資料
+├── ttps_fp_ref/                                           # 產品頁來源（內部審查原檔，gitignore，不入 repo）
 └── README.md
 ```
 
 ---
 
 ## 報告內容
+
+### [`docs/ttps-product-overview.html`](docs/ttps-product-overview.html) · [`docs/fideprotect-product-overview.html`](docs/fideprotect-product-overview.html)
+
+**TTPS / FideProtect 產品總覽** — 給大家查詢「這是什麼」用的產品頁，點選式導覽、多視覺化（流程圖、架構圖、防複製示意、成熟度三欄、Roadmap 時間軸、狀態標籤）。資料基準 2026-10-13，整理自 One-Page Brief、Product Overview & Roadmap 簡報、Standard Product Cut Sheet 與 Standard Product Review Package。
+
+| 章節（兩頁共通） | 內容 |
+|------|------|
+| 一句話看懂 / 解決什麼問題 | 三支柱、「是 / 不是」、問題 → 做法對照 |
+| 怎麼運作 / 保護機制 | TTPS 五步流程 + 防複製示意；FideProtect 三層保護 + 設備綁定 + 離線運作 |
+| 系統架構 | 設備端 / 平台 / CA（或供應端 / 平台 / 出貨設備）；可展開的埠與前置條件 |
+| 驗證證據 / 驗證成果 | TTPS 三項驗證 + 撤銷即拒；FideProtect TX8 5/5、無明文、錯裝置拒絕、跨站發證 |
+| 成熟度 | 已驗證 / 整合驗收中 / 規劃中 三欄 + 驗證狀態表（icon + 文字標籤） |
+| 支援範圍 / 導入方式 | 已驗證 / Expected / NRE 表；五步（TTPS）或四步（FideProtect）交付 |
+| Roadmap / FAQ / 定位 | 時間軸；常見問題；避免說 vs 應該說 |
+
+> 產品頁的來源檔放在 `ttps_fp_ref/`（內部審查原檔，含 PROPOSED 商務項目與 NDA 內容），已列入 `.gitignore`，不會進公開 repo；頁面內容只保留可對外說明的部分。
 
 ### [`docs/current-device-trust-cra-summary.html`](docs/current-device-trust-cra-summary.html)
 
@@ -184,5 +210,5 @@ CI workflow（`.github/workflows/`）會：
 
 ---
 
-**維護單位：** FiduciaEdge TTPS 團隊
+**維護單位：** FiduciaEdge TTPS 團隊 · 產品 DRI：Jerry Yang
 **文件狀態：** 內部討論用，非對外合規聲明
